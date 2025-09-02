@@ -133,7 +133,7 @@ export default function CategoryPage({ title, slug }) {
         keywords={currentSeo.keywords}
         image={currentSeo.image}
         type="category"
-        canonical={`https://houseofhandmade.com/${slug}`}
+        canonical={`https://royalthread.co.in/${slug}`}
       />
       
       <main className="max-w-[1150px] mx-auto px-3 sm:px-4 md:px-6 pb-10">

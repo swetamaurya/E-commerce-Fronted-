@@ -47,7 +47,7 @@ const SEO = ({
 
     const ogUrl = document.querySelector('meta[property="og:url"]');
     if (ogUrl) {
-      ogUrl.setAttribute('content', `https://houseofhandmade.com${location.pathname}`);
+      ogUrl.setAttribute('content', `https://royalthread.co.in${location.pathname}`);
     }
 
     // Update Twitter tags
@@ -98,7 +98,7 @@ const SEO = ({
         "@type": type === 'product' ? "Product" : "CollectionPage",
         "name": title,
         "description": description,
-        "url": `https://houseofhandmade.com${location.pathname}`,
+        "url": `https://royalthread.co.in${location.pathname}`,
         "image": image,
         "brand": {
           "@type": "Brand",

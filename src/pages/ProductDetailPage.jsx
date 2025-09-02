@@ -159,7 +159,7 @@ export default function ProductDetailPage() {
         keywords={`${product.type}, ${product.color}, ${product.size}, handmade`}
         image={gallery[0]}
         type="product"
-        canonical={`https://houseofhandmade.com/${category}/${product.id}`}
+        canonical={`https://royalthread.co.in/${category}/${product.id}`}
       />
 
       <div className="min-h-screen bg-white py-6">
