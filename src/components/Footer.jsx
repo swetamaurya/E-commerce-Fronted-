@@ -22,15 +22,15 @@ export default function Footer() {
         <div>
           <div className="mb-6">
             {/* apna logo public/logo-white.png mein daal sakte ho */}
-            <img src="/logo-white.png" alt="House of Handmade" className="h-10 w-auto" onError={(e)=>{
+            <img src="/logo-white.png" alt="Royal Thread" className="h-10 w-auto" onError={(e)=>{
               e.currentTarget.outerHTML =
-                '<div style="font-weight:800;font-size:24px;letter-spacing:.04em">House of Handmade</div>';
+                '<div style="font-weight:800;font-size:24px;letter-spacing:.04em">Royal Thread</div>';
             }}/>
           </div>
 
-          <h3 className="text-2xl md:text-[28px] font-semibold mb-3">House of Handmade</h3>
+          <h3 className="text-2xl md:text-[28px] font-semibold mb-3">Royal Thread</h3>
           <p className="text-white/80 leading-relaxed max-w-[560px]">
-            Welcome to House of Handmade website, we are a MSE based out of India.
+            Welcome to Royal Thread website, we are a MSE based out of India.
             We aim to deliver high-quality products to our customers.
           </p>
 
@@ -53,13 +53,12 @@ export default function Footer() {
           </div>
 
           <ul className="mt-4 space-y-3 text-white/80">
-            <li><strong>Call:</strong> +91 - 7007432974</li>
-            <li><strong>WhatsApp:</strong> +91 - 7007432974</li>
+            <li><strong>Call:</strong> +91 - 9260915202</li>
+            <li><strong>WhatsApp:</strong> +91 - 8756043373</li>
             <li><strong>Customer Support Time:</strong> 24/7</li>
-            <li><strong>Email:</strong> houseofhandmade2021@gmail.com</li>
+            <li><strong>Email:</strong> royalthread@gmail.com</li>
             <li>
-              <strong>Address:</strong> Next to Axis Bank, Laharpur Road, Khairabad, Distt. Sitapur, 261131,
-              Uttar Pradesh, Sitapur, 261131
+              <strong>Address:</strong> Near to Sastri Bridge, Natwa Road, Mirzapur, Choti Bashi, 231001, Uttar Pradesh
             </li>
           </ul>
         </div>
@@ -99,29 +98,48 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* --- Bottom: payments + go to top --- */}
-      <div className="bg-[#121212]">
-        <div className="max-w-[1200px] mx-auto px-6 py-6 flex flex-col md:flex-row items-center justify-between gap-5">
-          {/* payment logos (placeholder SVGs / text badges) */}
-          <div className="flex flex-wrap items-center gap-4 opacity-90">
-            <Badge>PhonePe</Badge>
-            <Badge>GPay</Badge>
-            <Badge>Paytm</Badge>
-            <Badge>UPI</Badge>
-            <Badge>RuPay</Badge>
-            <Badge>Mastercard</Badge>
-            <Badge>VISA</Badge>
-          </div>
+     {/* --- Bottom: payments + go to top --- */}
+<div className="bg-[#121212]">
+  <div className="max-w-[1200px] mx-auto px-6 py-6 flex flex-col md:flex-row items-center justify-between gap-5">
+    {/* payment logos */}
+    <div className="flex flex-wrap items-center gap-4 opacity-90">
+      <Badge>PhonePe</Badge>
+      <Badge>GPay</Badge>
+      <Badge>Paytm</Badge>
+      <Badge>UPI</Badge>
+      <Badge>RuPay</Badge>
+      <Badge>Mastercard</Badge>
+      <Badge>VISA</Badge>
+    </div>
 
-          <button
-            onClick={goTop}
-            className="w-full md:w-auto border border-white/20 rounded-md px-6 py-3 flex items-center justify-center gap-3 bg-white/5 hover:bg-white/10 transition"
-          >
-            <span className="text-xl">↑</span>
-            <span className="tracking-wide">GO TO TOP</span>
-          </button>
-        </div>
-      </div>
+    <button
+      onClick={goTop}
+      className="w-full md:w-auto border border-white/20 rounded-md px-6 py-3 flex items-center justify-center gap-3 bg-white/5 hover:bg-white/10 transition"
+    >
+      <span className="text-xl">↑</span>
+      <span className="tracking-wide">GO TO TOP</span>
+    </button>
+  </div>
+
+  {/* ⬇️ yeh NEW block payments wale container ke BAAD hi paste karo */}
+  <div className="border-t border-white/10">
+    <div className="max-w-[1200px] mx-auto px-6 py-4">
+      <p className="text-center text-xs sm:text-sm text-white/70">
+        Created By{" "}
+        <a
+          href="https://wa.me/918756043373"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-500 font-semibold underline-offset-4 hover:underline focus-visible:underline"
+        >
+          Sweta Maurya
+        </a>
+      </p>
+    </div>
+  </div>
+  {/* ⬆️ yahi tak naya block */}
+</div>
+
     </footer>
   );
 }

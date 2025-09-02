@@ -135,7 +135,7 @@ export default function ProductDetailPage() {
 
   // specs demo (fill from product when available)
   const specs = [
-    ["Brand", "House Of Handmade"],
+    ["Brand", "Royal Thread"],
     ["Type", product.type || "—"],
     ["Material", "Cotton"],
     ["Pack Of", "1"],
@@ -154,7 +154,7 @@ export default function ProductDetailPage() {
   return (
     <>
       <SEO
-        title={`${product.title} - House of Handmade`}
+        title={`${product.title} - Royal Thread`}
         description={product.title}
         keywords={`${product.type}, ${product.color}, ${product.size}, handmade`}
         image={gallery[0]}

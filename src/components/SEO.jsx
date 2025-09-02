@@ -79,7 +79,7 @@ const SEO = ({
     return () => {
       // Reset to default title if needed
       if (title) {
-        document.title = 'House of Handmade - Premium Yoga Mats, Rugs & Home Textiles';
+        document.title = 'Royal Thread - Premium Yoga Mats, Rugs & Home Textiles';
       }
     };
   }, [title, description, keywords, image, type, canonical, location.pathname]);
@@ -102,7 +102,7 @@ const SEO = ({
         "image": image,
         "brand": {
           "@type": "Brand",
-          "name": "House of Handmade"
+          "name": "Royal Thread"
         },
         "offers": {
           "@type": "Offer",

@@ -1,4 +1,4 @@
-# House of Handmade - E-commerce Website
+# Royal Thread - E-commerce Website
 
 A modern, responsive e-commerce website for premium handmade yoga mats, rugs, and home textiles.
 

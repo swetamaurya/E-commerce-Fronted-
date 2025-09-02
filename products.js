@@ -1,6 +1,6 @@
 // products.js
 const IMG = (n) =>
-  `https://images.unsplash.com/photo-1599058917212-d750089bc07e?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=${n}`;
+  `https://images.unsplash.com/photo-1740168254713-1e8695f89ffe?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGNhcnBldCUyMGltZ3xlbnwwfHwwfHx8MA%3D%3D=${n}`;
 
 const DB = {
   "cotton-yoga-mats": [
