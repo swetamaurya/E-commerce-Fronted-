@@ -1,0 +1,24 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://houseofhandmade.com/sitemap.xml
+
+# Crawl-delay
+Crawl-delay: 1
+
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /private/
+Disallow: /api/
+Disallow: /_next/
+Disallow: /static/
+
+# Allow important pages
+Allow: /cotton-yoga-mats
+Allow: /bedside-runners
+Allow: /mats-collection
+Allow: /bath-mats
+Allow: /area-rugs
+Allow: /account
+Allow: /cart

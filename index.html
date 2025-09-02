@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Primary Meta Tags -->
+    <title>House of Handmade - Premium Yoga Mats, Rugs & Home Textiles</title>
+    <meta name="title" content="House of Handmade - Premium Yoga Mats, Rugs & Home Textiles">
+    <meta name="description" content="Discover premium cotton yoga mats, bedside runners, bath mats, and area rugs. Handcrafted with love for your home comfort and wellness journey.">
+    <meta name="keywords" content="yoga mats, cotton yoga mats, bedside runners, bath mats, area rugs, home textiles, handmade, premium quality, wellness, meditation">
+    <meta name="author" content="House of Handmade">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://houseofhandmade.com/">
+    <meta property="og:title" content="House of Handmade - Premium Yoga Mats, Rugs & Home Textiles">
+    <meta property="og:description" content="Discover premium cotton yoga mats, bedside runners, bath mats, and area rugs. Handcrafted with love for your home comfort and wellness journey.">
+    <meta property="og:image" content="/og-image.jpg">
+    <meta property="og:site_name" content="House of Handmade">
+    <meta property="og:locale" content="en_US">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://houseofhandmade.com/">
+    <meta property="twitter:title" content="House of Handmade - Premium Yoga Mats, Rugs & Home Textiles">
+    <meta property="twitter:description" content="Discover premium cotton yoga mats, bedside runners, bath mats, and area rugs. Handcrafted with love for your home comfort and wellness journey.">
+    <meta property="twitter:image" content="/og-image.jpg">
+    
+    <!-- Additional SEO Meta Tags -->
+    <meta name="theme-color" content="#14b8a6">
+    <meta name="msapplication-TileColor" content="#14b8a6">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="House of Handmade">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://houseofhandmade.com/">
+    
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "House of Handmade",
+      "url": "https://houseofhandmade.com",
+      "logo": "https://houseofhandmade.com/logo.png",
+      "description": "Premium handmade yoga mats, rugs, and home textiles",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "IN"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "availableLanguage": "English"
+      },
+      "sameAs": [
+        "https://facebook.com/houseofhandmade",
+        "https://instagram.com/houseofhandmade"
+      ]
+    }
+    </script>
+    
+    <!-- Additional Structured Data for E-commerce -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "House of Handmade",
+      "url": "https://houseofhandmade.com",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://houseofhandmade.com/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+    
+    <!-- Performance and Analytics -->
+    <script>
+      // Preload critical resources
+      const criticalResources = [
+        '/src/components/Navbar.jsx',
+        '/src/components/FilterBar.jsx'
+      ];
+      
+      // Add loading indicator
+      document.addEventListener('DOMContentLoaded', function() {
+        const loader = document.createElement('div');
+        loader.id = 'page-loader';
+        loader.innerHTML = `
+          <div style="
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.3s;
+          ">
+            <div style="
+              width: 40px;
+              height: 40px;
+              border: 3px solid #f3f3f3;
+              border-top: 3px solid #14b8a6;
+              border-radius: 50%;
+              animation: spin 1s linear infinite;
+            "></div>
+          </div>
+          <style>
+            @keyframes spin {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+            }
+          </style>
+        `;
+        document.body.appendChild(loader);
+        
+        // Remove loader when React app is ready
+        setTimeout(() => {
+          const loader = document.getElementById('page-loader');
+          if (loader) {
+            loader.style.opacity = '0';
+            setTimeout(() => loader.remove(), 300);
+          }
+        }, 1000);
+      });
+    </script>
+  </body>
+</html>
