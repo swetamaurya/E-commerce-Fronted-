@@ -1,7 +1,7 @@
 // services/api.js
 import axios from 'axios';
 
-const API_URL = 'https://e-commerce-backend-r6s0.onrender.com/api';
+const API_URL = 'http://localhost:5002/api';
 
 const api = axios.create({
   baseURL: API_URL,
@@ -47,7 +47,17 @@ export const cartApi = {
   // Remove item from cart
   removeFromCart: async (productId) => {
     try {
+      // यदि productId undefined है तो एरर थ्रो करें
+      if (!productId) {
+        throw new Error('Product ID is required');
+      }
+      
       const response = await api.delete(`/cart/remove/${productId}`);
+      
+      // यदि रिस्पॉन्स में एरर है तो एरर थ्रो करें
+      if (response.status >= 400) {
+        throw new Error(`Error removing item from cart: ${response.statusText}`);
+      }
       return response.data;
     } catch (error) {
       console.error('Error removing from cart:', error);

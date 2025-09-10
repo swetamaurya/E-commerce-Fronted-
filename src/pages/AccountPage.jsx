@@ -22,6 +22,13 @@ export default function AccountPage() {
   const handleLoginSuccess = (userData) => {
     setUser(userData);
     setShowLoginModal(false);
+    
+    // Check if there's a return URL saved
+    const returnUrl = localStorage.getItem('returnToUrl');
+    if (returnUrl) {
+      localStorage.removeItem('returnToUrl');
+      navigate(returnUrl);
+    }
   };
 
   const handleLogout = () => {

@@ -14,10 +14,12 @@ import WishlistPage from "./pages/WishlistPage.jsx";
 import AddressPage from "./pages/AddressPage.jsx";
 import PaymentPage from "./pages/PaymentPage.jsx";
 import OrderTrackingPage from "./pages/OrderTrackingPage.jsx";
+import AdminPage from "./pages/AdminPage.jsx";
+import ProtectedRoute from "./components/ProtectedRoute";
 import Footer from "./components/Footer";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+// comment
 export default function App() {
   return (
     <>
@@ -40,6 +42,8 @@ export default function App() {
         <Route path="/address" element={<AddressPage />} />
         <Route path="/payment" element={<PaymentPage />} />
         <Route path="/order-tracking" element={<OrderTrackingPage />} />
+        <Route path="/order-tracking/:orderId" element={<OrderTrackingPage />} />
+        <Route path="/admin" element={<ProtectedRoute element={<AdminPage />} requiredRole="admin" />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <Footer />

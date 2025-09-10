@@ -12,11 +12,10 @@ export default function CartPage() {
 
   // Fetch cart data
   useEffect(() => {
-    // Prevent duplicate API calls
     if (dataFetched) return;
-    
+
     const fetchCart = async () => {
-      if (!localStorage.getItem('token')) {
+      if (!localStorage.getItem("token")) {
         setLoading(false);
         return;
       }
@@ -24,12 +23,11 @@ export default function CartPage() {
       try {
         setLoading(true);
         const response = await cartApi.getCart();
-        // Fix: Use response.data instead of response
         setCart(response.data);
         setDataFetched(true);
       } catch (error) {
-        console.error('Error fetching cart:', error);
-        toast.error('Failed to load cart');
+        console.error("Error fetching cart:", error);
+        toast.error("Failed to load cart");
       } finally {
         setLoading(false);
       }
@@ -38,84 +36,98 @@ export default function CartPage() {
     fetchCart();
   }, [dataFetched]);
 
-  // Handle quantity change
-  const handleQuantityChange = async (itemId, newQuantity) => {
+  // Update quantity handler
+  const handleQuantityChange = async (productId, newQuantity) => {
     if (newQuantity < 1) return;
-    
+
     try {
       setUpdating(true);
-      await cartApi.updateCartItem(itemId, { quantity: newQuantity });
-      
-      // Update local state
-      setCart(prevCart => {
-        const updatedItems = prevCart.items.map(item => 
-          item.productId === itemId ? { ...item, quantity: newQuantity } : item
+      // Backend likely uses productId + userId to update quantity
+      await cartApi.updateCartItem(productId, { quantity: newQuantity });
+
+      setCart((prevCart) => {
+        const updatedItems = prevCart.items.map((item) =>
+          item.productId === productId ? { ...item, quantity: newQuantity } : item
         );
-        
-        // Recalculate total
+
         const newTotal = updatedItems.reduce(
-          (sum, item) => sum + (item.price * item.quantity), 0
+          (sum, item) => sum + item.price * item.quantity,
+          0
         );
-        
-        return {
-          ...prevCart,
-          items: updatedItems,
-          total: newTotal
-        };
+
+        return { ...prevCart, items: updatedItems, total: newTotal };
       });
-      
-      toast.success('Cart updated');
+
+      toast.success("Cart updated");
     } catch (error) {
-      console.error('Error updating cart:', error);
-      toast.error('Failed to update cart');
+      console.error("Error updating cart:", error);
+      toast.error("Failed to update cart");
     } finally {
       setUpdating(false);
     }
   };
 
-  // Handle remove item
-  const handleRemoveItem = async (itemId) => {
+  // Remove single item handler
+  const handleRemoveItem = async (productId) => {
     try {
       setUpdating(true);
-      await cartApi.removeFromCart(itemId);
+      // Check if we're in the middle of checkout
+      const currentPath = window.location.pathname;
+      if (currentPath !== "/cart") {
+        toast.error("Cannot remove items during checkout");
+        return;
+      }
       
-      // Update local state
-      setCart(prevCart => {
-        const updatedItems = prevCart.items.filter(item => item.productId !== itemId);
+      // यदि productId undefined या null है तो एरर दिखाएं
+      if (!productId) {
+        console.error("Error: Product ID is undefined or null");
+        toast.error("Cannot remove item: Invalid product ID");
+        setUpdating(false);
+        return;
+      }
+      
+      await cartApi.removeFromCart(productId);
+
+      setCart((prevCart) => {
+        if (!prevCart || !prevCart.items) {
+          return prevCart;
+        }
         
-        // Recalculate total
+        const updatedItems = prevCart.items.filter((item) => {
+          // Check both productId and product fields to ensure compatibility
+          const itemId = item.productId || item.product?._id || item.product;
+          return itemId !== productId;
+        });
+
         const newTotal = updatedItems.reduce(
-          (sum, item) => sum + (item.price * item.quantity), 0
+          (sum, item) => sum + item.price * item.quantity,
+          0
         );
-        
-        return {
-          ...prevCart,
-          items: updatedItems,
-          total: newTotal
-        };
+
+        return { ...prevCart, items: updatedItems, total: newTotal };
       });
-      
-      toast.success('Item removed from cart');
+
+      toast.success("Item removed from cart");
     } catch (error) {
-      console.error('Error removing item from cart:', error);
-      toast.error('Failed to remove item');
+      console.error("Error removing item from cart:", error.response?.data || error.message);
+      toast.error("Failed to remove item: " + (error.message || "Unknown error"));
     } finally {
       setUpdating(false);
     }
   };
 
-  // Handle clear cart
+  // Clear entire cart handler
   const handleClearCart = async () => {
-    if (!window.confirm('Are you sure you want to clear your cart?')) return;
-    
+    if (!window.confirm("Are you sure you want to clear your cart?")) return;
+
     try {
       setUpdating(true);
       await cartApi.clearCart();
-      setCart(prev => ({ ...prev, items: [], total: 0 }));
-      toast.success('Cart cleared');
+      setCart((prev) => ({ ...prev, items: [], total: 0 }));
+      toast.success("Cart cleared");
     } catch (error) {
-      console.error('Error clearing cart:', error);
-      toast.error('Failed to clear cart');
+      console.error("Error clearing cart:", error);
+      toast.error("Failed to clear cart");
     } finally {
       setUpdating(false);
     }
@@ -132,15 +144,25 @@ export default function CartPage() {
     );
   }
 
-  // Not logged in
-  if (!localStorage.getItem('token')) {
+  if (!localStorage.getItem("token")) {
     return (
       <div className="min-h-[70vh]">
         <div className="max-w-[1100px] mx-auto px-6">
           <h1 className="text-2xl font-semibold text-center my-8">YOUR BAG</h1>
           <div className="flex flex-col items-center justify-center py-20">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 0 0-8 0v4M5 9h14l1 12H4L5 9z" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-16 w-16 text-gray-400 mb-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M16 11V7a4 4 0 0 0-8 0v4M5 9h14l1 12H4L5 9z"
+              />
             </svg>
             <p className="text-gray-500 mb-2">Please login to view your cart</p>
             <p className="text-gray-500 mb-6">Your bag is empty</p>
@@ -158,15 +180,25 @@ export default function CartPage() {
     );
   }
 
-  // Empty cart
   if (!cart || !cart.items || cart.items.length === 0) {
     return (
       <div className="min-h-[70vh]">
         <div className="max-w-[1100px] mx-auto px-6">
           <h1 className="text-2xl font-semibold text-center my-8">YOUR BAG</h1>
           <div className="flex flex-col items-center justify-center py-20">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 0 0-8 0v4M5 9h14l1 12H4L5 9z" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-16 w-16 text-gray-400 mb-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M16 11V7a4 4 0 0 0-8 0v4M5 9h14l1 12H4L5 9z"
+              />
             </svg>
             <p className="text-gray-500 mb-6">Your bag is empty</p>
             <div className="flex space-x-6">
@@ -187,7 +219,7 @@ export default function CartPage() {
     <div className="min-h-[70vh]">
       <div className="max-w-[1100px] mx-auto px-6 py-8">
         <h1 className="text-2xl font-semibold text-center mb-8">YOUR BAG</h1>
-        
+
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Cart Items */}
           <div className="flex-1">
@@ -195,7 +227,7 @@ export default function CartPage() {
               <div className="p-6">
                 <div className="flex justify-between items-center mb-6">
                   <h2 className="text-lg font-medium">Shopping Cart ({cart.items.length} items)</h2>
-                  <button 
+                  <button
                     onClick={handleClearCart}
                     disabled={updating}
                     className="text-sm text-red-600 hover:text-red-800 disabled:text-red-300 disabled:cursor-not-allowed"
@@ -203,17 +235,13 @@ export default function CartPage() {
                     Clear Cart
                   </button>
                 </div>
-                
+
                 <div className="divide-y divide-gray-200">
                   {cart.items.map((item) => (
                     <div key={item.productId} className="py-6 flex">
                       {/* Product Image */}
                       <div className="flex-shrink-0 w-24 h-24 border border-gray-200 rounded-md overflow-hidden">
-                        <img
-                          src={item.image}
-                          alt={item.title}
-                          className="w-full h-full object-cover"
-                        />
+                        <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
                       </div>
 
                       {/* Product Details */}
@@ -228,7 +256,7 @@ export default function CartPage() {
                             <p className="ml-4">₹{item.price}</p>
                           </div>
                         </div>
-                        
+
                         <div className="flex-1 flex items-end justify-between text-sm">
                           {/* Quantity Selector */}
                           <div className="flex items-center border border-gray-300 rounded-md">
@@ -274,7 +302,7 @@ export default function CartPage() {
             <div className="bg-white rounded-lg shadow-md overflow-hidden sticky top-20">
               <div className="p-6">
                 <h2 className="text-lg font-medium text-gray-900 mb-4">Order Summary</h2>
-                
+
                 <div className="space-y-4">
                   <div className="flex justify-between">
                     <p className="text-gray-600">Subtotal</p>
@@ -289,19 +317,25 @@ export default function CartPage() {
                     <p className="text-lg font-bold">₹{cart.total}</p>
                   </div>
                 </div>
-                
+
                 <button
-                  onClick={() => navigate('/address')}
+                  onClick={() => navigate("/address")}
                   className="mt-6 w-full bg-teal-600 text-white py-3 px-4 rounded-md font-medium hover:bg-teal-700 transition-colors"
                 >
                   Checkout
                 </button>
-                
+
                 <div className="mt-4 flex justify-center space-x-4">
-                  <Link to="/cotton-yoga-mats" className="text-sm font-medium text-teal-600 hover:text-teal-500">
+                  <Link
+                    to="/cotton-yoga-mats"
+                    className="text-sm font-medium text-teal-600 hover:text-teal-500"
+                  >
                     Continue Shopping
                   </Link>
-                  <Link to="/order-tracking" className="text-sm font-medium text-teal-600 hover:text-teal-500">
+                  <Link
+                    to="/order-tracking"
+                    className="text-sm font-medium text-teal-600 hover:text-teal-500"
+                  >
                     Track Orders
                   </Link>
                 </div>

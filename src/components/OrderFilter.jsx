@@ -14,7 +14,7 @@ const OrderFilter = () => {
                 className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 disabled
               />
-              <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+              <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
                 <FaSearch />
               </div>
             </div>
@@ -29,7 +29,7 @@ const OrderFilter = () => {
         </div>
 
         <div className="flex items-center">
-          <div className="flex items-center mr-2 text-gray-600">
+          <div className="flex items-center mr-2">
             <FaFilter className="mr-1" />
             <span>Filter:</span>
           </div>

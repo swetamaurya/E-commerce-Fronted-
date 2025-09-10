@@ -1,10 +1,12 @@
 // src/pages/ProductDetailPage.jsx
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { listProducts } from "../../products";
+import productApi from "../services/productApi";
 import { cartApi, wishlistApi } from "../services/api";
 import { toast } from "react-toastify";
 import SEO from "../components/SEO";
+import ImageGallery from "../components/ImageGallery";
+ 
 
 export default function ProductDetailPage() {
   const { productId } = useParams();
@@ -14,9 +16,7 @@ export default function ProductDetailPage() {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // gallery
-  const [selectedImage, setSelectedImage] = useState(0);
-  const [zoom, setZoom] = useState({ x: 50, y: 50, active: false });
+  // gallery - now handled by ImageGallery component
 
   // purchase state
   const [quantity, setQuantity] = useState(1);
@@ -24,6 +24,9 @@ export default function ProductDetailPage() {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [isTogglingWishlist, setIsTogglingWishlist] = useState(false);
+  
+  // login modal
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   // info table expand
   const [showFullInfo, setShowFullInfo] = useState(false);
@@ -32,38 +35,67 @@ export default function ProductDetailPage() {
   const category = location.pathname.split("/")[1];
 
   useEffect(() => {
+    let isMounted = true;
+    
     const fetchProduct = async () => {
+      if (!isMounted) return;
+      
       setLoading(true);
+      
       try {
-        const products = await listProducts(category);
+        // पहले API से प्रोडक्ट्स फेच करें
+        const response = await productApi.getProductsByCategory(category);
+        const products = response.data || [];
         const found = products.find((p) => p.id === productId);
-        if (!found) return navigate("/not-found");
+        
+        if (!isMounted) return;
+        
+        if (!found) {
+          navigate("/not-found");
+          return;
+        }
 
         setProduct(found);
 
+        // Check wishlist status only if user is logged in
         if (localStorage.getItem("token")) {
           try {
             const res = await wishlistApi.checkWishlistItem(productId);
-            setIsWishlisted(res.inWishlist);
+            if (isMounted) {
+              setIsWishlisted(res.inWishlist);
+            }
           } catch (e) {
-            console.error("wishlist status:", e);
+            if (isMounted) {
+              setIsWishlisted(false);
+            }
           }
         }
       } catch (e) {
-        console.error(e);
-        navigate("/not-found");
+        console.error(`❌ [${Date.now()}] Product fetch error:`, e);
+        if (isMounted) {
+          navigate("/not-found");
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
-    if (category && productId) fetchProduct();
+    if (category && productId) {
+      fetchProduct();
+    }
+    
+    return () => {
+      isMounted = false;
+    };
   }, [category, productId, navigate]);
 
   // --------- API handlers (UNCHANGED SIGNATURES) ----------
   const handleAddToCart = async () => {
     if (!localStorage.getItem("token")) {
-      toast.info("Please login to add items to your cart");
+      // Show custom login modal
+      setShowLoginModal(true);
       return;
     }
     setIsAddingToCart(true);
@@ -83,10 +115,22 @@ export default function ProductDetailPage() {
       setIsAddingToCart(false);
     }
   };
+  
+  const handleLoginConfirm = () => {
+    // Save current page to return after login
+    localStorage.setItem("returnToUrl", window.location.pathname);
+    setShowLoginModal(false);
+    navigate("/account");
+  };
+  
+  const handleLoginCancel = () => {
+    setShowLoginModal(false);
+  };
 
   const toggleWishlist = async () => {
     if (!localStorage.getItem("token")) {
-      toast.info("Please login to add items to your wishlist");
+      // Show custom login modal for wishlist too
+      setShowLoginModal(true);
       return;
     }
     setIsTogglingWishlist(true);
@@ -128,10 +172,22 @@ export default function ProductDetailPage() {
   }
   if (!product) return null;
 
-  // demo gallery (repeat same image if no array provided)
-  const gallery = product.images?.length
-    ? product.images
-    : [product.image, product.image, product.image, product.image, product.image];
+  // Prepare images for gallery - ensure proper format
+  const galleryImages = product.images?.length
+    ? product.images.map((img, index) => ({
+        url: typeof img === 'string' ? img : img.url,
+        alt: typeof img === 'string' ? `${product.title} - Image ${index + 1}` : img.alt || `${product.title} - Image ${index + 1}`,
+        thumbnail: typeof img === 'string' ? img : img.thumbnail || img.url
+      }))
+    : product.image
+    ? [{ 
+        url: product.image, 
+        alt: product.title,
+        thumbnail: product.image
+      }]
+    : [];
+
+  // Debug: Log images data (commented out for production)
 
   // specs demo (fill from product when available)
   const specs = [
@@ -144,12 +200,7 @@ export default function ProductDetailPage() {
     ["SKU", product.id],
   ];
 
-  const onZoomMove = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    setZoom({ x, y, active: true });
-  };
+  // Zoom functionality now handled by ImageGallery component
 
   return (
     <>
@@ -157,15 +208,15 @@ export default function ProductDetailPage() {
         title={`${product.title} - Royal Thread`}
         description={product.title}
         keywords={`${product.type}, ${product.color}, ${product.size}, handmade`}
-        image={gallery[0]}
+        image={galleryImages[0]?.url || product.image}
         type="product"
         canonical={`https://royalthread.co.in/${category}/${product.id}`}
       />
 
-      <div className="min-h-screen bg-white py-6">
-        <div className="max-w-[1200px] mx-auto px-4">
+             <div className="bg-white py-2">
+         <div className="max-w-[1200px] mx-auto px-3">
           {/* breadcrumb */}
-          <nav className="flex mb-6 text-sm">
+          <nav className="flex mb-2 text-sm">
             <button
               onClick={() => navigate(`/${category}`)}
               className="text-gray-500 hover:text-gray-700"
@@ -176,53 +227,74 @@ export default function ProductDetailPage() {
             <span className="text-gray-900">{product.title}</span>
           </nav>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* LEFT: Gallery */}
-            <div className="grid grid-cols-[88px,1fr] gap-4">
-              {/* thumbs */}
-              <div className="flex lg:flex-col gap-3 order-2 lg:order-1">
-                {gallery.map((src, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setSelectedImage(i)}
-                    className={`w-20 h-20 rounded border overflow-hidden hover:opacity-90 ${
-                      selectedImage === i ? "border-teal-500" : "border-gray-200"
-                    }`}
-                  >
-                    <img src={src} className="w-full h-full object-cover" alt={`thumb-${i}`} />
-                  </button>
-                ))}
-              </div>
+                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-1 mb-0">
+          {/* LEFT: Image Gallery - Sticky */}
+          <div className="relative lg:sticky lg:top-4 lg:self-start mb-0">
+               {/* Wishlist Icon - Top Right */}
+               <button
+                 onClick={toggleWishlist}
+                 disabled={isTogglingWishlist}
+                 className={`absolute top-2 right-2 z-20 p-2 rounded-full flex items-center justify-center transition-all duration-300 ${
+                   isWishlisted ? "bg-red-600" : "bg-white"
+                 }`}
+                 style={{ width: 40, height: 40 }}
+               >
+                 {isWishlisted ? (
+                   // White filled heart on red bg
+                   <svg
+                     className="w-6 h-6"
+                     fill="white"
+                     viewBox="0 0 24 24"
+                     stroke="none"
+                   >
+                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09 1.09-1.28 2.76-2.09 4.5-2.09 3.08 0 5.5 2.42 5.5 5.5 0 3.78-3.4 6.86-8.55 11.54z" />
+                   </svg>
+                 ) : (
+                   // Black outlined heart on white bg
+                   <svg
+                     className="w-6 h-6"
+                     fill="none"
+                     stroke="black"
+                     strokeWidth={2}
+                     viewBox="0 0 24 24"
+                   >
+                     <path
+                       strokeLinecap="round"
+                       strokeLinejoin="round"
+                       d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                     />
+                   </svg>
+                 )}
+               </button>
+               
+               <ImageGallery 
+                 images={galleryImages} 
+                 productName={product.title}
+               />
+               
+                           {/* CTA Buttons - Below Image */}
+            <div className="mt-2 flex gap-2 mb-0">
+                 <button
+                   onClick={handleAddToCart}
+                   disabled={isAddingToCart}
+                   className="flex-1 bg-gray-900 text-white py-2.5 rounded-md font-semibold hover:bg-gray-800 disabled:bg-gray-600 text-sm"
+                 >
+                   {isAddingToCart ? "ADDING..." : "ADD TO BAG"}
+                 </button>
+                 <button className="flex-1 bg-black text-white py-2.5 rounded-md font-semibold hover:opacity-90 text-sm">
+                   BUY NOW
+                 </button>
+               </div>
+             </div>
 
-              {/* main image with hover zoom like Flipkart */}
-              <div
-                className="relative order-1 lg:order-2 rounded border border-gray-200 overflow-hidden bg-gray-50"
-                onMouseMove={onZoomMove}
-                onMouseLeave={() => setZoom((z) => ({ ...z, active: false }))}
-              >
-                <img
-                  src={gallery[selectedImage]}
-                  alt={product.title}
-                  className={`w-full h-full object-cover transition-transform duration-300 ${
-                    zoom.active ? "scale-110" : "scale-100"
-                  }`}
-                  style={
-                    zoom.active
-                      ? { transformOrigin: `${zoom.x}% ${zoom.y}%` }
-                      : undefined
-                  }
-                />
-              </div>
-            </div>
-
-            {/* RIGHT: Details */}
-            <div>
+                      {/* RIGHT: Details */}
+          <div className="space-y-1">
               <h1 className="text-2xl font-semibold text-gray-900 leading-snug">
                 {product.title}
               </h1>
 
               {/* price row */}
-              <div className="mt-3 flex items-center gap-3">
+              <div className="flex items-center gap-3">
                 <div className="text-3xl font-bold text-gray-900">₹{product.price}</div>
                 {product.mrp && (
                   <div className="text-gray-500 line-through text-lg">₹{product.mrp}</div>
@@ -233,7 +305,7 @@ export default function ProductDetailPage() {
               </div>
 
               {/* promo banner */}
-              <div className="mt-4 rounded border border-teal-100 bg-teal-50 text-teal-900 px-3 py-2 flex items-center gap-2">
+              <div className="rounded border border-teal-100 bg-teal-50 text-teal-900 px-3 py-2 flex items-center gap-2">
                 <span className="inline-flex h-5 w-5 items-center justify-center rounded bg-teal-600 text-white text-xs">
                   ₹
                 </span>
@@ -241,7 +313,7 @@ export default function ProductDetailPage() {
               </div>
 
               {/* delivery / return strip */}
-              <div className="mt-4 grid grid-cols-3 gap-3 text-center border rounded">
+              <div className="grid grid-cols-3 gap-3 text-center border rounded">
                 <div className="py-3">
                   <div className="font-semibold">Cash on Delivery</div>
                 </div>
@@ -256,22 +328,9 @@ export default function ProductDetailPage() {
                 </div>
               </div>
 
-              {/* CTA row */}
-              <div className="mt-5 flex gap-3">
-                <button
-                  onClick={handleAddToCart}
-                  disabled={isAddingToCart}
-                  className="flex-1 bg-gray-900 text-white py-3 rounded-md font-semibold hover:bg-gray-800 disabled:bg-gray-600"
-                >
-                  {isAddingToCart ? "ADDING..." : "ADD TO BAG"}
-                </button>
-                <button className="flex-1 bg-black text-white py-3 rounded-md font-semibold hover:opacity-90">
-                  BUY NOW
-                </button>
-              </div>
 
               {/* size (UI only) */}
-              <div className="mt-6">
+              <div>
                 <div className="text-base font-semibold mb-2">Size</div>
                 <select
                   value={selectedSize}
@@ -285,57 +344,43 @@ export default function ProductDetailPage() {
                 </select>
               </div>
 
-              {/* quantity + wishlist */}
-              <div className="mt-4 flex items-center gap-4">
-                <div>
-                  <div className="text-sm text-gray-600 mb-1">Quantity</div>
-                  <div className="flex items-center border rounded w-32">
-                    <button
-                      onClick={() => handleQuantityChange(quantity - 1)}
-                      className="px-3 py-2 text-gray-700 disabled:opacity-40"
-                      disabled={quantity <= 1}
-                    >
-                      –
-                    </button>
-                    <div className="flex-1 text-center">{quantity}</div>
-                    <button
-                      onClick={() => handleQuantityChange(quantity + 1)}
-                      className="px-3 py-2 text-gray-700"
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-
-                <button
-                  onClick={toggleWishlist}
-                  disabled={isTogglingWishlist}
-                  className={`mt-6 px-4 py-2 rounded border ${
-                    isWishlisted
-                      ? "bg-red-50 border-red-200 text-red-600"
-                      : "border-gray-300 text-gray-700 hover:bg-gray-50"
-                  }`}
-                >
-                  {isWishlisted ? "♥ Wishlisted" : "♡ Add to Wishlist"}
-                </button>
-              </div>
+              {/* quantity */}
+               <div>
+                 <div className="text-sm text-gray-600 mb-1">Quantity</div>
+                 <div className="flex items-center border rounded w-32">
+                   <button
+                     onClick={() => handleQuantityChange(quantity - 1)}
+                     className="px-3 py-2 text-gray-700 disabled:opacity-40"
+                     disabled={quantity <= 1}
+                   >
+                     –
+                   </button>
+                   <div className="flex-1 text-center">{quantity}</div>
+                   <button
+                     onClick={() => handleQuantityChange(quantity + 1)}
+                     className="px-3 py-2 text-gray-700"
+                   >
+                     +
+                   </button>
+                 </div>
+               </div>
 
               {/* product information table */}
-              <div className="mt-8 border rounded">
-                <div className="px-4 py-3 border-b font-semibold">Product Information</div>
+              <div className="border rounded">
+                <div className="px-4 py-2 border-b font-semibold">Product Information</div>
                 <div className="p-0">
                   <table className="w-full text-sm">
                     <tbody>
                       {(showFullInfo ? specs : specs.slice(0, 5)).map(([k, v]) => (
                         <tr key={k} className="border-b last:border-b-0">
-                          <td className="w-40 px-4 py-3 text-gray-600">{k}</td>
-                          <td className="px-4 py-3">{v}</td>
+                          <td className="w-40 px-4 py-2 text-gray-600">{k}</td>
+                          <td className="px-4 py-2">{v}</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
-                <div className="px-4 py-3 text-right">
+                <div className="px-4 py-2 text-right">
                   <button
                     className="text-sm font-semibold underline underline-offset-2"
                     onClick={() => setShowFullInfo((s) => !s)}
@@ -346,8 +391,8 @@ export default function ProductDetailPage() {
               </div>
 
               {/* description */}
-              <div className="mt-6">
-                <div className="text-base font-semibold mb-2">Product Description</div>
+              <div>
+                <div className="text-base font-semibold mb-1">Product Description</div>
                 <p className="text-gray-700 leading-relaxed">
                   This premium {product.type?.toLowerCase() || "product"} is handcrafted
                   with the finest materials, featuring a beautiful{" "}
@@ -359,6 +404,26 @@ export default function ProductDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Login Modal */}
+      {showLoginModal && (
+        <div className="modal-overlay">
+          <div className="modal-container">
+            <div className="modal-header">
+              <h3 className="modal-title">Login Required</h3>
+              <button onClick={handleLoginCancel} className="modal-close">&times;</button>
+            </div>
+            <div className="modal-body">
+              <p>Please login to add items to your cart or wishlist.</p>
+              <p>Would you like to login now?</p>
+            </div>
+            <div className="modal-footer">
+              <button onClick={handleLoginCancel} className="modal-button cancel-button">Cancel</button>
+              <button onClick={handleLoginConfirm} className="modal-button confirm-button">Login</button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

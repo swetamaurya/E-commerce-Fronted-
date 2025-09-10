@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
+import productApi from '../services/productApi';
 
 // Sample data for the homepage
 const categoryData = [
@@ -36,52 +37,6 @@ const categoryData = [
   }
 ];
 
-const spotlightProducts = [
-  {
-    id: 1,
-    title: "BROWN HANDMADE KNITTED NON SLIP COTTON PRINTED ROUND RUG FOR HOME",
-    price: 399,
-    mrp: 1199,
-    off: "66%",
-    badge: "Extra 50% OFF",
-    image: "/images/brown-round-rug.jpg",
-    type: "Round Rug",
-    size: "3x3 ft"
-  },
-  {
-    id: 2,
-    title: "GREY HANDMADE KNITTED COTTON-WOOL BLEND RUNNER RUG FOR HALLWAY",
-    price: 799,
-    mrp: 2299,
-    off: "65%",
-    badge: "Extra 50% OFF",
-    image: "/images/grey-runner-rug.jpg",
-    type: "Runner",
-    size: "2x6 ft"
-  },
-  {
-    id: 3,
-    title: "RED HANDMADE KNITTED COTTON PRINTED ROUND RUG FOR LIVING ROOM",
-    price: 399,
-    mrp: 1199,
-    off: "66%",
-    badge: "Extra 50% OFF",
-    image: "/images/red-round-rug.jpg",
-    type: "Round Rug",
-    size: "3x3 ft"
-  },
-  {
-    id: 4,
-    title: "BLUE HANDMADE KNITTED ANTISLIP COTTON PRINTED ROUND RUG FOR HOME",
-    price: 399,
-    mrp: 1199,
-    off: "66%",
-    badge: "Extra 50% OFF",
-    image: "/images/blue-round-rug.jpg",
-    type: "Round Rug",
-    size: "3x3 ft"
-  }
-];
 
 const allProducts = [
   {
@@ -158,6 +113,27 @@ const customerReviews = [
 ];
 
 export default function HomePage() {
+  const [featuredProducts, setFeaturedProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchFeaturedProducts = async () => {
+      try {
+        setLoading(true);
+        const response = await productApi.getFeaturedProducts();
+        setFeaturedProducts(response.data || []);
+      } catch (error) {
+        console.error('Error fetching featured products:', error);
+        // No fallback data - show empty state
+        setFeaturedProducts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFeaturedProducts();
+  }, []);
+
   return (
     <div className="min-h-screen bg-white">
       {/* Royal Thread Logo Section */}
@@ -291,9 +267,17 @@ export default function HomePage() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {spotlightProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
+            {loading ? (
+              <div className="col-span-full flex justify-center items-center py-12">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+              </div>
+            ) : featuredProducts.length > 0 ? featuredProducts.map((product) => (
+              <ProductCard key={product._id || product.id} product={product} />
+            )) : (
+              <div className="col-span-full text-center py-12">
+                <p className="text-gray-500">No featured products available</p>
+              </div>
+            )}
           </div>
         </div>
       </section>

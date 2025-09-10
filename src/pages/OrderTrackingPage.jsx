@@ -1,11 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-// import {
-//   getUserOrders,
-//   getOrderById,
-//   getOrderStatusHistory,
-// } from '../api/orderTrackingApi';
+import { FaArrowLeft } from 'react-icons/fa';
 
 
 import OrderFilter from '../components/OrderFilter';
@@ -18,34 +14,40 @@ export default function OrderTrackingPage() {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [searchOrderId, setSearchOrderId] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  
+  // Handler to go back to previous page
+  const handleGoBack = () => {
+    navigate('/account'); // This navigates back to the account page where order list is shown
+  };
 
+  // Function to get user orders from localStorage
+  const getUserOrders = () => {
+    return new Promise((resolve) => {
+      const savedOrders = JSON.parse(localStorage.getItem('orders') || '[]');
+      resolve(savedOrders);
+    });
+  };
+  
   useEffect(() => {
     const token = localStorage.getItem('token');
     setIsLoggedIn(!!token);
 
-    if (token) {
-      setLoading(true);
-      getUserOrders()
-        .then((savedOrders) => {
-          setOrders(savedOrders || []);
+    setLoading(true);
+    getUserOrders()
+      .then((savedOrders) => {
+        setOrders(savedOrders || []);
 
-          if (savedOrders && savedOrders.length > 0) {
-            const id = setInterval(updateOrderStatuses, 10000); // 10s
-            // cleanup interval if component unmounts
-            return () => clearInterval(id);
-          }
-        })
-        .catch((err) => {
-          console.error('Error loading orders:', err);
-          toast.error('Failed to load orders');
-        })
-        .finally(() => setLoading(false));
-    } else {
-      // Guest: load from localStorage
-      const saved = JSON.parse(localStorage.getItem('orders') || '[]');
-      setOrders(saved);
-      setLoading(false);
-    }
+        if (savedOrders && savedOrders.length > 0) {
+          const id = setInterval(updateOrderStatuses, 10000); // 10s
+          // cleanup interval if component unmounts
+          return () => clearInterval(id);
+        }
+      })
+      .catch((err) => {
+        console.error('Error loading orders:', err);
+        toast.error('Failed to load orders');
+      })
+      .finally(() => setLoading(false));
   }, [navigate]);
 
 
@@ -217,6 +219,15 @@ export default function OrderTrackingPage() {
   return (
     <div className="min-h-[70vh]">
       <div className="max-w-[1200px] mx-auto px-6 py-8">
+        {/* Back Button */}
+        <div className="mb-4">
+          <button 
+            onClick={handleGoBack}
+            className="flex items-center text-gray-600 hover:text-teal-600 transition-colors"
+          >
+            <FaArrowLeft className="mr-2" color="transparent" /> Back
+          </button>
+        </div>
         {/* <h1 className="text-2xl font-semibold text-center mb-8">ORDER TRACKING</h1> */}
 
         {/* Track by Order ID */}

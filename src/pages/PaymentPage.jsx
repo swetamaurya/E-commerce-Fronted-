@@ -2,6 +2,80 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
+// UPI Payment UI Component
+const UpiPaymentUI = ({ upiId, onClose, onSuccess }) => {
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+        <h2 className="text-xl font-semibold mb-4 text-center">UPI Payment</h2>
+        <p className="mb-4 text-center">Please complete your payment using UPI ID: <strong>{upiId}</strong></p>
+        
+        <div className="bg-gray-100 p-4 rounded-md mb-4">
+          <p className="text-center text-gray-700">Scan QR code or use your UPI app</p>
+          <div className="h-48 w-48 bg-gray-300 mx-auto my-4 flex items-center justify-center">
+            {/* QR Code Image */}
+            <img 
+              src="https://chart.googleapis.com/chart?cht=qr&chl=upi://pay?pa=royalthread@ybl&pn=RoyalThread&am=0&cu=INR&tn=Payment%20for%20Order" 
+              alt="UPI QR Code" 
+              className="h-full w-full object-contain"
+            />
+          </div>
+        </div>
+        
+        <div className="flex justify-between">
+          <button 
+            onClick={onClose}
+            className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100"
+          >
+            Cancel
+          </button>
+          <button 
+            onClick={onSuccess}
+            className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700"
+          >
+            Payment Complete
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Card Payment UI Component
+const CardPaymentUI = ({ cardDetails, onClose, onSuccess }) => {
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+        <h2 className="text-xl font-semibold mb-4">Card Payment</h2>
+        
+        <div className="bg-gray-100 p-4 rounded-md mb-4">
+          <p className="mb-2">Card Number: **** **** **** {cardDetails.cardNumber.slice(-4)}</p>
+          <p>Expiry: {cardDetails.expiry}</p>
+        </div>
+        
+        <div className="mb-4">
+          <p className="text-gray-600 text-sm">Please verify your payment details and click "Pay Now" to complete your transaction.</p>
+        </div>
+        
+        <div className="flex justify-between">
+          <button 
+            onClick={onClose}
+            className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100"
+          >
+            Cancel
+          </button>
+          <button 
+            onClick={onSuccess}
+            className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700"
+          >
+            Pay Now
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default function PaymentPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -12,6 +86,8 @@ export default function PaymentPage() {
   const [upiId, setUpiId] = useState('');
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderId, setOrderId] = useState('');
+  const [showUpiPaymentUI, setShowUpiPaymentUI] = useState(false);
+  const [showCardPaymentUI, setShowCardPaymentUI] = useState(false);
   
   useEffect(() => {
     // Check if user is logged in
@@ -69,25 +145,63 @@ export default function PaymentPage() {
       const newOrderId = generateOrderId();
       setOrderId(newOrderId);
       
-      // For UPI and Card payments, redirect to payment gateway
+      // For UPI and Card payments, show payment UI in the same page
       if (paymentMethod === 'upi') {
-        // Simulate UPI payment gateway redirect
+        // Simulate UPI payment processing
         await new Promise(resolve => setTimeout(resolve, 1000));
-        window.open('https://pay.google.com', '_blank');
-        await new Promise(resolve => setTimeout(resolve, 500));
+        // Show UPI payment UI instead of redirecting
+        setShowUpiPaymentUI(true);
       } else if (paymentMethod === 'card') {
-        // Simulate card payment gateway redirect
+        // Simulate card payment processing
         await new Promise(resolve => setTimeout(resolve, 1000));
-        window.open('https://www.phonepe.com', '_blank');
-        await new Promise(resolve => setTimeout(resolve, 500));
+        // Show card payment UI instead of redirecting
+        setShowCardPaymentUI(true);
+      } else if (paymentMethod === 'cod') {
+        // For COD, process the order directly
+        // Simulate order processing
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        // Save order details to localStorage for tracking
+        const orderDetails = {
+          id: newOrderId,
+          date: new Date().toISOString(),
+          paymentMethod,
+          status: 'Processing',
+          estimatedDelivery: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
+          address: JSON.parse(localStorage.getItem('shippingAddress')),
+          items: JSON.parse(localStorage.getItem('cart') || '[]')
+        };
+        
+        // Save to localStorage
+        const existingOrders = JSON.parse(localStorage.getItem('orders') || '[]');
+        localStorage.setItem('orders', JSON.stringify([...existingOrders, orderDetails]));
+        
+        // Clear cart and shipping address after successful order
+        localStorage.removeItem('shippingAddress');
+        localStorage.removeItem('cart');
+        
+        // Set order placed state to show confirmation
+        setOrderPlaced(true);
       }
-      
-      // Simulate order processing
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
+    } catch (error) {
+      console.error('Error processing payment:', error);
+      toast.error('Failed to process payment. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle payment completion
+  const handlePaymentSuccess = async () => {
+    // Close payment UIs
+    setShowUpiPaymentUI(false);
+    setShowCardPaymentUI(false);
+    
+    // Process the order
+    try {
       // Save order details to localStorage for tracking
       const orderDetails = {
-        id: newOrderId,
+        id: orderId,
         date: new Date().toISOString(),
         paymentMethod,
         status: 'Processing',
@@ -107,10 +221,8 @@ export default function PaymentPage() {
       // Set order placed state to show confirmation
       setOrderPlaced(true);
     } catch (error) {
-      console.error('Error processing payment:', error);
-      toast.error('Failed to process payment. Please try again.');
-    } finally {
-      setLoading(false);
+      toast.error('Error processing payment. Please try again.');
+      console.error('Payment error:', error);
     }
   };
 
@@ -118,6 +230,24 @@ export default function PaymentPage() {
     <div className="min-h-[70vh]">
       <div className="max-w-[800px] mx-auto px-6 py-8">
         <h1 className="text-2xl font-semibold text-center mb-8">PAYMENT METHOD</h1>
+        
+        {/* UPI Payment UI Modal */}
+        {showUpiPaymentUI && (
+          <UpiPaymentUI 
+            upiId={upiId}
+            onClose={() => setShowUpiPaymentUI(false)}
+            onSuccess={handlePaymentSuccess}
+          />
+        )}
+        
+        {/* Card Payment UI Modal */}
+        {showCardPaymentUI && (
+          <CardPaymentUI 
+            cardDetails={{ cardNumber, expiry }}
+            onClose={() => setShowCardPaymentUI(false)}
+            onSuccess={handlePaymentSuccess}
+          />
+        )}
         
         {orderPlaced ? (
           <div className="bg-white rounded-lg shadow-md overflow-hidden p-6">

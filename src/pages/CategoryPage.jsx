@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
-import { listProducts } from "../../products";
+import productApi from "../services/productApi";
 import ProductCard from "../components/ProductCard";
 import FilterBar from "../components/FilterBar";
 import SEO from "../components/SEO";
+import { wishlistApi } from "../services/api";
 
 const initialFilters = {
   type: [],      // [] = All (multi-select)
@@ -17,6 +18,7 @@ export default function CategoryPage({ title, slug }) {
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState(initialFilters);
   const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
+  const [wishlistStatus, setWishlistStatus] = useState({}); // Track wishlist status for all products
 
   // SEO data for each category
   const seoData = {
@@ -59,15 +61,84 @@ export default function CategoryPage({ title, slug }) {
     image: '/images/default-category.jpg'
   };
 
+  // Fetch wishlist status for all products
+  const fetchWishlistStatus = async (products) => {
+    if (!localStorage.getItem("token") || !products.length) return;
+    
+    try {
+      
+      // Batch fetch wishlist status for all products
+      const wishlistPromises = products.map(async (product) => {
+        try {
+          const res = await wishlistApi.checkWishlistItem(product.id);
+          return { productId: product.id, isWishlisted: !!res?.inWishlist };
+        } catch (error) {
+          console.error(`Error checking wishlist for product ${product.id}:`, error);
+          return { productId: product.id, isWishlisted: false };
+        }
+      });
+      
+      const results = await Promise.all(wishlistPromises);
+      const statusMap = {};
+      results.forEach(({ productId, isWishlisted }) => {
+        statusMap[productId] = isWishlisted;
+      });
+      
+      setWishlistStatus(statusMap);
+    } catch (error) {
+    }
+  };
+
   useEffect(() => {
-    let alive = true;
-    setLoading(true);
-    listProducts(slug).then((data) => {
-      if (!alive) return;
-      setItems(Array.isArray(data) ? data : []);
-      setLoading(false);
-    });
-    return () => { alive = false; };
+    let isMounted = true;
+    let abortController = new AbortController();
+    
+    const fetchProducts = async () => {
+      if (!isMounted) return;
+      
+      setLoading(true);
+      
+      try {
+        const response = await productApi.getProductsByCategory(slug);
+        const data = response.data || [];
+        
+        if (!isMounted) {
+          return;
+        }
+        
+        const products = Array.isArray(data) ? data : [];
+        setItems(products);
+        
+        // Fetch wishlist status for all products
+        if (products.length > 0) {
+          fetchWishlistStatus(products);
+        }
+      } catch (error) {
+        if (error.name === 'AbortError') {
+          return;
+        }
+        if (isMounted) {
+          setItems([]);
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+    
+    // Debounce the fetch to prevent multiple calls
+    const timeoutId = setTimeout(() => {
+      if (isMounted) {
+        fetchProducts();
+      }
+    }, 100);
+    
+    return () => { 
+      isMounted = false;
+      abortController.abort();
+      clearTimeout(timeoutId);
+    };
   }, [slug]);
 
   // --- filter (multi-select + price)
@@ -89,9 +160,9 @@ export default function CategoryPage({ title, slug }) {
     const inSel = (selArr, val) => selArr.length === 0 || selArr.includes(val);
 
     return items
-      .filter((p) => inSel(filters.type, p.type))
-      .filter((p) => inSel(filters.size, p.size))
-      .filter((p) => inSel(filters.color, p.color))
+      .filter((p) => inSel(filters.type, p.type || p.category))
+      .filter((p) => inSel(filters.size, p.size || p.variants?.[0]?.size))
+      .filter((p) => inSel(filters.color, p.color || p.variants?.[0]?.color))
       .filter((p) => priceMatch(Number(p.price ?? 0)));
   }, [items, filters]);
 
@@ -111,9 +182,9 @@ export default function CategoryPage({ title, slug }) {
   const facetOptions = useMemo(() => {
     const uniq = (arr) => Array.from(new Set(arr)).filter(Boolean);
     return {
-      types: uniq(items.map((p) => p.type)),
-      sizes: uniq(items.map((p) => p.size)),
-      colors: uniq(items.map((p) => p.color)),
+      types: uniq(items.map((p) => p.category)),
+      sizes: uniq(items.flatMap((p) => p.variants?.map(v => v.size) || [])),
+      colors: uniq(items.flatMap((p) => p.variants?.map(v => v.color) || [])),
     };
   }, [items]);
 
@@ -238,6 +309,13 @@ export default function CategoryPage({ title, slug }) {
                 key={p.id ?? `${p.title}-${p.sku ?? Math.random()}`} 
                 product={p}
                 viewMode={viewMode}
+                wishlistStatus={wishlistStatus[p.id] || false}
+                onWishlistChange={(productId, isWishlisted) => {
+                  setWishlistStatus(prev => ({
+                    ...prev,
+                    [productId]: isWishlisted
+                  }));
+                }}
               />
             ))}
           </section>

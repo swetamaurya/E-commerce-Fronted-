@@ -3,13 +3,19 @@ import { useNavigate } from "react-router-dom";
 import { cartApi, wishlistApi } from "../services/api";
 import { toast } from "react-toastify";
 
-export default function ProductCard({ product, viewMode = "grid", category: forcedCategory }) {
+export default function ProductCard({ 
+  product, 
+  viewMode = "grid", 
+  category: forcedCategory,
+  wishlistStatus = false,
+  onWishlistChange
+}) {
   const navigate = useNavigate();
-  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [isWishlisted, setIsWishlisted] = useState(wishlistStatus);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [isTogglingWishlist, setIsTogglingWishlist] = useState(false);
 
-  // Normalize images: prefer product.images (string[] or {url,alt}[]), fallback to product.image
+  // Normalize images
   const images = useMemo(() => {
     if (Array.isArray(product?.images) && product.images.length > 0) {
       return product.images
@@ -20,26 +26,47 @@ export default function ProductCard({ product, viewMode = "grid", category: forc
     }
     return product?.image ? [{ url: product.image, alt: product.title }] : [];
   }, [product]);
-
   const primaryImg = images[0]?.url || product?.image || "";
   const hoverImg = images[1]?.url || images[0]?.url || product?.image || "";
 
-  // Check wishlist status on mount / product change
+  // Update wishlist status when props change
   useEffect(() => {
+    setIsWishlisted(wishlistStatus);
+  }, [wishlistStatus]);
+
+  // Only check wishlist status if not provided via props
+  useEffect(() => {
+    if (onWishlistChange) {
+      // Parent is managing wishlist status, no need to check individually
+      return;
+    }
+    
     const checkWishlistStatus = async () => {
       try {
         if (localStorage.getItem("token")) {
-          const res = await wishlistApi.checkWishlistItem(product.id);
-          setIsWishlisted(!!res?.inWishlist);
+          // Debounce the wishlist check to prevent multiple calls
+          const timeoutId = setTimeout(async () => {
+            try {
+              const res = await wishlistApi.checkWishlistItem(product.id);
+              setIsWishlisted(!!res?.inWishlist);
+            } catch (e) {
+              console.error("Error checking wishlist status:", e);
+              setIsWishlisted(false);
+            }
+          }, 100); // 100ms debounce
+          
+          return () => clearTimeout(timeoutId);
         } else {
           setIsWishlisted(false);
         }
       } catch (e) {
-        console.error("Error checking wishlist status:", e);
+        console.error("Error in wishlist check setup:", e);
+        setIsWishlisted(false);
       }
     };
+    
     checkWishlistStatus();
-  }, [product.id]);
+  }, [product.id, onWishlistChange]);
 
   const handleProductClick = () => {
     const catFromPath = window.location.pathname.split("/")[1] || "cotton-yoga-mats";
@@ -58,6 +85,10 @@ export default function ProductCard({ product, viewMode = "grid", category: forc
       if (isWishlisted) {
         await wishlistApi.removeFromWishlist(product.id);
         setIsWishlisted(false);
+        // Notify parent component
+        if (onWishlistChange) {
+          onWishlistChange(product.id, false);
+        }
         toast.success("Removed from wishlist");
       } else {
         await wishlistApi.addToWishlist({
@@ -67,6 +98,10 @@ export default function ProductCard({ product, viewMode = "grid", category: forc
           image: primaryImg,
         });
         setIsWishlisted(true);
+        // Notify parent component
+        if (onWishlistChange) {
+          onWishlistChange(product.id, true);
+        }
         toast.success("Added to wishlist");
       }
     } catch (error) {
@@ -101,14 +136,13 @@ export default function ProductCard({ product, viewMode = "grid", category: forc
     }
   };
 
-  /* ---------- LIST VIEW ---------- */
+  // ---- LIST VIEW ----
   if (viewMode === "list") {
     return (
       <article
         className="flex gap-4 p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow cursor-pointer"
         onClick={handleProductClick}
       >
-        {/* Image with hover swap */}
         <div className="flex-shrink-0">
           <div className="w-24 h-24 bg-gray-100 border border-gray-200 rounded-md overflow-hidden relative">
             {product.badge && (
@@ -116,7 +150,6 @@ export default function ProductCard({ product, viewMode = "grid", category: forc
                 {product.badge}
               </div>
             )}
-            {/* base image */}
             <img
               src={primaryImg}
               alt={product.title}
@@ -124,33 +157,66 @@ export default function ProductCard({ product, viewMode = "grid", category: forc
               loading="lazy"
               title={product.title}
             />
-            {/* hover image */}
             <img
               src={hoverImg}
               alt={product.title}
               className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300 opacity-0 hover:opacity-100"
               loading="lazy"
             />
+            {/* Wishlist Icon */}
+         <button
+  onClick={handleWishlistClick}
+  disabled={isTogglingWishlist}
+  aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+  className={`absolute right-3 top-3 z-20 p-2 rounded-full flex items-center justify-center transition-all duration-300 ${
+    isWishlisted ? "bg-red-600" : "bg-white"
+  }`}
+  style={{ width: 36, height: 36 }}
+>
+  {isWishlisted ? (
+    // White filled heart on red bg
+    <svg
+      className="w-5 h-5"
+      fill="white"
+      viewBox="0 0 24 24"
+      stroke="none"
+    >
+      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09 1.09-1.28 2.76-2.09 4.5-2.09 3.08 0 5.5 2.42 5.5 5.5 0 3.78-3.4 6.86-8.55 11.54z" />
+    </svg>
+  ) : (
+    // Black outlined heart on white bg
+    <svg
+      className="w-5 h-5"
+      fill="none"
+      stroke="black"
+      strokeWidth={2}
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+      />
+    </svg>
+  )}
+</button>
+
           </div>
         </div>
-
         <div className="flex-1 min-w-0">
           <h3 className="font-bold text-sm sm:text-base text-gray-900 leading-tight mb-2 line-clamp-2">
             {product.title}
           </h3>
-
           <div className="flex flex-wrap gap-2 text-xs text-gray-600 mb-2">
             {product.type && <span className="px-2 py-1 bg-gray-100 rounded-full">{product.type}</span>}
             {product.size && <span className="px-2 py-1 bg-gray-100 rounded-full">{product.size}</span>}
             {product.color && <span className="px-2 py-1 bg-gray-100 rounded-full">{product.color}</span>}
           </div>
-
           <div className="flex items-baseline gap-2">
             <div className="font-black text-lg text-gray-900">₹{product.price}</div>
             {product.mrp && <div className="line-through text-gray-500 text-sm">₹{product.mrp}</div>}
             {product.off && <div className="text-red-600 font-bold text-sm">{product.off} OFF</div>}
           </div>
-
           <div className="flex gap-2 mt-3">
             <button
               onClick={handleAddToCart}
@@ -159,29 +225,13 @@ export default function ProductCard({ product, viewMode = "grid", category: forc
             >
               Add to Cart
             </button>
-            <button
-              onClick={handleWishlistClick}
-              disabled={isTogglingWishlist}
-              className={`p-2 rounded-md border transition-colors ${
-                isWishlisted ? "bg-red-50 border-red-200 text-red-600" : "border-gray-300 text-gray-600 hover:bg-gray-50"
-              }`}
-            >
-              <svg className="w-4 h-4" fill={isWishlisted ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                />
-              </svg>
-            </button>
           </div>
         </div>
       </article>
     );
   }
 
-  /* ---------- GRID VIEW ---------- */
+  // ---- GRID VIEW ----
   return (
     <article
       className="group relative bg-white rounded-lg border border-gray-200 hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer"
@@ -194,39 +244,54 @@ export default function ProductCard({ product, viewMode = "grid", category: forc
         </div>
       )}
 
-      {/* Wishlist */}
-      <button
-        onClick={handleWishlistClick}
-        className={`absolute right-3 top-3 z-20 p-2 rounded-full transition-all duration-300 ${
-          isWishlisted
-            ? "bg-red-500 text-white shadow-lg scale-110"
-            : "bg-white/95 text-gray-600 hover:bg-white hover:shadow-md hover:scale-110"
-        }`}
-        aria-label="Toggle wishlist"
-      >
-        <svg className="w-4 h-4" fill={isWishlisted ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-          />
-        </svg>
-      </button>
+     <button
+  onClick={handleWishlistClick}
+  disabled={isTogglingWishlist}
+  aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+  className={`absolute right-3 top-3 z-20 p-2 rounded-full flex items-center justify-center transition-all duration-300 ${
+    isWishlisted ? "bg-red-600" : "bg-white"
+  }`}
+  style={{ width: 36, height: 36 }}
+>
+  {isWishlisted ? (
+    // White filled heart on red bg
+    <svg
+      className="w-5 h-5"
+      fill="white"
+      viewBox="0 0 24 24"
+      stroke="none"
+    >
+      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09 1.09-1.28 2.76-2.09 4.5-2.09 3.08 0 5.5 2.42 5.5 5.5 0 3.78-3.4 6.86-8.55 11.54z" />
+    </svg>
+  ) : (
+    // Black outlined heart on white bg
+    <svg
+      className="w-5 h-5"
+      fill="none"
+      stroke="black"
+      strokeWidth={2}
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+      />
+    </svg>
+  )}
+</button>
 
-      {/* Image with hover swap */}
-  {/* Product Image with Zoom Effect */}
-<div className="aspect-[4/3] bg-gray-50 overflow-hidden relative">
-  <img
-    src={primaryImg}
-    alt={product.title}
-    className="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-110"
-    loading="lazy"
-    title={product.title}
-  />
-</div>
 
-      {/* Info */}
+      <div className="aspect-[4/3] bg-gray-50 overflow-hidden relative">
+        <img
+          src={primaryImg}
+          alt={product.title}
+          className="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-110"
+          loading="lazy"
+          title={product.title}
+        />
+      </div>
+
       <div className="p-4">
         <div className="flex flex-wrap gap-1 mb-3">
           {product.type && (
@@ -258,4 +323,3 @@ export default function ProductCard({ product, viewMode = "grid", category: forc
     </article>
   );
 }
-

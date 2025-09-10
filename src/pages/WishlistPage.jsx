@@ -113,7 +113,7 @@ export default function WishlistPage() {
         <div className="max-w-[1100px] mx-auto px-6">
           <h1 className="text-2xl font-semibold text-center my-8">YOUR WISHLIST</h1>
           <div className="flex flex-col items-center justify-center py-20">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mb-4" fill="none" viewBox="0 0 24 24" stroke="red">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
             <p className="text-gray-500 mb-2">Please login to view your wishlist</p>
@@ -134,7 +134,7 @@ export default function WishlistPage() {
         <div className="max-w-[1100px] mx-auto px-6">
           <h1 className="text-2xl font-semibold text-center my-8">YOUR WISHLIST</h1>
           <div className="flex flex-col items-center justify-center py-20">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mb-4" fill="none" viewBox="0 0 24 24" stroke="red">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
             <p className="text-gray-500 mb-6">Your wishlist is empty</p>
@@ -197,11 +197,13 @@ export default function WishlistPage() {
                       <button
                         onClick={() => handleRemoveItem(item.product)}
                         disabled={processing}
-                        className="p-2 text-gray-500 hover:text-red-600 border border-gray-300 rounded-md disabled:text-gray-300 disabled:cursor-not-allowed"
+                        className="p-2 border border-gray-300 rounded-md disabled:cursor-not-allowed"
                       >
-                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                        </svg>
+                       {/* Filled Heart - always wishlisted on WishlistPage */}
+<svg className="w-6 h-6" fill="#e53e3e" viewBox="0 0 24 24" stroke="none">
+  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+</svg>
+
                       </button>
                     </div>
                   </div>

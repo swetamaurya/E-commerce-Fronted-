@@ -54,11 +54,12 @@ export default function Footer() {
 
           <ul className="mt-4 space-y-3 text-white/80">
             <li><strong>Call:</strong> +91 - 9260915202</li>
-            <li><strong>WhatsApp:</strong> +91 - 8756043373</li>
+            <li><strong>WhatsApp:</strong> +91 - 8887565329</li>
             <li><strong>Customer Support Time:</strong> 24/7</li>
-            <li><strong>Email:</strong> royalthread@gmail.com</li>
+            <li><strong>Email:</strong> royalthread2025@gmail.com</li>
             <li>
-              <strong>Address:</strong> Near to Sastri Bridge, Natwa Road, Mirzapur, Choti Bashi, 231001, Uttar Pradesh
+              <strong>Address:</strong> Chhoti Bashi, Near Shastri Setu,
+Mirzapur, Uttar Pradesh – 231001
             </li>
           </ul>
         </div>
@@ -67,16 +68,16 @@ export default function Footer() {
       {/* --- Middle: policy links + most searched --- */}
       <div className="max-w-[1200px] mx-auto px-6 py-6 border-b border-white/10">
         {/* policies row */}
-        <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-3 text-white font-semibold">
+        {/* <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-3 text-white font-semibold">
           <Link to="/about" className="hover:underline">About Us</Link>
           <Link to="/privacy" className="hover:underline">Privacy Policy</Link>
           <Link to="/return" className="hover:underline">Return Policy</Link>
           <Link to="/shipping" className="hover:underline">Shipping Policy</Link>
           <Link to="/terms" className="hover:underline">Terms and condition</Link>
-        </div>
+        </div> */}
 
         {/* divider line */}
-        <div className="h-px bg-white/10 my-6"></div>
+        {/* <div className="h-px bg-white/10 my-6"></div> */}
 
         {/* most searched */}
         <div className="space-y-3">
@@ -102,7 +103,7 @@ export default function Footer() {
 <div className="bg-[#121212]">
   <div className="max-w-[1200px] mx-auto px-6 py-6 flex flex-col md:flex-row items-center justify-between gap-5">
     {/* payment logos */}
-    <div className="flex flex-wrap items-center gap-4 opacity-90">
+    {/* <div className="flex flex-wrap items-center gap-4 opacity-90">
       <Badge>PhonePe</Badge>
       <Badge>GPay</Badge>
       <Badge>Paytm</Badge>
@@ -110,7 +111,7 @@ export default function Footer() {
       <Badge>RuPay</Badge>
       <Badge>Mastercard</Badge>
       <Badge>VISA</Badge>
-    </div>
+    </div> */}
 
     <button
       onClick={goTop}
