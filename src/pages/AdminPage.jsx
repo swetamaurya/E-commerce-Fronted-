@@ -878,15 +878,17 @@ const AdminPage = () => {
                           
                           return (
                             <div key={index} className="relative group">
-                              <img
-                                src={imageUrl}
-                                alt={imageAlt}
-                                className="w-full h-24 object-cover rounded border"
-                                onError={(e) => {
-                                  e.target.style.display = 'none';
-                                  e.target.nextSibling.style.display = 'flex';
-                                }}
-                              />
+                              {imageUrl ? (
+                                <img
+                                  src={imageUrl}
+                                  alt={imageAlt}
+                                  className="w-full h-24 object-cover rounded border"
+                                  onError={(e) => {
+                                    e.target.style.display = 'none';
+                                    e.target.nextSibling.style.display = 'flex';
+                                  }}
+                                />
+                              ) : null}
                               <div 
                                 className="w-full h-24 bg-gray-100 rounded border hidden items-center justify-center"
                                 style={{display: 'none'}}
@@ -985,7 +987,7 @@ const AdminPage = () => {
                   ).map((product, index) => (
                     <tr key={product.id || `product-${index}`}>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        {product.images && product.images.length > 0 ? (
+                        {product.images && product.images.length > 0 && product.images[0] ? (
                           <img 
                             src={product.images[0]} 
                             alt={product.name} 

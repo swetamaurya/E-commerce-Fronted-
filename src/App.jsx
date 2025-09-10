@@ -7,6 +7,7 @@ import MatsCollection from "./pages/MatsCollection";
 import BathMats from "./pages/BathMats";
 import AreaRugs from "./pages/AreaRugs";
 import ProductDetailPage from "./pages/ProductDetailPage";
+import AllProductsPage from "./pages/AllProductsPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import AccountPage from "./pages/AccountPage.jsx";
 import CartPage from "./pages/CartPage.jsx";
@@ -17,9 +18,10 @@ import OrderTrackingPage from "./pages/OrderTrackingPage.jsx";
 import AdminPage from "./pages/AdminPage.jsx";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Footer from "./components/Footer";
+import GoToTopButton from "./components/GoToTopButton";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-// commentsssss
+
 export default function App() {
   return (
     <>
@@ -36,6 +38,7 @@ export default function App() {
         <Route path="/bath-mats/:productId" element={<ProductDetailPage />} />
         <Route path="/area-rugs" element={<AreaRugs />} />
         <Route path="/area-rugs/:productId" element={<ProductDetailPage />} />
+        <Route path="/all-products" element={<AllProductsPage />} />
         <Route path="/account" element={<AccountPage />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/wishlist" element={<WishlistPage />} />
@@ -47,6 +50,7 @@ export default function App() {
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <Footer />
+      <GoToTopButton />
     </>
   );
 }

@@ -20,7 +20,7 @@ export default function ProductDetailPage() {
 
   // purchase state
   const [quantity, setQuantity] = useState(1);
-  const [selectedSize, setSelectedSize] = useState("2 X 6 Feet | 8 Mm"); // UI only
+  const [selectedSize, setSelectedSize] = useState(""); // Will be set from variant data
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [isTogglingWishlist, setIsTogglingWishlist] = useState(false);
@@ -34,6 +34,13 @@ export default function ProductDetailPage() {
   // category from URL
   const category = location.pathname.split("/")[1];
 
+  // Set initial size from variant data
+  useEffect(() => {
+    if (product?.variants?.[0]?.size) {
+      setSelectedSize(product.variants[0].size);
+    }
+  }, [product]);
+
   useEffect(() => {
     let isMounted = true;
     
@@ -43,19 +50,39 @@ export default function ProductDetailPage() {
       setLoading(true);
       
       try {
-        // पहले API से प्रोडक्ट्स फेच करें
+        console.log('Fetching product:', { category, productId });
+        
+        // First try to get products by category
         const response = await productApi.getProductsByCategory(category);
         const products = response.data || [];
-        const found = products.find((p) => p.id === productId);
+        console.log('Products from category:', products);
+        
+        const found = products.find((p) => (p.id || p._id) === productId);
+        console.log('Found product:', found);
         
         if (!isMounted) return;
         
         if (!found) {
-          navigate("/not-found");
-          return;
+          console.log('Product not found in category, trying direct fetch by ID');
+          // Try to fetch product directly by ID as fallback
+          try {
+            const directResponse = await productApi.getProductById(productId);
+            if (directResponse.success && directResponse.data) {
+              console.log('Found product via direct fetch:', directResponse.data);
+              setProduct(directResponse.data);
+            } else {
+              console.log('Product not found via direct fetch, redirecting to 404');
+              navigate("/not-found");
+              return;
+            }
+          } catch (directError) {
+            console.log('Direct fetch failed, redirecting to 404:', directError);
+            navigate("/not-found");
+            return;
+          }
+        } else {
+          setProduct(found);
         }
-
-        setProduct(found);
 
         // Check wishlist status only if user is logged in
         if (localStorage.getItem("token")) {
@@ -101,11 +128,11 @@ export default function ProductDetailPage() {
     setIsAddingToCart(true);
     try {
       await cartApi.addToCart({
-        productId: product.id,
+        productId: product.id || product._id,
         quantity,
         price: product.price,
-        title: product.title,
-        image: product.image,
+        title: product.name || product.title,
+        image: product.images?.[0]?.url || product.image,
       });
       toast.success("Added to cart");
     } catch (err) {
@@ -136,15 +163,15 @@ export default function ProductDetailPage() {
     setIsTogglingWishlist(true);
     try {
       if (isWishlisted) {
-        await wishlistApi.removeFromWishlist(product.id);
+        await wishlistApi.removeFromWishlist(product.id || product._id);
         setIsWishlisted(false);
         toast.success("Removed from wishlist");
       } else {
         await wishlistApi.addToWishlist({
-          productId: product.id,
-          title: product.title,
+          productId: product.id || product._id,
+          title: product.name || product.title,
           price: product.price,
-          image: product.image,
+          image: product.images?.[0]?.url || product.image,
         });
         setIsWishlisted(true);
         toast.success("Added to wishlist");
@@ -176,28 +203,33 @@ export default function ProductDetailPage() {
   const galleryImages = product.images?.length
     ? product.images.map((img, index) => ({
         url: typeof img === 'string' ? img : img.url,
-        alt: typeof img === 'string' ? `${product.title} - Image ${index + 1}` : img.alt || `${product.title} - Image ${index + 1}`,
+        alt: typeof img === 'string' ? `${product.name || product.title} - Image ${index + 1}` : img.alt || `${product.name || product.title} - Image ${index + 1}`,
         thumbnail: typeof img === 'string' ? img : img.thumbnail || img.url
       }))
     : product.image
     ? [{ 
         url: product.image, 
-        alt: product.title,
+        alt: product.name || product.title,
         thumbnail: product.image
       }]
     : [];
 
   // Debug: Log images data (commented out for production)
 
+  // Extract variant data for display
+  const variant = product?.variants?.[0] || {};
+  const displaySize = variant.size || product?.size || selectedSize;
+  const displayColor = variant.color || product?.color || "Fade-Resistant And Maintains Color Over Time";
+
   // specs demo (fill from product when available)
   const specs = [
-    ["Brand", "Royal Thread"],
-    ["Type", product.type || "—"],
+    ["Brand", product.brand || "Royal Thread"],
+    ["Type", product.category || "—"],
     ["Material", "Cotton"],
     ["Pack Of", "1"],
-    ["Color", product.color || "Fade-Resistant And Maintains Color Over Time"],
-    ["Size", product.size || selectedSize],
-    ["SKU", product.id],
+    ["Color", displayColor],
+    ["Size", displaySize],
+    ["SKU", product.id || product._id],
   ];
 
   // Zoom functionality now handled by ImageGallery component
@@ -205,12 +237,12 @@ export default function ProductDetailPage() {
   return (
     <>
       <SEO
-        title={`${product.title} - Royal Thread`}
-        description={product.title}
-        keywords={`${product.type}, ${product.color}, ${product.size}, handmade`}
+        title={`${product.name || product.title} - Royal Thread`}
+        description={product.description || product.name || product.title}
+        keywords={`${product.category}, ${displayColor}, ${displaySize}, handmade`}
         image={galleryImages[0]?.url || product.image}
         type="product"
-        canonical={`https://royalthread.co.in/${category}/${product.id}`}
+        canonical={`https://royalthread.co.in/${category}/${product.id || product._id}`}
       />
 
              <div className="bg-white py-2">
@@ -224,7 +256,7 @@ export default function ProductDetailPage() {
               {category.replace("-", " ").replace(/\b\w/g, (l) => l.toUpperCase())}
             </button>
             <span className="px-2 text-gray-400">/</span>
-            <span className="text-gray-900">{product.title}</span>
+            <span className="text-gray-900">{product.name || product.title}</span>
           </nav>
 
                              <div className="grid grid-cols-1 lg:grid-cols-2 gap-1 mb-0">
@@ -269,7 +301,7 @@ export default function ProductDetailPage() {
                
                <ImageGallery 
                  images={galleryImages} 
-                 productName={product.title}
+                 productName={product.name || product.title}
                />
                
                            {/* CTA Buttons - Below Image */}
@@ -290,7 +322,7 @@ export default function ProductDetailPage() {
                       {/* RIGHT: Details */}
           <div className="space-y-1">
               <h1 className="text-2xl font-semibold text-gray-900 leading-snug">
-                {product.title}
+                {product.name || product.title}
               </h1>
 
               {/* price row */}
@@ -329,7 +361,7 @@ export default function ProductDetailPage() {
               </div>
 
 
-              {/* size (UI only) */}
+              {/* size selection */}
               <div>
                 <div className="text-base font-semibold mb-2">Size</div>
                 <select
@@ -337,10 +369,13 @@ export default function ProductDetailPage() {
                   onChange={(e) => setSelectedSize(e.target.value)}
                   className="w-64 border rounded px-3 py-2"
                 >
-                  <option>2 X 6 Feet | 8 Mm</option>
-                  <option>2 X 6 Feet | 7 Mm</option>
-                  <option>2 X 6 Feet | 6 Mm</option>
-                  <option>2 X 6 Feet | 5 Mm</option>
+                  {product.variants?.map((variant, index) => (
+                    <option key={index} value={variant.size}>
+                      {variant.size} - ₹{variant.price}
+                    </option>
+                  )) || (
+                    <option value={displaySize}>{displaySize}</option>
+                  )}
                 </select>
               </div>
 
@@ -394,10 +429,9 @@ export default function ProductDetailPage() {
               <div>
                 <div className="text-base font-semibold mb-1">Product Description</div>
                 <p className="text-gray-700 leading-relaxed">
-                  This premium {product.type?.toLowerCase() || "product"} is handcrafted
-                  with the finest materials, featuring a beautiful{" "}
-                  {product.color?.toLowerCase() || "elegant"} design. Perfect for daily use,
-                  combining traditional craftsmanship with modern aesthetics.
+                  {product.description || `This premium ${product.category?.toLowerCase() || "product"} is handcrafted
+                  with the finest materials, featuring a beautiful ${displayColor?.toLowerCase() || "elegant"} design. Perfect for daily use,
+                  combining traditional craftsmanship with modern aesthetics.`}
                 </p>
               </div>
             </div>

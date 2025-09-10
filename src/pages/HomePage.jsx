@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
+import ImageSlider from '../components/ImageSlider';
 import productApi from '../services/productApi';
 
 // Sample data for the homepage
@@ -38,52 +39,6 @@ const categoryData = [
 ];
 
 
-const allProducts = [
-  {
-    id: 1,
-    title: "HANDWOVEN TRADITIONAL KILIM RUG FOR LIVING ROOM",
-    price: 1399,
-    mrp: 3998,
-    off: "65%",
-    badge: "Extra 50% OFF",
-    image: "/images/kilim-rug.jpg",
-    type: "Kilim Rug",
-    size: "5x8 ft"
-  },
-  {
-    id: 2,
-    title: "PREMIUM HANDWOVEN RUG FOR LIVING ROOM",
-    price: 1199,
-    mrp: 2499,
-    off: "52%",
-    badge: "Extra 50% OFF",
-    image: "/images/premium-rug.jpg",
-    type: "Premium Rug",
-    size: "4x6 ft"
-  },
-  {
-    id: 3,
-    title: "PREMIUM HANDMADE KNITTED RUG FOR LIVING ROOM",
-    price: 1899,
-    mrp: 6998,
-    off: "72%",
-    badge: "Extra 50% OFF",
-    image: "/images/knitted-rug.jpg",
-    type: "Knitted Rug",
-    size: "6x9 ft"
-  },
-  {
-    id: 4,
-    title: "PREMIUM HANDWOVEN RUG FOR LIVING ROOM",
-    price: 999,
-    mrp: 1999,
-    off: "50%",
-    badge: "Extra 50% OFF",
-    image: "/images/handwoven-rug.jpg",
-    type: "Handwoven Rug",
-    size: "3x5 ft"
-  }
-];
 
 const customerReviews = [
   {
@@ -114,7 +69,14 @@ const customerReviews = [
 
 export default function HomePage() {
   const [featuredProducts, setFeaturedProducts] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [allProductsLoading, setAllProductsLoading] = useState(true);
+  const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
+
+  // Debug: Log the current state
+  console.log('HomePage render - allProducts:', allProducts);
+  console.log('HomePage render - allProductsLoading:', allProductsLoading);
 
   useEffect(() => {
     const fetchFeaturedProducts = async () => {
@@ -131,11 +93,61 @@ export default function HomePage() {
       }
     };
 
+    const fetchAllProducts = async () => {
+      try {
+        setAllProductsLoading(true);
+        console.log('Fetching all products...');
+        
+        // Test direct API call first
+        const directResponse = await fetch('https://e-commerce-backend-r6s0.onrender.com/api/products/getAll/');
+        console.log('Direct API response status:', directResponse.status);
+        
+        if (!directResponse.ok) {
+          throw new Error(`HTTP error! status: ${directResponse.status}`);
+        }
+        
+        const directData = await directResponse.json();
+        console.log('Direct API data:', directData);
+        
+        // Now try with productApi
+        const response = await productApi.getAllProducts();
+        console.log('All products API response:', response);
+        const products = response.data || [];
+        console.log('Products data:', products);
+        // Take only first 4 products
+        setAllProducts(products.slice(0, 4));
+        console.log('Set all products:', products.slice(0, 4));
+      } catch (error) {
+        console.error('Error fetching all products:', error);
+        console.error('Error details:', error.message);
+        setAllProducts([]);
+      } finally {
+        setAllProductsLoading(false);
+      }
+    };
+
     fetchFeaturedProducts();
+    fetchAllProducts();
+  }, []);
+
+  // Auto-rotate categories - show 4 at a time
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentCategoryIndex((prevIndex) => {
+        // Move by 1 category at a time, but ensure we don't go beyond the limit
+        const maxIndex = Math.max(0, categoryData.length - 4);
+        return prevIndex >= maxIndex ? 0 : prevIndex + 1;
+      });
+    }, 4000); // Change every 4 seconds
+
+    return () => clearInterval(interval);
   }, []);
 
   return (
     <div className="min-h-screen bg-white">
+      {/* Image Slider Section */}
+      <ImageSlider />
+
       {/* Royal Thread Logo Section */}
       <section className="py-12 bg-gradient-to-b from-gray-50 to-white">
         <div className="container mx-auto px-4 text-center">
@@ -179,82 +191,102 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-gray-900 to-gray-700 text-white py-20">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-5xl font-bold mb-6">Welcome to Royal Thread</h1>
-          <p className="text-xl mb-8">Discover the finest handmade rugs and mats for your home</p>
-          <Link 
-            to="/cotton-yoga-mats" 
-            className="bg-white text-gray-900 px-8 py-3 rounded-md font-semibold hover:bg-gray-100 transition-colors"
-          >
-            Shop Now
-          </Link>
-        </div>
-      </section>
 
-      {/* Brand Category Section */}
+      {/* Brand Category Section - 4 Categories Carousel */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
-          {/* Pagination Dots */}
-          <div className="flex justify-center mb-4">
-            <div className="flex space-x-2">
-              <div className="w-2 h-2 bg-black rounded-full"></div>
-              <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
-            </div>
-          </div>
-          
           <h2 className="text-3xl font-bold text-center text-gray-800 mb-12">BRAND CATEGORY</h2>
           
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
-            {categoryData.map((category) => (
-              <Link key={category.id} to={category.link} className="group">
-                <div className="text-center">
-                  <div className="w-24 h-24 mx-auto mb-4 rounded-full border-2 border-black overflow-hidden group-hover:scale-105 transition-transform">
-                    <img 
-                      src={category.image} 
-                      alt={category.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <h3 className="text-sm font-medium text-gray-800">{category.name}</h3>
+          {/* Carousel Container */}
+          <div className="relative overflow-hidden rounded-2xl shadow-2xl">
+            {/* Categories Carousel - Show 4 at a time */}
+            <div 
+              className="flex transition-transform duration-1000 ease-in-out"
+              style={{ transform: `translateX(-${currentCategoryIndex * 25}%)` }}
+            >
+              {categoryData.map((category, index) => (
+                <div key={category.id} className="w-1/4 flex-shrink-0">
+                  <Link to={category.link} className="block group">
+                    <div className="relative h-[50vh] md:h-[60vh] overflow-hidden">
+                      {/* Background Image */}
+                      <div
+                        className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-700 group-hover:scale-110"
+                        style={{
+                          backgroundImage: `url(${category.image})`,
+                          backgroundSize: 'cover',
+                          backgroundPosition: 'center'
+                        }}
+                      >
+                        {/* Overlay */}
+                        <div className="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-30 transition-all duration-300" />
+                        
+                        {/* Content */}
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="text-center text-white px-4">
+                            <h3 className="text-xl md:text-2xl font-bold mb-2 group-hover:scale-105 transition-transform duration-300">
+                              {category.name}
+                            </h3>
+                            <p className="text-sm md:text-base font-light mb-4 opacity-90">
+                              Click to explore
+                            </p>
+                            <div className="inline-block bg-white bg-opacity-20 backdrop-blur-sm px-4 py-2 rounded-full group-hover:bg-opacity-30 transition-all duration-300">
+                              <span className="text-xs font-semibold">SHOP NOW</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
                 </div>
-              </Link>
+              ))}
+            </div>
+
+            {/* Navigation Arrows */}
+            <button
+              onClick={() => {
+                const maxIndex = Math.max(0, categoryData.length - 4);
+                setCurrentCategoryIndex((prev) => prev <= 0 ? maxIndex : prev - 1);
+              }}
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 backdrop-blur-sm z-10"
+              aria-label="Previous categories"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+
+            <button
+              onClick={() => {
+                const maxIndex = Math.max(0, categoryData.length - 4);
+                setCurrentCategoryIndex((prev) => prev >= maxIndex ? 0 : prev + 1);
+              }}
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 backdrop-blur-sm z-10"
+              aria-label="Next categories"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Pagination Dots - Show only for the starting positions */}
+          <div className="flex justify-center mt-8 space-x-3">
+            {Array.from({ length: Math.max(1, categoryData.length - 3) }, (_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentCategoryIndex(index)}
+                className={`w-4 h-4 rounded-full transition-all duration-300 ${
+                  index === currentCategoryIndex
+                    ? 'bg-gray-800 scale-125'
+                    : 'bg-gray-300 hover:bg-gray-500'
+                }`}
+                aria-label={`Go to categories starting from ${index + 1}`}
+              />
             ))}
           </div>
         </div>
       </section>
 
-      {/* Shop By Category Section */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center text-gray-800 mb-4">SHOP BY CATEGORY</h2>
-          <div className="text-center mb-12">
-            <Link to="/cotton-yoga-mats" className="text-gray-600 underline hover:text-gray-800">
-              VIEW ALL
-            </Link>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {categoryData.slice(0, 3).map((category) => (
-              <Link key={category.id} to={category.link} className="group">
-                <div className="relative overflow-hidden rounded-lg shadow-lg group-hover:shadow-xl transition-shadow">
-                  <div className="aspect-[4/3] bg-gray-200">
-                    <img 
-                      src={category.image} 
-                      alt={category.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                  </div>
-                  <div className="absolute bottom-0 left-0 right-0 bg-white p-4">
-                    <h3 className="text-lg font-semibold text-gray-800">{category.name}</h3>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* In The Spotlight Section */}
       <section className="py-16 bg-gray-50">
@@ -287,15 +319,26 @@ export default function HomePage() {
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-12">
             <h2 className="text-3xl font-bold text-gray-800">ALL PRODUCT</h2>
-            <Link to="/cotton-yoga-mats" className="text-gray-600 underline hover:text-gray-800">
+            <Link to="/all-products" className="text-gray-600 underline hover:text-gray-800">
               VIEW ALL
             </Link>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {allProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
+            {(allProductsLoading !== false) ? (
+              <div className="col-span-full flex justify-center items-center py-12">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                <p className="ml-4 text-gray-500">Loading products...</p>
+              </div>
+            ) : (allProducts && allProducts.length > 0) ? allProducts.map((product) => (
+              <ProductCard key={product._id || product.id} product={product} />
+            )) : (
+              <div className="col-span-full text-center py-12">
+                <p className="text-gray-500">No products available</p>
+                <p className="text-sm text-gray-400 mt-2">Loading state: {allProductsLoading ? 'true' : 'false'}</p>
+                <p className="text-sm text-gray-400">Products count: {allProducts ? allProducts.length : 'undefined'}</p>
+              </div>
+            )}
           </div>
         </div>
       </section>

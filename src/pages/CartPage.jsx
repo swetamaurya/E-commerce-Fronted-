@@ -23,6 +23,8 @@ export default function CartPage() {
       try {
         setLoading(true);
         const response = await cartApi.getCart();
+        console.log('Cart data received:', response.data);
+        console.log('Cart items:', response.data?.items);
         setCart(response.data);
         setDataFetched(true);
       } catch (error) {
@@ -42,13 +44,16 @@ export default function CartPage() {
 
     try {
       setUpdating(true);
+      console.log('Updating cart item:', { productId, newQuantity });
+      
       // Backend likely uses productId + userId to update quantity
       await cartApi.updateCartItem(productId, { quantity: newQuantity });
 
       setCart((prevCart) => {
-        const updatedItems = prevCart.items.map((item) =>
-          item.productId === productId ? { ...item, quantity: newQuantity } : item
-        );
+        const updatedItems = prevCart.items.map((item) => {
+          const itemId = item.product || item.productId;
+          return itemId === productId ? { ...item, quantity: newQuantity } : item;
+        });
 
         const newTotal = updatedItems.reduce(
           (sum, item) => sum + item.price * item.quantity,
@@ -71,6 +76,8 @@ export default function CartPage() {
   const handleRemoveItem = async (productId) => {
     try {
       setUpdating(true);
+      console.log('Removing cart item:', { productId, type: typeof productId });
+      
       // Check if we're in the middle of checkout
       const currentPath = window.location.pathname;
       if (currentPath !== "/cart") {
@@ -78,9 +85,9 @@ export default function CartPage() {
         return;
       }
       
-      // यदि productId undefined या null है तो एरर दिखाएं
-      if (!productId) {
-        console.error("Error: Product ID is undefined or null");
+      // Check if productId is valid
+      if (!productId || productId === '_id' || productId === 'undefined') {
+        console.error("Error: Invalid product ID:", productId);
         toast.error("Cannot remove item: Invalid product ID");
         setUpdating(false);
         return;
@@ -237,11 +244,19 @@ export default function CartPage() {
                 </div>
 
                 <div className="divide-y divide-gray-200">
-                  {cart.items.map((item) => (
-                    <div key={item.productId} className="py-6 flex">
+                  {cart.items.map((item, index) => (
+                    <div key={item.product || item.productId || index} className="py-6 flex">
                       {/* Product Image */}
                       <div className="flex-shrink-0 w-24 h-24 border border-gray-200 rounded-md overflow-hidden">
-                        <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
+                        {item.image ? (
+                          <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-gray-400 bg-gray-100">
+                            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                          </div>
+                        )}
                       </div>
 
                       {/* Product Details */}
@@ -249,7 +264,7 @@ export default function CartPage() {
                         <div>
                           <div className="flex justify-between text-base font-medium text-gray-900">
                             <h3>
-                              <Link to={`/product/${item.productId}`} className="hover:text-teal-600">
+                              <Link to={`/product/${item.product || item.productId}`} className="hover:text-teal-600">
                                 {item.title}
                               </Link>
                             </h3>
@@ -261,7 +276,7 @@ export default function CartPage() {
                           {/* Quantity Selector */}
                           <div className="flex items-center border border-gray-300 rounded-md">
                             <button
-                              onClick={() => handleQuantityChange(item.productId, item.quantity - 1)}
+                              onClick={() => handleQuantityChange(item.product || item.productId, item.quantity - 1)}
                               disabled={updating || item.quantity <= 1}
                               className="px-3 py-1 text-gray-600 hover:text-gray-900 hover:bg-gray-50 disabled:text-gray-300 disabled:cursor-not-allowed"
                             >
@@ -269,7 +284,7 @@ export default function CartPage() {
                             </button>
                             <span className="px-3 py-1">{item.quantity}</span>
                             <button
-                              onClick={() => handleQuantityChange(item.productId, item.quantity + 1)}
+                              onClick={() => handleQuantityChange(item.product || item.productId, item.quantity + 1)}
                               disabled={updating}
                               className="px-3 py-1 text-gray-600 hover:text-gray-900 hover:bg-gray-50 disabled:text-gray-300 disabled:cursor-not-allowed"
                             >
@@ -281,7 +296,11 @@ export default function CartPage() {
                           <div className="flex">
                             <button
                               type="button"
-                              onClick={() => handleRemoveItem(item.productId)}
+                              onClick={() => {
+                                const productId = item.product || item.productId;
+                                console.log('Remove button clicked:', { item, productId });
+                                handleRemoveItem(productId);
+                              }}
                               disabled={updating}
                               className="font-medium text-teal-600 hover:text-teal-500 disabled:text-teal-300 disabled:cursor-not-allowed"
                             >
