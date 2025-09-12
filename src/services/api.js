@@ -1,8 +1,6 @@
 // services/api.js
 import axios from 'axios';
-
-// const API_URL = 'http://localhost:5002/api';
-const API_URL = 'https://e-commerce-backend-r6s0.onrender.com/api';
+import { API_URL } from '../config.js';
 const api = axios.create({
   baseURL: API_URL,
   withCredentials: true,
