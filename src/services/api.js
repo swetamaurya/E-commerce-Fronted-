@@ -68,7 +68,9 @@ export const cartApi = {
   // Update item quantity in cart
   updateCartItem: async (productId, quantity) => {
     try {
+      console.log('Updating cart item via API:', { productId, quantity });
       const response = await api.put(`/cart/update/${productId}`, { quantity });
+      console.log('Cart update API response:', response.data);
       return response.data;
     } catch (error) {
       console.error('Error updating cart item:', error);
@@ -144,6 +146,195 @@ export const wishlistApi = {
       throw error;
     }
   },
+};
+
+// Order API
+export const orderApi = {
+  // Get user's orders
+  getOrders: async () => {
+    try {
+      const response = await api.get('/orders');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+      throw error;
+    }
+  },
+
+  // Get order details
+  getOrderDetails: async (orderId) => {
+    try {
+      const response = await api.get(`/orders/${orderId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching order details:', error);
+      throw error;
+    }
+  },
+
+  // Create new order
+  createOrder: async (orderData) => {
+    try {
+      const response = await api.post('/orders', orderData);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating order:', error);
+      throw error;
+    }
+  },
+
+  // Update order status
+  updateOrderStatus: async (orderId, status) => {
+    try {
+      const response = await api.put(`/orders/${orderId}/status`, { status });
+      return response.data;
+    } catch (error) {
+      console.error('Error updating order status:', error);
+      throw error;
+    }
+  },
+
+  // Cancel order
+  cancelOrder: async (orderId) => {
+    try {
+      const response = await api.put(`/orders/${orderId}/cancel`);
+      return response.data;
+    } catch (error) {
+      console.error('Error cancelling order:', error);
+      throw error;
+    }
+  },
+};
+
+// Address API
+export const addressApi = {
+  // Get user's addresses
+  getAddresses: async () => {
+    try {
+      const response = await api.get('/addresses');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching addresses:', error);
+      throw error;
+    }
+  },
+
+  // Get default address
+  getDefaultAddress: async () => {
+    try {
+      const response = await api.get('/addresses/default');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching default address:', error);
+      throw error;
+    }
+  },
+
+  // Create new address
+  createAddress: async (addressData) => {
+    try {
+      const response = await api.post('/addresses', addressData);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating address:', error);
+      throw error;
+    }
+  },
+
+  // Update address
+  updateAddress: async (addressId, addressData) => {
+    try {
+      const response = await api.put(`/addresses/${addressId}`, addressData);
+      return response.data;
+    } catch (error) {
+      console.error('Error updating address:', error);
+      throw error;
+    }
+  },
+
+  // Delete address
+  deleteAddress: async (addressId) => {
+    try {
+      const response = await api.delete(`/addresses/${addressId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error deleting address:', error);
+      throw error;
+    }
+  },
+
+  // Set default address
+  setDefaultAddress: async (addressId) => {
+    try {
+      const response = await api.patch(`/addresses/${addressId}/default`);
+      return response.data;
+    } catch (error) {
+      console.error('Error setting default address:', error);
+      throw error;
+    }
+  }
+};
+
+// Admin Order API
+export const adminOrderApi = {
+  // Get all orders for admin
+  getAllOrders: async () => {
+    try {
+      const response = await api.get('/admin/orders');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching all orders:', error);
+      throw error;
+    }
+  },
+
+  // Update order status
+  updateOrderStatus: async (orderId, statusData) => {
+    try {
+      const response = await api.put(`/admin/orders/${orderId}/status`, statusData);
+      return response.data;
+    } catch (error) {
+      console.error('Error updating order status:', error);
+      throw error;
+    }
+  },
+
+  // Get order details for admin
+  getOrderDetails: async (orderId) => {
+    try {
+      const response = await api.get(`/admin/orders/${orderId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching order details:', error);
+      throw error;
+    }
+  },
+
+  // Get order statistics
+  getOrderStats: async () => {
+    try {
+      const response = await api.get('/admin/orders/stats');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching order stats:', error);
+      throw error;
+    }
+  }
+};
+
+// Real-time Order Updates (SSE)
+export const orderSSE = {
+  // Create SSE connection for order updates
+  connect: () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('No authentication token found');
+    }
+    
+    // Add token as query parameter since EventSource doesn't support headers
+    const eventSource = new EventSource(`${API_URL}/admin/orders/sse?token=${encodeURIComponent(token)}`);
+    return eventSource;
+  }
 };
 
 export default api;

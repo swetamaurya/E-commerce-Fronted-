@@ -82,64 +82,75 @@ export default function FilterBar({ filters, setFilters, products = [], total = 
 
   return (
     <div ref={wrapRef} className="w-full bg-gray-50 border-b border-gray-200">
-      <div className="max-w-[1200px] mx-auto">
-        {/* Desktop filters - Exact design from images */}
-        <div className="flex flex-wrap items-center gap-x-8 gap-y-4 text-[15px] leading-6 text-gray-900 py-4 px-6">
-          <FilterGroup
-            label="Product Type"
-            summary={summary(filters.type)}
-            isOpen={open === "type"}
-            onOpen={() => setOpen(open === "type" ? null : "type")}
-          >
-            <CheckboxList title="Product Type" options={facets.types} selected={filters.type} onToggle={(v) => toggleSel("type", v)} />
-          </FilterGroup>
-
-          <FilterGroup
-            label="Size"
-            summary={summary(filters.size)}
-            isOpen={open === "size"}
-            onOpen={() => setOpen(open === "size" ? null : "size")}
-          >
-            <CheckboxList title="Size" options={facets.sizes} selected={filters.size} onToggle={(v) => toggleSel("size", v)} />
-          </FilterGroup>
-
-          <FilterGroup
-            label="Colour/Variant"
-            summary={summary(filters.color)}
-            isOpen={open === "color"}
-            onOpen={() => setOpen(open === "color" ? null : "color")}
-          >
-            <CheckboxList title="Colour/Variant" options={facets.colors} selected={filters.color} onToggle={(v) => toggleSel("color", v)} />
-          </FilterGroup>
-
-          <FilterGroup
-            label="Price Range"
-            summary={priceSummary(facets.prices, filters.price)}
-            isOpen={open === "price"}
-            onOpen={() => setOpen(open === "price" ? null : "price")}
-          >
-            <RadioList title="Price Range" options={facets.prices} value={filters.price} onChange={(v) => setSingle("price", v)} />
-          </FilterGroup>
-
-          <div className="ml-auto">
+      <div className="max-w-7xl mx-auto">
+        {/* Clean Filter Bar */}
+        <div className="px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+            {/* Filter Controls */}
             <FilterGroup
-              label="Sort:"
-              summary={facets.sorts.find((s) => s.value === filters.sort)?.label ?? "Popularity"}
-              isOpen={open === "sort"}
-              onOpen={() => setOpen(open === "sort" ? null : "sort")}
-              noChevron
-              align="right"
+              label="Product Type"
+              summary={summary(filters.type)}
+              isOpen={open === "type"}
+              onOpen={() => setOpen(open === "type" ? null : "type")}
             >
-              <MenuList options={facets.sorts} value={filters.sort} onChange={(v) => setSingle("sort", v)} />
+              <CheckboxList title="Product Type" options={facets.types} selected={filters.type} onToggle={(v) => toggleSel("type", v)} />
             </FilterGroup>
+
+            <FilterGroup
+              label="Size"
+              summary={summary(filters.size)}
+              isOpen={open === "size"}
+              onOpen={() => setOpen(open === "size" ? null : "size")}
+            >
+              <CheckboxList title="Size" options={facets.sizes} selected={filters.size} onToggle={(v) => toggleSel("size", v)} />
+            </FilterGroup>
+
+            <FilterGroup
+              label="Colour/Variant"
+              summary={summary(filters.color)}
+              isOpen={open === "color"}
+              onOpen={() => setOpen(open === "color" ? null : "color")}
+            >
+              <CheckboxList title="Colour/Variant" options={facets.colors} selected={filters.color} onToggle={(v) => toggleSel("color", v)} />
+            </FilterGroup>
+
+            <FilterGroup
+              label="Price Range"
+              summary={priceSummary(facets.prices, filters.price)}
+              isOpen={open === "price"}
+              onOpen={() => setOpen(open === "price" ? null : "price")}
+            >
+              <RadioList title="Price Range" options={facets.prices} value={filters.price} onChange={(v) => setSingle("price", v)} />
+            </FilterGroup>
+
+            {/* Sort Control */}
+            <div className="ml-auto">
+              <FilterGroup
+                label="Sort by"
+                summary={facets.sorts.find((s) => s.value === filters.sort)?.label ?? "Popularity"}
+                isOpen={open === "sort"}
+                onOpen={() => setOpen(open === "sort" ? null : "sort")}
+                noChevron
+                align="right"
+              >
+                <MenuList options={facets.sorts} value={filters.sort} onChange={(v) => setSingle("sort", v)} />
+              </FilterGroup>
+            </div>
+          </div>
+
+          {/* Results Count */}
+          <div className="mt-4 pt-4 border-t border-gray-200">
+            <p className="text-sm text-gray-600">
+              Showing <span className="font-medium text-gray-900">{total}</span> products
+            </p>
           </div>
         </div>
 
         {/* Active filters display */}
         {hasActiveFilters && (
-          <div className="px-6 py-3 bg-white border-t border-gray-200">
+          <div className="px-4 sm:px-6 lg:px-8 py-3 bg-white border-t border-gray-200">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-sm text-gray-600">Active filters:</span>
+              <span className="text-sm font-medium text-gray-700">Active filters:</span>
               {filters.type.map(type => (
                 <FilterChip key={type} label={type} onRemove={() => toggleSel("type", type)} />
               ))}
@@ -156,6 +167,12 @@ export default function FilterBar({ filters, setFilters, products = [], total = 
                   onRemove={() => setSingle("price", "ALL")} 
                 />
               )}
+              <button
+                onClick={clearAllFilters}
+                className="ml-2 px-3 py-1 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
+              >
+                Clear All
+              </button>
             </div>
           </div>
         )}
@@ -170,26 +187,31 @@ function FilterGroup({ label, summary, isOpen, onOpen, noChevron = false, align 
     <div className="relative">
       <button
         onClick={onOpen}
-        className={`inline-flex items-center gap-2 px-3 py-2 rounded-md transition-all ${
+        className={`inline-flex items-center gap-2 px-3 py-2 rounded-md transition-all text-sm ${
           isOpen 
-            ? "text-black font-semibold bg-white shadow-sm border border-gray-200" 
-            : "text-gray-700 hover:text-black hover:bg-white/50"
+            ? "text-gray-900 bg-white border border-gray-300 shadow-sm" 
+            : "text-gray-700 bg-gray-100 hover:text-gray-900 hover:bg-white hover:border-gray-200 border border-transparent"
         }`}
       >
-        <span className="font-medium">{label}</span>
-        <span className="text-gray-600">{summary}</span>
-        {!noChevron && <span className="text-gray-500 text-sm">▾</span>}
+        <span className="font-medium text-sm">{label}</span>
+        <span className="text-gray-500 text-sm">:</span>
+        <span className="text-gray-600 text-sm">{summary}</span>
+        {!noChevron && (
+          <svg className={`w-3 h-3 text-gray-500 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        )}
       </button>
 
       {isOpen && (
         <div
           className={[
-            "absolute z-30 mt-2 rounded-lg border border-gray-200 bg-white shadow-xl",
-            "w-[min(90vw,380px)]",
+            "absolute z-50 mt-2 rounded-lg border border-gray-200 bg-white shadow-lg",
+            "w-[min(95vw,350px)]",
             align === "right" ? "right-0" : "left-0",
           ].join(" ")}
         >
-          <div className="px-4 py-3">{children}</div>
+          <div className="p-4">{children}</div>
         </div>
       )}
     </div>
@@ -199,11 +221,11 @@ function FilterGroup({ label, summary, isOpen, onOpen, noChevron = false, align 
 /* ------- Filter Chip ------- */
 function FilterChip({ label, onRemove }) {
   return (
-    <span className="inline-flex items-center gap-1 px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full">
+    <span className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-700 text-sm rounded-md">
       {label}
       <button
         onClick={onRemove}
-        className="ml-1 hover:bg-gray-200 rounded-full p-0.5"
+        className="hover:bg-gray-200 rounded-full p-0.5 transition-colors"
         aria-label={`Remove ${label} filter`}
       >
         <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -218,20 +240,20 @@ function FilterChip({ label, onRemove }) {
 function CheckboxList({ title, options, selected, onToggle }) {
   return (
     <div>
-      <div className="mb-3 text-sm font-semibold text-gray-700">{title}</div>
-      <div className="max-h-[48vh] overflow-auto pr-1 custom-scroll">
-        <ul className="divide-y divide-gray-100">
+      <div className="mb-3 text-sm font-semibold text-gray-900">{title}</div>
+      <div className="max-h-[40vh] overflow-auto pr-1 custom-scroll">
+        <ul className="space-y-1">
           {options.map(({ value, count }) => (
-            <li key={value} className="py-2">
-              <label className="grid grid-cols-[24px,1fr,auto] items-center gap-3">
+            <li key={value}>
+              <label className="flex items-center gap-3 py-2 hover:bg-gray-50 cursor-pointer">
                 <input
                   type="checkbox"
-                  className="h-4 w-4 rounded border-gray-400 text-gray-900 focus:ring-gray-400"
+                  className="h-4 w-4 rounded border-gray-300 text-gray-600 focus:ring-gray-500"
                   checked={selected.includes(value)}
                   onChange={() => onToggle(value)}
                 />
-                <span className="text-sm text-gray-900 leading-5 break-words">{value}</span>
-                <span className="text-xs text-gray-500 tabular-nums">{count}</span>
+                <span className="flex-1 text-sm text-gray-900">{value}</span>
+                <span className="text-sm text-gray-500">{count}</span>
               </label>
             </li>
           ))}
@@ -245,22 +267,21 @@ function CheckboxList({ title, options, selected, onToggle }) {
 function RadioList({ title, options, value, onChange }) {
   return (
     <div>
-      <div className="mb-3 text-sm font-semibold text-gray-700">{title}</div>
-      <div className="max-h-[48vh] overflow-auto pr-1 custom-scroll">
-        <ul className="divide-y divide-gray-100">
+      <div className="mb-3 text-sm font-semibold text-gray-900">{title}</div>
+      <div className="max-h-[40vh] overflow-auto pr-1 custom-scroll">
+        <ul className="space-y-1">
           {options.map((opt) => (
-            <li key={opt.value} className="py-2">
-              <label className="grid grid-cols-[24px,1fr,auto] items-center gap-3">
+            <li key={opt.value}>
+              <label className="flex items-center gap-3 py-2 hover:bg-gray-50 cursor-pointer">
                 <input
                   type="radio"
                   name="price"
                   value={opt.value}
                   checked={value === opt.value}
                   onChange={(e) => onChange(e.target.value)}
-                  className="h-4 w-4 text-gray-900 focus:ring-gray-400"
+                  className="h-4 w-4 text-gray-600 focus:ring-gray-500"
                 />
-                <span className="text-sm text-gray-900 leading-5">{opt.label ?? opt.value}</span>
-                <span className="text-xs text-transparent">.</span>
+                <span className="flex-1 text-sm text-gray-900">{opt.label ?? opt.value}</span>
               </label>
             </li>
           ))}
@@ -274,20 +295,20 @@ function RadioList({ title, options, value, onChange }) {
 function MenuList({ options, value, onChange }) {
   return (
     <div className="py-1">
-      <ul className="min-w-[220px]">
+      <ul className="min-w-[200px] space-y-1">
         {options.map((opt) => {
           const active = opt.value === value;
           return (
             <li key={opt.value}>
               <button
                 onClick={() => onChange(opt.value)}
-                className={`w-full text-left px-3 py-2 rounded-md ${
+                className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${
                   active 
                     ? "bg-gray-100 text-gray-900" 
-                    : "hover:bg-gray-50 text-gray-700"
+                    : "hover:bg-gray-50 text-gray-700 hover:text-gray-900"
                 }`}
               >
-                {opt.label}
+                <span className="text-sm">{opt.label}</span>
               </button>
             </li>
           );

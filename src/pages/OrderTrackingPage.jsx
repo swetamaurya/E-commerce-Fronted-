@@ -77,19 +77,7 @@ export default function OrderTrackingPage() {
             time: new Date().toISOString(),
             message: 'Your order is being processed by our team.',
           };
-        } else if (hours < 0.09) {
-          newStatus = 'Payment Confirmed';
-          statusDetails.paymentConfirmed = {
-            time: new Date().toISOString(),
-            message: 'Payment has been confirmed for your order.',
-          };
-        } else if (hours < 0.12) {
-          newStatus = 'Confirmed';
-          statusDetails.confirmed = {
-            time: new Date().toISOString(),
-            message: 'Your order has been confirmed and is being prepared.',
-          };
-        } else if (hours < 0.15) {
+        }  else if (hours < 0.15) {
           newStatus = 'Packed';
           statusDetails.packed = {
             time: new Date().toISOString(),
@@ -185,10 +173,7 @@ export default function OrderTrackingPage() {
         return 'bg-gray-100 text-gray-800';
       case 'Processing':
         return 'bg-yellow-100 text-yellow-800';
-      case 'Payment Confirmed':
-        return 'bg-teal-100 text-teal-800';
-      case 'Confirmed':
-        return 'bg-blue-100 text-blue-800';
+      
       case 'Packed':
         return 'bg-indigo-100 text-indigo-800';
       case 'Shipped':
@@ -207,8 +192,7 @@ export default function OrderTrackingPage() {
   const fullStatusList = [
     'Order Received',
     'Processing',
-    'Payment Confirmed',
-    'Confirmed',
+  
     'Packed',
     'Shipped',
     'In Transit',
@@ -228,32 +212,7 @@ export default function OrderTrackingPage() {
             <FaArrowLeft className="mr-2" color="transparent" /> Back
           </button>
         </div>
-        {/* <h1 className="text-2xl font-semibold text-center mb-8">ORDER TRACKING</h1> */}
-
-        {/* Track by Order ID */}
-        {/* <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <h2 className="text-lg font-medium mb-4 text-center">Track Your Order</h2>
-          <p className="text-center text-gray-600 mb-4">
-            {isLoggedIn
-              ? 'Enter your order ID below to track your order status.'
-              : 'You can track your order without logging in. Just enter your order ID below.'}
-          </p>
-          <form onSubmit={handleSearch} className="flex gap-2 max-w-md mx-auto">
-            <input
-              type="text"
-              value={searchOrderId}
-              onChange={(e) => setSearchOrderId(e.target.value)}
-              placeholder="Enter Order ID (e.g. ORD-123456)"
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-            />
-            <button
-              type="submit"
-              className="bg-teal-600 text-white px-4 py-2 rounded-md font-medium hover:bg-teal-700 transition-colors"
-            >
-              Track
-            </button>
-          </form>
-        </div> */}
+        
 
         {/* --- RENDERING LOGIC --- */}
         {selectedOrder ? (
@@ -340,9 +299,9 @@ export default function OrderTrackingPage() {
                     <div className="flex justify-between mb-2">
                       <span>Payment Method</span>
                       <span className="font-medium">
-                        {selectedOrder.paymentMethod === 'cod'
+                        {selectedOrder.paymentMethod === 'COD'
                           ? 'Cash on Delivery'
-                          : selectedOrder.paymentMethod === 'card'
+                          : selectedOrder.paymentMethod === 'Card'
                           ? 'Credit/Debit Card'
                           : 'UPI'}
                       </span>

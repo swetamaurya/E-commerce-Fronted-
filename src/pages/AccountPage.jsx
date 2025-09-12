@@ -95,24 +95,22 @@ export default function AccountPage() {
           </button>
         </div>
         
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid md:grid-cols-2 gap-6">
           <div>
-            <p className="text-gray-600 text-sm">Name</p>
-            <p className="font-medium">{user.name}</p>
+            <p className="text-gray-600 text-sm mb-1">Full Name</p>
+            <p className="font-medium text-lg">{user.name || 'Not provided'}</p>
           </div>
           <div>
-            <p className="text-gray-600 text-sm">Email</p>
-            <p className="font-medium">{user.email}</p>
+            <p className="text-gray-600 text-sm mb-1">Email Address</p>
+            <p className="font-medium text-lg">{user.email}</p>
+          </div>
+          <div>
+            <p className="text-gray-600 text-sm mb-1">Mobile Number</p>
+            <p className="font-medium text-lg">{user.mobile || 'Not provided'}</p>
           </div>
         </div>
       </div>
       
-      <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-        <h2 className="text-xl font-medium mb-4">Order History</h2>
-        <div className="text-center py-8 text-gray-500">
-          <p>You haven't placed any orders yet.</p>
-        </div>
-      </div>
     </div>
   );
 }

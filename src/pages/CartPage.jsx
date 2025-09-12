@@ -60,6 +60,17 @@ export default function CartPage() {
           0
         );
 
+        console.log('Cart updated locally:', {
+          itemsCount: updatedItems.length,
+          newTotal: newTotal,
+          items: updatedItems.map(item => ({
+            productName: item.title,
+            quantity: item.quantity,
+            price: item.price,
+            total: item.quantity * item.price
+          }))
+        });
+
         return { ...prevCart, items: updatedItems, total: newTotal };
       });
 
@@ -142,7 +153,7 @@ export default function CartPage() {
 
   if (loading) {
     return (
-      <div className="min-h-[70vh] flex items-center justify-center">
+      <div className="bg-white flex items-center justify-center py-20">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-teal-500"></div>
           <p className="mt-4 text-gray-500">Loading your cart...</p>
@@ -153,9 +164,9 @@ export default function CartPage() {
 
   if (!localStorage.getItem("token")) {
     return (
-      <div className="min-h-[70vh]">
-        <div className="max-w-[1100px] mx-auto px-6">
-          <h1 className="text-2xl font-semibold text-center my-8">YOUR BAG</h1>
+      <div className="bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-2 text-center">Your Bag</h1>
           <div className="flex flex-col items-center justify-center py-20">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -171,14 +182,11 @@ export default function CartPage() {
                 d="M16 11V7a4 4 0 0 0-8 0v4M5 9h14l1 12H4L5 9z"
               />
             </svg>
-            <p className="text-gray-500 mb-2">Please login to view your cart</p>
-            <p className="text-gray-500 mb-6">Your bag is empty</p>
-            <div className="flex space-x-6">
-              <Link to="/cotton-yoga-mats" className="text-sm font-semibold text-black underline">
+            <p className="text-sm text-gray-500 mb-2">Please login to view your cart</p>
+            <p className="text-sm text-gray-500 mb-6">Your bag is empty</p>
+            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-6">
+              <Link to="/cotton-yoga-mats" className="text-sm font-semibold text-black underline text-center">
                 CONTINUE SHOPPING
-              </Link>
-              <Link to="/order-tracking" className="text-sm font-semibold text-teal-600 underline">
-                TRACK YOUR ORDERS
               </Link>
             </div>
           </div>
@@ -189,9 +197,9 @@ export default function CartPage() {
 
   if (!cart || !cart.items || cart.items.length === 0) {
     return (
-      <div className="min-h-[70vh]">
-        <div className="max-w-[1100px] mx-auto px-6">
-          <h1 className="text-2xl font-semibold text-center my-8">YOUR BAG</h1>
+      <div className="bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-2 text-center">Your Bag</h1>
           <div className="flex flex-col items-center justify-center py-20">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -207,13 +215,10 @@ export default function CartPage() {
                 d="M16 11V7a4 4 0 0 0-8 0v4M5 9h14l1 12H4L5 9z"
               />
             </svg>
-            <p className="text-gray-500 mb-6">Your bag is empty</p>
-            <div className="flex space-x-6">
-              <Link to="/cotton-yoga-mats" className="text-sm font-semibold text-black underline">
+            <p className="text-sm text-gray-500 mb-6">Your bag is empty</p>
+            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-6">
+              <Link to="/cotton-yoga-mats" className="text-sm font-semibold text-black underline text-center">
                 CONTINUE SHOPPING
-              </Link>
-              <Link to="/order-tracking" className="text-sm font-semibold text-teal-600 underline">
-                TRACK YOUR ORDERS
               </Link>
             </div>
           </div>
@@ -223,21 +228,21 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-[70vh]">
-      <div className="max-w-[1100px] mx-auto px-6 py-8">
-        <h1 className="text-2xl font-semibold text-center mb-8">YOUR BAG</h1>
+    <div className="bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4 sm:mb-6 md:mb-8 text-center">Your Bag</h1>
 
-        <div className="flex flex-col lg:flex-row gap-8">
+        <div className="flex flex-col lg:flex-row gap-6 sm:gap-8">
           {/* Cart Items */}
           <div className="flex-1">
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
-              <div className="p-6">
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-lg font-medium">Shopping Cart ({cart.items.length} items)</h2>
+              <div className="p-4 sm:p-6">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 sm:mb-6 gap-3">
+                  <h2 className="text-lg sm:text-xl font-medium">Shopping Cart ({cart.items.length} items)</h2>
                   <button
                     onClick={handleClearCart}
                     disabled={updating}
-                    className="text-sm text-red-600 hover:text-red-800 disabled:text-red-300 disabled:cursor-not-allowed"
+                    className="text-sm text-red-600 hover:text-red-800 disabled:text-red-300 disabled:cursor-not-allowed px-3 py-1 hover:bg-red-50 rounded transition-colors"
                   >
                     Clear Cart
                   </button>
@@ -245,9 +250,9 @@ export default function CartPage() {
 
                 <div className="divide-y divide-gray-200">
                   {cart.items.map((item, index) => (
-                    <div key={item.product || item.productId || index} className="py-6 flex">
+                    <div key={item.product || item.productId || index} className="py-4 sm:py-6 flex flex-col sm:flex-row gap-4">
                       {/* Product Image */}
-                      <div className="flex-shrink-0 w-24 h-24 border border-gray-200 rounded-md overflow-hidden">
+                      <div className="flex-shrink-0 w-full sm:w-24 h-32 sm:h-24 border border-gray-200 rounded-md overflow-hidden">
                         {item.image ? (
                           <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
                         ) : (
@@ -260,21 +265,21 @@ export default function CartPage() {
                       </div>
 
                       {/* Product Details */}
-                      <div className="ml-4 flex-1 flex flex-col">
-                        <div>
-                          <div className="flex justify-between text-base font-medium text-gray-900">
-                            <h3>
+                      <div className="flex-1 flex flex-col">
+                        <div className="mb-3 sm:mb-4">
+                          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
+                            <h3 className="text-base sm:text-lg font-medium text-gray-900">
                               <Link to={`/product/${item.product || item.productId}`} className="hover:text-teal-600">
                                 {item.title}
                               </Link>
                             </h3>
-                            <p className="ml-4">₹{item.price}</p>
+                            <p className="text-lg sm:text-xl font-bold text-gray-900">₹{item.price}</p>
                           </div>
                         </div>
 
-                        <div className="flex-1 flex items-end justify-between text-sm">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                           {/* Quantity Selector */}
-                          <div className="flex items-center border border-gray-300 rounded-md">
+                          <div className="flex items-center border border-gray-300 rounded-md w-fit">
                             <button
                               onClick={() => handleQuantityChange(item.product || item.productId, item.quantity - 1)}
                               disabled={updating || item.quantity <= 1}
@@ -282,7 +287,7 @@ export default function CartPage() {
                             >
                               -
                             </button>
-                            <span className="px-3 py-1">{item.quantity}</span>
+                            <span className="px-3 py-1 min-w-[2rem] text-center">{item.quantity}</span>
                             <button
                               onClick={() => handleQuantityChange(item.product || item.productId, item.quantity + 1)}
                               disabled={updating}
@@ -293,20 +298,18 @@ export default function CartPage() {
                           </div>
 
                           {/* Remove Button */}
-                          <div className="flex">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const productId = item.product || item.productId;
-                                console.log('Remove button clicked:', { item, productId });
-                                handleRemoveItem(productId);
-                              }}
-                              disabled={updating}
-                              className="font-medium text-teal-600 hover:text-teal-500 disabled:text-teal-300 disabled:cursor-not-allowed"
-                            >
-                              Remove
-                            </button>
-                          </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const productId = item.product || item.productId;
+                              console.log('Remove button clicked:', { item, productId });
+                              handleRemoveItem(productId);
+                            }}
+                            disabled={updating}
+                            className="font-medium text-red-600 hover:text-red-800 hover:bg-red-50 px-3 py-1 rounded transition-colors disabled:text-red-300 disabled:cursor-not-allowed w-fit"
+                          >
+                            Remove
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -319,43 +322,37 @@ export default function CartPage() {
           {/* Order Summary */}
           <div className="w-full lg:w-80">
             <div className="bg-white rounded-lg shadow-md overflow-hidden sticky top-20">
-              <div className="p-6">
-                <h2 className="text-lg font-medium text-gray-900 mb-4">Order Summary</h2>
+              <div className="p-4 sm:p-6">
+                <h2 className="text-lg sm:text-xl font-medium text-gray-900 mb-4 sm:mb-6">Order Summary</h2>
 
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   <div className="flex justify-between">
-                    <p className="text-gray-600">Subtotal</p>
-                    <p className="font-medium">₹{cart.total}</p>
+                    <p className="text-gray-600 text-sm sm:text-base">Subtotal</p>
+                    <p className="font-medium text-sm sm:text-base">₹{cart.total}</p>
                   </div>
                   <div className="flex justify-between">
-                    <p className="text-gray-600">Shipping</p>
-                    <p className="font-medium">Free</p>
+                    <p className="text-gray-600 text-sm sm:text-base">Shipping</p>
+                    <p className="font-medium text-sm sm:text-base">Free</p>
                   </div>
-                  <div className="border-t border-gray-200 pt-4 flex justify-between">
-                    <p className="text-lg font-medium">Total</p>
-                    <p className="text-lg font-bold">₹{cart.total}</p>
+                  <div className="border-t border-gray-200 pt-3 sm:pt-4 flex justify-between">
+                    <p className="text-base sm:text-lg font-medium">Total</p>
+                    <p className="text-base sm:text-lg font-bold">₹{cart.total}</p>
                   </div>
                 </div>
 
                 <button
-                  onClick={() => navigate("/address")}
-                  className="mt-6 w-full bg-teal-600 text-white py-3 px-4 rounded-md font-medium hover:bg-teal-700 transition-colors"
+                  onClick={() => navigate("/address", { state: { fromCart: true } })}
+                  className="mt-4 sm:mt-6 w-full bg-teal-600 text-white py-2.5 sm:py-3 px-4 rounded-md font-medium hover:bg-teal-700 transition-colors text-sm sm:text-base"
                 >
                   Checkout
                 </button>
 
-                <div className="mt-4 flex justify-center space-x-4">
+                <div className="mt-4 flex flex-col sm:flex-row sm:justify-center sm:space-x-4 space-y-2 sm:space-y-0">
                   <Link
                     to="/cotton-yoga-mats"
-                    className="text-sm font-medium text-teal-600 hover:text-teal-500"
+                    className="text-sm font-medium text-teal-600 hover:text-teal-500 text-center"
                   >
                     Continue Shopping
-                  </Link>
-                  <Link
-                    to="/order-tracking"
-                    className="text-sm font-medium text-teal-600 hover:text-teal-500"
-                  >
-                    Track Orders
                   </Link>
                 </div>
               </div>

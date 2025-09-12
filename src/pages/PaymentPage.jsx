@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { orderApi, cartApi } from '../services/api';
 
 // UPI Payment UI Component
 const UpiPaymentUI = ({ upiId, onClose, onSuccess }) => {
@@ -79,7 +80,8 @@ const CardPaymentUI = ({ cardDetails, onClose, onSuccess }) => {
 export default function PaymentPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState('cod');
+  const [processingOrder, setProcessingOrder] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState('COD');
   const [cardNumber, setCardNumber] = useState('');
   const [expiry, setExpiry] = useState('');
   const [cvv, setCvv] = useState('');
@@ -88,6 +90,8 @@ export default function PaymentPage() {
   const [orderId, setOrderId] = useState('');
   const [showUpiPaymentUI, setShowUpiPaymentUI] = useState(false);
   const [showCardPaymentUI, setShowCardPaymentUI] = useState(false);
+  const [cartData, setCartData] = useState(null);
+  const [cartFetched, setCartFetched] = useState(false);
   
   useEffect(() => {
     // Check if user is logged in
@@ -102,7 +106,30 @@ export default function PaymentPage() {
       toast.error('Please provide shipping address first');
       navigate('/address');
     }
-  }, [navigate]);
+
+    // Fetch cart data only once for initial display
+    if (!cartFetched && !loading) {
+      const fetchCartData = async () => {
+        try {
+          setLoading(true);
+          const response = await cartApi.getCart();
+          setCartData(response.data);
+          setCartFetched(true);
+          console.log('Initial cart data loaded:', {
+            itemsCount: response.data.items.length,
+            total: response.data.total
+          });
+        } catch (error) {
+          console.error('Error fetching cart:', error);
+          toast.error('Failed to load cart data');
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchCartData();
+    }
+  }, [navigate, cartFetched]);
 
   // Generate a random order ID
   const generateOrderId = () => {
@@ -111,9 +138,28 @@ export default function PaymentPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (processingOrder) return; // Prevent multiple submissions
+    
     setLoading(true);
+    setProcessingOrder(true);
     
     try {
+      // Fetch fresh cart data to ensure we have the latest quantities
+      console.log('Fetching fresh cart data for validation...');
+      const freshCartResponse = await cartApi.getCart();
+      const freshCartData = freshCartResponse.data;
+      
+      if (!freshCartData || !freshCartData.items || freshCartData.items.length === 0) {
+        toast.error('Your cart is empty. Please add items to cart first.');
+        navigate('/cart');
+        setLoading(false);
+        return;
+      }
+      
+      // Update the local cart data with fresh data
+      setCartData(freshCartData);
+      
       // Validate payment method specific fields
       if (paymentMethod === 'card') {
         if (!cardNumber || !expiry || !cvv) {
@@ -156,80 +202,145 @@ export default function PaymentPage() {
         await new Promise(resolve => setTimeout(resolve, 1000));
         // Show card payment UI instead of redirecting
         setShowCardPaymentUI(true);
-      } else if (paymentMethod === 'cod') {
+      } else if (paymentMethod === 'COD') {
         // For COD, process the order directly
-        // Simulate order processing
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        
-        // Save order details to localStorage for tracking
-        const orderDetails = {
-          id: newOrderId,
-          date: new Date().toISOString(),
-          paymentMethod,
-          status: 'Processing',
-          estimatedDelivery: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
-          address: JSON.parse(localStorage.getItem('shippingAddress')),
-          items: JSON.parse(localStorage.getItem('cart') || '[]')
-        };
-        
-        // Save to localStorage
-        const existingOrders = JSON.parse(localStorage.getItem('orders') || '[]');
-        localStorage.setItem('orders', JSON.stringify([...existingOrders, orderDetails]));
-        
-        // Clear cart and shipping address after successful order
-        localStorage.removeItem('shippingAddress');
-        localStorage.removeItem('cart');
-        
-        // Set order placed state to show confirmation
-        setOrderPlaced(true);
+        try {
+          // Fetch fresh cart data before creating order
+          console.log('Fetching fresh cart data before COD order creation...');
+          const freshCartResponse = await cartApi.getCart();
+          const freshCartData = freshCartResponse.data;
+          
+          if (!freshCartData || !freshCartData.items || freshCartData.items.length === 0) {
+            toast.error('Your cart is empty. Please add items to cart first.');
+            navigate('/cart');
+            return;
+          }
+
+          console.log('Fresh cart data before COD order creation:', {
+            itemsCount: freshCartData.items.length,
+            total: freshCartData.total,
+            items: freshCartData.items.map(item => ({
+              productName: item.title,
+              quantity: item.quantity,
+              price: item.price,
+              total: item.quantity * item.price
+            }))
+          });
+
+          const shippingAddress = JSON.parse(localStorage.getItem('shippingAddress') || '{}');
+          const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+          // Create order data
+          const orderData = {
+            customerName: user.name,
+            customerEmail: user.email,
+            customerPhone: user.mobile || '',
+            shippingAddress: shippingAddress,
+            paymentMethod: paymentMethod,
+            paymentStatus: 'COD',
+            discountAmount: 0,
+            shippingAmount: 0,
+            taxAmount: 0,
+            notes: 'Order placed via COD'
+          };
+
+          // Create order via API (this will automatically clear the cart)
+          await orderApi.createOrder(orderData);
+          
+          // Clear shipping address
+          localStorage.removeItem('shippingAddress');
+          
+          // Set order placed state to show confirmation
+          setOrderPlaced(true);
+          
+          toast.success('Order placed successfully!');
+        } catch (error) {
+          console.error('Error creating order:', error);
+          toast.error('Failed to create order. Please try again.');
+        }
       }
     } catch (error) {
       console.error('Error processing payment:', error);
       toast.error('Failed to process payment. Please try again.');
     } finally {
       setLoading(false);
+      setProcessingOrder(false);
     }
   };
 
   // Handle payment completion
   const handlePaymentSuccess = async () => {
+    if (processingOrder) return; // Prevent multiple submissions
+    
     // Close payment UIs
     setShowUpiPaymentUI(false);
     setShowCardPaymentUI(false);
     
+    setProcessingOrder(true);
+    
     // Process the order
     try {
-      // Save order details to localStorage for tracking
-      const orderDetails = {
-        id: orderId,
-        date: new Date().toISOString(),
-        paymentMethod,
-        status: 'Processing',
-        estimatedDelivery: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
-        address: JSON.parse(localStorage.getItem('shippingAddress')),
-        items: JSON.parse(localStorage.getItem('cart') || '[]')
+      // Fetch fresh cart data before creating order
+      console.log('Fetching fresh cart data before payment order creation...');
+      const freshCartResponse = await cartApi.getCart();
+      const freshCartData = freshCartResponse.data;
+      
+      if (!freshCartData || !freshCartData.items || freshCartData.items.length === 0) {
+        toast.error('Your cart is empty. Please add items to cart first.');
+        navigate('/cart');
+        return;
+      }
+
+      console.log('Fresh cart data before payment order creation:', {
+        itemsCount: freshCartData.items.length,
+        total: freshCartData.total,
+        items: freshCartData.items.map(item => ({
+          productName: item.title,
+          quantity: item.quantity,
+          price: item.price,
+          total: item.quantity * item.price
+        }))
+      });
+
+      const shippingAddress = JSON.parse(localStorage.getItem('shippingAddress') || '{}');
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+      // Create order data
+      const orderData = {
+        customerName: user.name,
+        customerEmail: user.email,
+        customerPhone: user.mobile || '',
+        shippingAddress: shippingAddress,
+        paymentMethod: paymentMethod,
+        paymentStatus: paymentMethod === 'COD' ? 'COD' : 'Paid',
+        discountAmount: 0,
+        shippingAmount: 0,
+        taxAmount: 0,
+        notes: `Order placed via ${paymentMethod.toUpperCase()}`
       };
+
+      // Create order via API (this will automatically clear the cart)
+      const response = await orderApi.createOrder(orderData);
       
-      // Save to localStorage
-      const existingOrders = JSON.parse(localStorage.getItem('orders') || '[]');
-      localStorage.setItem('orders', JSON.stringify([...existingOrders, orderDetails]));
-      
-      // Clear cart and shipping address after successful order
+      // Clear shipping address
       localStorage.removeItem('shippingAddress');
-      localStorage.removeItem('cart');
       
       // Set order placed state to show confirmation
       setOrderPlaced(true);
+      
+      toast.success('Order placed successfully!');
     } catch (error) {
-      toast.error('Error processing payment. Please try again.');
-      console.error('Payment error:', error);
+      console.error('Error creating order:', error);
+      toast.error('Failed to create order. Please try again.');
+    } finally {
+      setProcessingOrder(false);
     }
   };
 
   return (
-    <div className="min-h-[70vh]">
-      <div className="max-w-[800px] mx-auto px-6 py-8">
-        <h1 className="text-2xl font-semibold text-center mb-8">PAYMENT METHOD</h1>
+    <div className="min-h-[70vh] bg-gray-50">
+      <div className="max-w-[800px] mx-auto px-4 sm:px-6 py-4 sm:py-6">
+        <h1 className="text-xl sm:text-2xl font-semibold text-center mb-4 sm:mb-6">PAYMENT METHOD</h1>
         
         {/* UPI Payment UI Modal */}
         {showUpiPaymentUI && (
@@ -269,32 +380,32 @@ export default function PaymentPage() {
                 <Link to="/" className="bg-teal-600 text-white py-2 px-6 rounded-md font-medium hover:bg-teal-700 transition-colors">
                   Continue Shopping
                 </Link>
-                <Link to="/order-tracking" className="border border-teal-600 text-teal-600 py-2 px-6 rounded-md font-medium hover:bg-teal-50 transition-colors">
-                  Track Order
+                <Link to="/orders" className="border border-teal-600 text-teal-600 py-2 px-6 rounded-md font-medium hover:bg-teal-50 transition-colors">
+                  View Orders
                 </Link>
               </div>
             </div>
           </div>
         ) : (
           <div className="bg-white rounded-lg shadow-md overflow-hidden">
-            <div className="p-6">
+            <div className="p-4 sm:p-6">
               <form onSubmit={handleSubmit}>
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 <div>
                   <h2 className="text-lg font-medium mb-4">Select Payment Method</h2>
                   
-                  <div className="space-y-4">
+                  <div className="space-y-3 sm:space-y-4">
                     <div className="flex items-center">
                       <input
-                        id="cod"
+                        id="COD"
                         name="paymentMethod"
                         type="radio"
-                        value="cod"
-                        checked={paymentMethod === 'cod'}
-                        onChange={() => setPaymentMethod('cod')}
+                        value="COD"
+                        checked={paymentMethod === 'COD'}
+                        onChange={() => setPaymentMethod('COD')}
                         className="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300"
                       />
-                      <label htmlFor="cod" className="ml-3 block text-sm font-medium text-gray-700">
+                      <label htmlFor="COD" className="ml-3 block text-sm font-medium text-gray-700">
                         Cash on Delivery (COD)
                       </label>
                     </div>
@@ -449,16 +560,16 @@ export default function PaymentPage() {
                 )}
               </div>
               
-              <div className="mt-8 flex justify-between">
-                <Link to="/address" className="text-teal-600 py-3 px-6 rounded-md font-medium hover:text-teal-700 transition-colors">
+              <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row justify-between gap-3">
+                <Link to="/address" className="text-teal-600 py-2.5 px-4 sm:px-6 rounded-md font-medium hover:text-teal-700 transition-colors text-center sm:text-left">
                   Back to Address
                 </Link>
                 <button
                   type="submit"
-                  className="bg-teal-600 text-white py-3 px-6 rounded-md font-medium hover:bg-teal-700 transition-colors"
-                  disabled={loading}
+                  className="bg-teal-600 text-white py-2.5 px-4 sm:px-6 rounded-md font-medium hover:bg-teal-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
+                  disabled={loading || processingOrder}
                 >
-                  {loading ? 'Processing...' : 'Place Order'}
+                  {loading || processingOrder ? 'Processing Order...' : 'Place Order'}
                 </button>
               </div>
             </form>

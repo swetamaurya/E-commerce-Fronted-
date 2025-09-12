@@ -1,4 +1,5 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import Navbar from "./components/Navbar";
 import HomePage from "./pages/HomePage";
 import CottonYogaMats from "./pages/CottonYogaMats";
@@ -15,7 +16,15 @@ import WishlistPage from "./pages/WishlistPage.jsx";
 import AddressPage from "./pages/AddressPage.jsx";
 import PaymentPage from "./pages/PaymentPage.jsx";
 import OrderTrackingPage from "./pages/OrderTrackingPage.jsx";
+import OrdersPage from "./pages/OrdersPage.jsx";
+import OrderDetailsPage from "./pages/OrderDetailsPage.jsx";
 import AdminPage from "./pages/AdminPage.jsx";
+import AboutPage from "./pages/AboutPage";
+import ContactPage from "./pages/ContactPage";
+import PrivacyPage from "./pages/PrivacyPage";
+import TermsPage from "./pages/TermsPage";
+import ReturnPage from "./pages/ReturnPage";
+import ShippingPage from "./pages/ShippingPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Footer from "./components/Footer";
 import GoToTopButton from "./components/GoToTopButton";
@@ -23,6 +32,13 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function App() {
+  const location = useLocation();
+
+  // Scroll to top on route change
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [location.pathname]);
+
   return (
     <>
       <Navbar />
@@ -44,8 +60,16 @@ export default function App() {
         <Route path="/wishlist" element={<WishlistPage />} />
         <Route path="/address" element={<AddressPage />} />
         <Route path="/payment" element={<PaymentPage />} />
+        <Route path="/orders" element={<OrdersPage />} />
+        <Route path="/order-details/:orderId" element={<OrderDetailsPage />} />
         <Route path="/order-tracking" element={<OrderTrackingPage />} />
         <Route path="/order-tracking/:orderId" element={<OrderTrackingPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/terms" element={<TermsPage />} />
+        <Route path="/return" element={<ReturnPage />} />
+        <Route path="/shipping" element={<ShippingPage />} />
         <Route path="/admin" element={<ProtectedRoute element={<AdminPage />} requiredRole="admin" />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

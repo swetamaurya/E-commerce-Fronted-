@@ -207,13 +207,13 @@ export default function CategoryPage({ title, slug }) {
         canonical={`https://royalthread.co.in/${slug}`}
       />
       
-      <main className="max-w-[1150px] mx-auto px-3 sm:px-4 md:px-6 pb-10">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6 sm:pb-8 md:pb-10">
         {/* Page Header */}
-        <div className="text-center mt-6 mb-6">
-          <h1 className="font-extrabold tracking-[.08em] text-2xl sm:text-3xl lg:text-4xl text-gray-900 mb-2">
+        <div className="text-center mt-4 sm:mt-6 md:mt-8 mb-4 sm:mb-6 md:mb-8">
+          <h1 className="font-extrabold tracking-[.08em] text-xl sm:text-2xl md:text-3xl lg:text-4xl text-gray-900 mb-2 sm:mb-3">
             {title}
           </h1>
-          <p className="text-gray-600 text-sm sm:text-base max-w-2xl mx-auto">
+          <p className="text-gray-600 text-sm sm:text-base md:text-lg max-w-3xl mx-auto px-2 leading-relaxed">
             {currentSeo.description}
           </p>
         </div>
@@ -228,8 +228,8 @@ export default function CategoryPage({ title, slug }) {
         />
 
         {/* Results Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mt-6 mb-4">
-          <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 mt-3 sm:mt-6 mb-2 sm:mb-4">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-4">
             <span className="text-sm text-gray-600">
               {visibleProducts.length} of {items.length} products
             </span>
@@ -244,24 +244,24 @@ export default function CategoryPage({ title, slug }) {
           </div>
           
           {/* View Mode Toggle */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2">
             <span className="text-sm text-gray-600">View:</span>
             <div className="flex border border-gray-300 rounded-lg overflow-hidden">
               <button
                 onClick={() => setViewMode('grid')}
-                className={`p-2 ${viewMode === 'grid' ? 'bg-teal-500 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}
+                className={`p-1 sm:p-2 ${viewMode === 'grid' ? 'bg-teal-500 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}
                 aria-label="Grid view"
               >
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-2.5 h-2.5 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
                 </svg>
               </button>
               <button
                 onClick={() => setViewMode('list')}
-                className={`p-2 ${viewMode === 'list' ? 'bg-teal-500 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}
+                className={`p-1 sm:p-2 ${viewMode === 'list' ? 'bg-teal-500 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}
                 aria-label="List view"
               >
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-2.5 h-2.5 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"/>
                 </svg>
               </button>
@@ -273,7 +273,7 @@ export default function CategoryPage({ title, slug }) {
         {loading ? (
           <div className="py-20 text-center">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-teal-500"></div>
-            <p className="mt-4 text-gray-500">Loading products...</p>
+            <p className="mt-4 text-sm text-gray-500">Loading products...</p>
           </div>
         ) : visibleProducts.length === 0 ? (
           /* No Results State */
@@ -282,7 +282,7 @@ export default function CategoryPage({ title, slug }) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.47-.881-6.08-2.33"/>
             </svg>
             <h3 className="mt-4 text-lg font-medium text-gray-900">No products found</h3>
-            <p className="mt-2 text-gray-500">
+            <p className="mt-2 text-sm text-gray-500">
               {hasActiveFilters 
                 ? "Try adjusting your filters or search terms."
                 : "We couldn't find any products in this category."
@@ -291,7 +291,7 @@ export default function CategoryPage({ title, slug }) {
             {hasActiveFilters && (
               <button
                 onClick={clearAllFilters}
-                className="mt-4 px-4 py-2 bg-teal-500 text-white rounded-md hover:bg-teal-600 transition-colors"
+                className="mt-4 px-4 py-2 bg-teal-500 text-white rounded-md hover:bg-teal-600 transition-colors text-sm"
               >
                 Clear all filters
               </button>
@@ -299,10 +299,10 @@ export default function CategoryPage({ title, slug }) {
           </div>
         ) : (
           /* Products Grid/List */
-          <section className={`mt-6 ${
+          <section className={`mt-4 sm:mt-6 ${
             viewMode === 'grid' 
-              ? 'grid gap-4 sm:gap-6 grid-cols-2 md:grid-cols-3 lg:grid-cols-4' 
-              : 'space-y-4'
+              ? 'grid gap-2 sm:gap-4 md:gap-6 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-stretch' 
+              : 'space-y-3 sm:space-y-4'
           }`}>
             {visibleProducts.map((p) => (
               <ProductCard 

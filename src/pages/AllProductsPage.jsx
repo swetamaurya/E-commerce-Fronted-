@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import FilterBar from '../components/FilterBar';
 import productApi from '../services/productApi';
@@ -14,11 +14,31 @@ const initialFilters = {
 };
 
 export default function AllProductsPage() {
+  const location = useLocation();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState(initialFilters);
   const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
   const [wishlistStatus, setWishlistStatus] = useState({}); // Track wishlist status for all products
+  const [searchQuery, setSearchQuery] = useState(''); // Search query from URL
+
+  // Get search query from URL
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const search = urlParams.get('search');
+    if (search) {
+      setSearchQuery(search);
+    } else {
+      setSearchQuery('');
+    }
+  }, [location.search]);
+
+  // Clear search when component mounts without search query
+  useEffect(() => {
+    if (!location.search.includes('search=')) {
+      setSearchQuery('');
+    }
+  }, [location.search]);
 
   // Fetch wishlist status for all products
   const fetchWishlistStatus = async (products) => {
@@ -119,11 +139,38 @@ export default function AllProductsPage() {
     const inSel = (selArr, val) => selArr.length === 0 || selArr.includes(val);
 
     return products
+      .filter((p) => {
+        // Search filter
+        if (searchQuery.trim()) {
+          const query = searchQuery.toLowerCase().trim();
+          const searchableFields = [
+            p.name,
+            p.description,
+            p.category,
+            p.type,
+            p.color,
+            p.size,
+            p.material,
+            p.brand
+          ].filter(Boolean).join(' ').toLowerCase();
+          
+          // Check if any word from the query matches any part of the searchable fields
+          const queryWords = query.split(/\s+/);
+          const matches = queryWords.some(word => 
+            searchableFields.includes(word) || 
+            searchableFields.split(/\s+/).some(field => field.includes(word))
+          );
+          
+          
+          return matches;
+        }
+        return true;
+      })
       .filter((p) => inSel(filters.type, p.type || p.category))
       .filter((p) => inSel(filters.size, p.size || p.variants?.[0]?.size))
       .filter((p) => inSel(filters.color, p.color || p.variants?.[0]?.color))
       .filter((p) => priceMatch(Number(p.price ?? 0)));
-  }, [products, filters]);
+  }, [products, filters, searchQuery]);
 
   // --- sort
   const visibleProducts = useMemo(() => {
@@ -156,15 +203,32 @@ export default function AllProductsPage() {
   const hasActiveFilters = filters.type.length > 0 || filters.size.length > 0 || filters.color.length > 0 || filters.price !== "ALL";
 
   return (
-    <main className="max-w-[1150px] mx-auto px-3 sm:px-4 md:px-6 pb-10">
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6 sm:pb-8 md:pb-10">
       {/* Page Header */}
-      <div className="text-center mt-6 mb-6">
-        <h1 className="font-extrabold tracking-[.08em] text-2xl sm:text-3xl lg:text-4xl text-gray-900 mb-2">
-          All Products
+      <div className="text-center mt-4 sm:mt-6 md:mt-8 mb-4 sm:mb-6 md:mb-8">
+        <h1 className="font-extrabold tracking-[.08em] text-xl sm:text-2xl md:text-3xl lg:text-4xl text-gray-900 mb-2 sm:mb-3">
+          {searchQuery ? `Search Results for "${searchQuery}"` : 'All Products'}
         </h1>
-        <p className="text-gray-600 text-sm sm:text-base max-w-2xl mx-auto">
-          Discover our complete collection of premium handcrafted products
+        <p className="text-gray-600 text-sm sm:text-base md:text-lg max-w-3xl mx-auto px-2 leading-relaxed">
+          {searchQuery 
+            ? `Found ${visibleProducts.length} products matching your search`
+            : 'Discover our complete collection of premium handcrafted products'
+          }
         </p>
+        {searchQuery && (
+          <button
+            onClick={() => {
+              setSearchQuery('');
+              // Clear search from URL
+              const url = new URL(window.location);
+              url.searchParams.delete('search');
+              window.history.replaceState({}, '', url);
+            }}
+            className="mt-3 text-sm text-teal-600 hover:text-teal-700 underline"
+          >
+            Clear search
+          </button>
+        )}
       </div>
 
       {/* Filter Bar */}
@@ -177,8 +241,8 @@ export default function AllProductsPage() {
       />
 
       {/* Results Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mt-6 mb-4">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 mt-4 sm:mt-6 mb-2 sm:mb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-4">
           <span className="text-sm text-gray-600">
             {visibleProducts.length} of {products.length} products
           </span>
@@ -193,7 +257,7 @@ export default function AllProductsPage() {
         </div>
         
         {/* View Mode Toggle */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           <span className="text-sm text-gray-600">View:</span>
           <div className="flex border border-gray-300 rounded-lg overflow-hidden">
             <button
@@ -222,7 +286,7 @@ export default function AllProductsPage() {
       {loading ? (
         <div className="py-20 text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-teal-500"></div>
-          <p className="mt-4 text-gray-500">Loading products...</p>
+          <p className="mt-4 text-sm text-gray-500">Loading products...</p>
         </div>
       ) : visibleProducts.length === 0 ? (
         /* No Results State */
@@ -231,7 +295,7 @@ export default function AllProductsPage() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.47-.881-6.08-2.33"/>
           </svg>
           <h3 className="mt-4 text-lg font-medium text-gray-900">No products found</h3>
-          <p className="mt-2 text-gray-500">
+          <p className="mt-2 text-sm text-gray-500">
             {hasActiveFilters 
               ? "Try adjusting your filters or search terms."
               : "We couldn't find any products in this category."
@@ -240,7 +304,7 @@ export default function AllProductsPage() {
           {hasActiveFilters && (
             <button
               onClick={clearAllFilters}
-              className="mt-4 px-4 py-2 bg-teal-500 text-white rounded-md hover:bg-teal-600 transition-colors"
+              className="mt-4 px-4 py-2 bg-teal-500 text-white rounded-md hover:bg-teal-600 transition-colors text-sm"
             >
               Clear all filters
             </button>

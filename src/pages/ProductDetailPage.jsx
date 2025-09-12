@@ -229,7 +229,6 @@ export default function ProductDetailPage() {
     ["Pack Of", "1"],
     ["Color", displayColor],
     ["Size", displaySize],
-    ["SKU", product.id || product._id],
   ];
 
   // Zoom functionality now handled by ImageGallery component
@@ -245,179 +244,182 @@ export default function ProductDetailPage() {
         canonical={`https://royalthread.co.in/${category}/${product.id || product._id}`}
       />
 
-             <div className="bg-white py-2">
-         <div className="max-w-[1200px] mx-auto px-3">
-          {/* breadcrumb */}
-          <nav className="flex mb-2 text-sm">
+      <div className="bg-white min-h-screen">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 md:py-8 bg-white">
+          {/* Breadcrumb */}
+          <nav className="flex items-center mb-4 sm:mb-6 text-sm">
             <button
               onClick={() => navigate(`/${category}`)}
-              className="text-gray-500 hover:text-gray-700"
+              className="text-gray-500 hover:text-gray-700 transition-colors text-sm"
             >
               {category.replace("-", " ").replace(/\b\w/g, (l) => l.toUpperCase())}
             </button>
-            <span className="px-2 text-gray-400">/</span>
-            <span className="text-gray-900">{product.name || product.title}</span>
+            <span className="px-2 text-gray-400 text-sm">/</span>
+            <span className="text-gray-900 font-medium text-sm">{product.name || product.title}</span>
           </nav>
 
-                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-1 mb-0">
-          {/* LEFT: Image Gallery - Sticky */}
-          <div className="relative lg:sticky lg:top-4 lg:self-start mb-0">
-               {/* Wishlist Icon - Top Right */}
-               <button
-                 onClick={toggleWishlist}
-                 disabled={isTogglingWishlist}
-                 className={`absolute top-2 right-2 z-20 p-2 rounded-full flex items-center justify-center transition-all duration-300 ${
-                   isWishlisted ? "bg-red-600" : "bg-white"
-                 }`}
-                 style={{ width: 40, height: 40 }}
-               >
-                 {isWishlisted ? (
-                   // White filled heart on red bg
-                   <svg
-                     className="w-6 h-6"
-                     fill="white"
-                     viewBox="0 0 24 24"
-                     stroke="none"
-                   >
-                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09 1.09-1.28 2.76-2.09 4.5-2.09 3.08 0 5.5 2.42 5.5 5.5 0 3.78-3.4 6.86-8.55 11.54z" />
-                   </svg>
-                 ) : (
-                   // Black outlined heart on white bg
-                   <svg
-                     className="w-6 h-6"
-                     fill="none"
-                     stroke="black"
-                     strokeWidth={2}
-                     viewBox="0 0 24 24"
-                   >
-                     <path
-                       strokeLinecap="round"
-                       strokeLinejoin="round"
-                       d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                     />
-                   </svg>
-                 )}
-               </button>
-               
-               <ImageGallery 
-                 images={galleryImages} 
-                 productName={product.name || product.title}
-               />
-               
-                           {/* CTA Buttons - Below Image */}
-            <div className="mt-2 flex gap-2 mb-0">
-                 <button
-                   onClick={handleAddToCart}
-                   disabled={isAddingToCart}
-                   className="flex-1 bg-gray-900 text-white py-2.5 rounded-md font-semibold hover:bg-gray-800 disabled:bg-gray-600 text-sm"
-                 >
-                   {isAddingToCart ? "ADDING..." : "ADD TO BAG"}
-                 </button>
-                 <button className="flex-1 bg-black text-white py-2.5 rounded-md font-semibold hover:opacity-90 text-sm">
-                   BUY NOW
-                 </button>
-               </div>
-             </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+            {/* LEFT: Image Gallery - Fixed */}
+            <div className="lg:sticky lg:top-0 lg:h-screen lg:overflow-hidden lg:z-10">
+              <ImageGallery 
+                images={galleryImages} 
+                productName={product.name || product.title}
+                onWishlistToggle={toggleWishlist}
+                isWishlisted={isWishlisted}
+              />
+            </div>
 
-                      {/* RIGHT: Details */}
-          <div className="space-y-1">
-              <h1 className="text-2xl font-semibold text-gray-900 leading-snug">
-                {product.name || product.title}
-              </h1>
-
-              {/* price row */}
-              <div className="flex items-center gap-3">
-                <div className="text-3xl font-bold text-gray-900">₹{product.price}</div>
-                {product.mrp && (
-                  <div className="text-gray-500 line-through text-lg">₹{product.mrp}</div>
-                )}
-                {product.off && (
-                  <div className="text-red-600 font-semibold">{product.off} Off</div>
-                )}
-              </div>
-
-              {/* promo banner */}
-              <div className="rounded border border-teal-100 bg-teal-50 text-teal-900 px-3 py-2 flex items-center gap-2">
-                <span className="inline-flex h-5 w-5 items-center justify-center rounded bg-teal-600 text-white text-xs">
-                  ₹
-                </span>
-                <span className="text-sm">Get this as low as <b>₹{Math.max(0, product.price - 79)}</b></span>
-              </div>
-
-              {/* delivery / return strip */}
-              <div className="grid grid-cols-3 gap-3 text-center border rounded">
-                <div className="py-3">
-                  <div className="font-semibold">Cash on Delivery</div>
-                </div>
-                <div className="py-3 border-x">
-                  <div className="font-semibold">Easy 3 days return</div>
-                </div>
-                <div className="py-3">
-                  <div className="font-semibold">Free Delivery</div>
-                </div>
-                <div className="col-span-3 bg-gray-50 py-2 text-sm text-gray-700">
-                  Get it delivered in <b>3-7 days</b>
-                </div>
-              </div>
-
-
-              {/* size selection */}
+            {/* RIGHT: Product Details - Scrollable */}
+            <div className="space-y-4 sm:space-y-6 lg:overflow-y-auto lg:max-h-screen lg:pr-4 scrollbar-hide lg:relative lg:z-0 lg:pb-20">
+              {/* Product Title */}
               <div>
-                <div className="text-base font-semibold mb-2">Size</div>
-                <select
-                  value={selectedSize}
-                  onChange={(e) => setSelectedSize(e.target.value)}
-                  className="w-64 border rounded px-3 py-2"
-                >
-                  {product.variants?.map((variant, index) => (
-                    <option key={index} value={variant.size}>
-                      {variant.size} - ₹{variant.price}
-                    </option>
-                  )) || (
-                    <option value={displaySize}>{displaySize}</option>
-                  )}
-                </select>
+                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 leading-tight mb-2">
+                  {product.name || product.title}
+                </h1>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 text-sm text-gray-600">
+                  <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-sm font-medium w-fit">
+                    {product.category || "Premium Quality"}
+                  </span>
+                </div>
               </div>
 
-              {/* quantity */}
-               <div>
-                 <div className="text-sm text-gray-600 mb-1">Quantity</div>
-                 <div className="flex items-center border rounded w-32">
-                   <button
-                     onClick={() => handleQuantityChange(quantity - 1)}
-                     className="px-3 py-2 text-gray-700 disabled:opacity-40"
-                     disabled={quantity <= 1}
-                   >
-                     –
-                   </button>
-                   <div className="flex-1 text-center">{quantity}</div>
-                   <button
-                     onClick={() => handleQuantityChange(quantity + 1)}
-                     className="px-3 py-2 text-gray-700"
-                   >
-                     +
-                   </button>
-                 </div>
-               </div>
+              {/* Price Section */}
+              <div className="space-y-2">
+                <div className="flex flex-wrap items-baseline gap-2 sm:gap-3">
+                  <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">₹{product.price}</div>
+                  {product.mrp && product.mrp > product.price && (
+                    <>
+                      <div className="text-sm sm:text-lg text-gray-500 line-through">₹{product.mrp}</div>
+                      <div className="bg-red-100 text-red-800 px-2 py-1 rounded-full text-sm font-semibold">
+                        {Math.round(((product.mrp - product.price) / product.mrp) * 100)}% OFF
+                      </div>
+                    </>
+                  )}
+                </div>
+                
+                {product.off && (
+                  <div className="text-sm text-red-600 font-semibold">
+                    Save ₹{product.mrp - product.price} ({product.off} Off)
+                  </div>
+                )}
+              </div>
 
-              {/* product information table */}
-              <div className="border rounded">
-                <div className="px-4 py-2 border-b font-semibold">Product Information</div>
+              {/* Promo Banner */}
+              <div className="bg-gradient-to-r from-teal-50 to-blue-50 border border-teal-200 rounded-lg p-2 sm:p-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-5 h-5 sm:w-6 sm:h-6 bg-teal-600 rounded-full flex items-center justify-center">
+                    <span className="text-white font-bold text-sm">₹</span>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-700">
+                      Get this as low as <span className="font-bold text-teal-700">₹{Math.max(0, product.price - 79)}</span>
+                    </p>
+                    <p className="text-xs text-gray-600">With additional offers</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Features Strip */}
+              <div className="grid grid-cols-3 gap-1 sm:gap-2">
+                <div className="text-center p-2 border border-gray-200 rounded-lg bg-gray-50">
+                  <div className="text-sm font-semibold text-gray-900 mb-1">Cash on Delivery</div>
+                  <div className="text-xs text-gray-600">Available</div>
+                </div>
+                <div className="text-center p-2 border border-gray-200 rounded-lg bg-gray-50">
+                  <div className="text-sm font-semibold text-gray-900 mb-1">Easy Returns</div>
+                  <div className="text-xs text-gray-600">3 days return</div>
+                </div>
+                <div className="text-center p-2 border border-gray-200 rounded-lg bg-gray-50">
+                  <div className="text-sm font-semibold text-gray-900 mb-1">Free Delivery</div>
+                  <div className="text-xs text-gray-600">3-7 days</div>
+                </div>
+              </div>
+
+
+              {/* Size and Quantity Selection */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* Size Selection */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-900 mb-1">Select Size</label>
+                  <select
+                    value={selectedSize}
+                    onChange={(e) => setSelectedSize(e.target.value)}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:border-gray-900 focus:outline-none transition-colors"
+                  >
+                    {product.variants?.map((variant, index) => (
+                      <option key={index} value={variant.size}>
+                        {variant.size} - ₹{variant.price}
+                      </option>
+                    )) || (
+                      <option value={displaySize}>{displaySize}</option>
+                    )}
+                  </select>
+                </div>
+
+                {/* Quantity */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-900 mb-1">Quantity</label>
+                  <div className="flex items-center border border-gray-300 rounded-lg w-full">
+                    <button
+                      onClick={() => handleQuantityChange(quantity - 1)}
+                      className="px-3 py-2 text-gray-700 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-sm"
+                      disabled={quantity <= 1}
+                    >
+                      –
+                    </button>
+                    <div className="flex-1 text-center py-2 font-semibold text-sm">{quantity}</div>
+                    <button
+                      onClick={() => handleQuantityChange(quantity + 1)}
+                      className="px-3 py-2 text-gray-700 hover:bg-gray-100 transition-colors text-sm"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* CTA Buttons */}
+              <div className="space-y-2">
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleAddToCart}
+                    disabled={isAddingToCart}
+                    className="flex-1 bg-orange-500 text-white py-2.5 rounded-lg font-semibold text-sm hover:bg-orange-600 disabled:bg-gray-400 disabled:text-gray-200 transition-all duration-200"
+                  >
+                    {isAddingToCart ? "Adding to cart..." : "ADD TO CART"}
+                  </button>
+                  <button className="flex-1 bg-orange-500 text-white py-2.5 rounded-lg font-semibold text-sm hover:bg-orange-600 transition-all duration-200">
+                    BUY NOW
+                  </button>
+                </div>
+                
+                {/* Additional Info */}
+                <div className="text-center text-sm text-gray-600">
+                  <p>✓ Free shipping on orders above ₹999</p>
+                  <p>✓ 30-day return policy</p>
+                </div>
+              </div>
+
+              {/* Product Information */}
+              <div className="bg-gray-50 rounded-lg border border-gray-200">
+                <div className="px-6 py-4 border-b border-gray-200">
+                  <h3 className="text-lg font-bold text-gray-900">Product Information</h3>
+                </div>
                 <div className="p-0">
-                  <table className="w-full text-sm">
+                  <table className="w-full">
                     <tbody>
                       {(showFullInfo ? specs : specs.slice(0, 5)).map(([k, v]) => (
-                        <tr key={k} className="border-b last:border-b-0">
-                          <td className="w-40 px-4 py-2 text-gray-600">{k}</td>
-                          <td className="px-4 py-2">{v}</td>
+                        <tr key={k} className="border-b border-gray-200 last:border-b-0">
+                          <td className="w-40 px-6 py-4 text-gray-600 font-medium">{k}</td>
+                          <td className="px-6 py-4 text-gray-900">{v}</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
-                <div className="px-4 py-2 text-right">
+                <div className="px-6 py-4 text-center border-t border-gray-200">
                   <button
-                    className="text-sm font-semibold underline underline-offset-2"
+                    className="text-sm font-semibold text-gray-700 hover:text-gray-900 underline underline-offset-2 transition-colors"
                     onClick={() => setShowFullInfo((s) => !s)}
                   >
                     {showFullInfo ? "READ LESS" : "READ MORE"}
@@ -425,14 +427,16 @@ export default function ProductDetailPage() {
                 </div>
               </div>
 
-              {/* description */}
-              <div>
-                <div className="text-base font-semibold mb-1">Product Description</div>
-                <p className="text-gray-700 leading-relaxed">
-                  {product.description || `This premium ${product.category?.toLowerCase() || "product"} is handcrafted
-                  with the finest materials, featuring a beautiful ${displayColor?.toLowerCase() || "elegant"} design. Perfect for daily use,
-                  combining traditional craftsmanship with modern aesthetics.`}
-                </p>
+              {/* Product Description */}
+              <div className="space-y-3">
+                <h3 className="text-lg font-bold text-gray-900">Product Description</h3>
+                <div className="prose prose-gray max-w-none">
+                  <p className="text-gray-700 leading-relaxed text-base">
+                    {product.description || `This premium ${product.category?.toLowerCase() || "product"} is handcrafted
+                    with the finest materials, featuring a beautiful ${displayColor?.toLowerCase() || "elegant"} design. Perfect for daily use,
+                    combining traditional craftsmanship with modern aesthetics.`}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
