@@ -71,6 +71,7 @@ export default function App() {
         <Route path="/return" element={<ReturnPage />} />
         <Route path="/shipping" element={<ShippingPage />} />
         <Route path="/admin" element={<ProtectedRoute element={<AdminPage />} requiredRole="admin" />} />
+        <Route path="/404" element={<NotFoundPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <Footer />
