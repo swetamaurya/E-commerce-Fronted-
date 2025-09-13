@@ -78,8 +78,8 @@ export default function HomePage() {
   const [touchEnd, setTouchEnd] = useState(null);
 
   // Debug: Log the current state
-  console.log('HomePage render - allProducts:', allProducts);
-  console.log('HomePage render - allProductsLoading:', allProductsLoading);
+  // console.log('HomePage render - allProducts:', allProducts);
+  // console.log('HomePage render - allProductsLoading:', allProductsLoading);
 
   useEffect(() => {
     // Check if mobile on mount and resize
