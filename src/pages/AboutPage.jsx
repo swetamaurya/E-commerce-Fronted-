@@ -14,7 +14,7 @@ export default function AboutPage() {
             About Royal Thread
           </h1>
           <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Crafting premium handmade rugs and mats for your home
+            Crafting premium handmade rugs and mats for your home.
           </p>
         </div>
       </section>
