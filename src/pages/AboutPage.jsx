@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-// commentgit 
+// commentgit ..
 export default function AboutPage() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
