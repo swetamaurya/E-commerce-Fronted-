@@ -31,6 +31,8 @@ const AdminLogin = () => {
     setLoading(true);
 
     try {
+      console.log('Attempting admin login with:', { email: formData.email, url: `${API_URL}/auth/login` });
+      
       const response = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: {
@@ -39,7 +41,9 @@ const AdminLogin = () => {
         body: JSON.stringify(formData),
       });
 
+      console.log('Login response status:', response.status);
       const data = await response.json();
+      console.log('Login response data:', data);
 
       if (response.ok && data.success) {
         // Check if user is admin
@@ -57,11 +61,12 @@ const AdminLogin = () => {
         // Redirect to admin dashboard
         navigate('/admin/dashboard');
       } else {
+        console.error('Login failed:', data);
         toast.error(data.message || 'Login failed');
       }
     } catch (error) {
       console.error('Login error:', error);
-      toast.error('Network error. Please try again.');
+      toast.error(`Network error: ${error.message}`);
     } finally {
       setLoading(false);
     }
