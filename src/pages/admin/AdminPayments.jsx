@@ -1,31 +1,99 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { FaSearch, FaEdit, FaChevronLeft, FaChevronRight, FaShoppingCart, FaUser, FaPhone, FaCalendar, FaTruck } from 'react-icons/fa';
+import { FaSearch, FaEdit, FaChevronLeft, FaChevronRight, FaCreditCard, FaCheck, FaTimes, FaClock, FaExclamationTriangle } from 'react-icons/fa';
 import { toast } from 'react-toastify';
-import { adminOrderApi } from '../services/api';
 
-// Order status options
-const ORDER_STATUSES = [
-  'Order Received',
-  'Processing',
-  'Shipped',
-  'Delivered',
-  'Cancelled'
+// Static payments data for testing
+const STATIC_PAYMENTS = [
+  {
+    _id: '1',
+    paymentId: 'PAY001',
+    orderId: 'ORD001',
+    customerName: 'John Doe',
+    customerEmail: 'john@example.com',
+    amount: 2500,
+    status: 'Completed',
+    paymentMethod: 'Credit Card',
+    transactionId: 'TXN123456789',
+    createdAt: '2025-01-14',
+    processedAt: '2025-01-14',
+    gateway: 'Razorpay',
+    notes: 'Payment successful'
+  },
+  {
+    _id: '2',
+    paymentId: 'PAY002',
+    orderId: 'ORD002',
+    customerName: 'Jane Smith',
+    customerEmail: 'jane@example.com',
+    amount: 1800,
+    status: 'Pending',
+    paymentMethod: 'UPI',
+    transactionId: 'TXN987654321',
+    createdAt: '2025-01-13',
+    processedAt: '',
+    gateway: 'Razorpay',
+    notes: 'Payment verification pending'
+  },
+  {
+    _id: '3',
+    paymentId: 'PAY003',
+    orderId: 'ORD003',
+    customerName: 'Mike Johnson',
+    customerEmail: 'mike@example.com',
+    amount: 3200,
+    status: 'Failed',
+    paymentMethod: 'Net Banking',
+    transactionId: 'TXN456789123',
+    createdAt: '2025-01-12',
+    processedAt: '',
+    gateway: 'Razorpay',
+    notes: 'Payment failed - insufficient funds'
+  },
+  {
+    _id: '4',
+    paymentId: 'PAY004',
+    orderId: 'ORD004',
+    customerName: 'Sarah Wilson',
+    customerEmail: 'sarah@example.com',
+    amount: 1500,
+    status: 'Completed',
+    paymentMethod: 'Debit Card',
+    transactionId: 'TXN789123456',
+    createdAt: '2025-01-10',
+    processedAt: '2025-01-10',
+    gateway: 'Razorpay',
+    notes: 'Payment successful'
+  },
+  {
+    _id: '5',
+    paymentId: 'PAY005',
+    orderId: 'ORD005',
+    customerName: 'David Brown',
+    customerEmail: 'david@example.com',
+    amount: 2800,
+    status: 'Processing',
+    paymentMethod: 'Wallet',
+    transactionId: 'TXN321654987',
+    createdAt: '2025-01-14',
+    processedAt: '',
+    gateway: 'Razorpay',
+    notes: 'Payment being processed'
+  }
 ];
 
-export default function AdminOrdersPage() {
-  const [orders, setOrders] = useState([]);
+export default function AdminPayments() {
+  const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [totalOrders, setTotalOrders] = useState(0);
+  const [totalPayments, setTotalPayments] = useState(0);
   const [pagination, setPagination] = useState({});
-  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [selectedPayment, setSelectedPayment] = useState(null);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [updateData, setUpdateData] = useState({
     status: '',
-    notes: '',
-    estimatedDelivery: ''
+    notes: ''
   });
   const [searchTimeout, setSearchTimeout] = useState(null);
   const [isSearching, setIsSearching] = useState(false);
@@ -33,7 +101,8 @@ export default function AdminOrdersPage() {
   const [localSearchTerm, setLocalSearchTerm] = useState('');
 
   useEffect(() => {
-    fetchOrders();
+    console.log('AdminPayments mounted');
+    fetchPayments();
   }, [currentPage, searchTerm]);
 
   // Cleanup timeout on unmount
@@ -45,44 +114,43 @@ export default function AdminOrdersPage() {
     };
   }, [searchTimeout]);
 
-  const fetchOrders = async () => {
+  const fetchPayments = async () => {
     try {
       setLoading(true);
+      console.log('Fetching payments...');
       
-      // Fetch orders from API
-      const response = await adminOrderApi.getAllOrders();
+      // Use static data for now
+      let filteredPayments = STATIC_PAYMENTS;
+      console.log('Static payments:', filteredPayments);
       
-      if (response && response.data) {
-        let allOrders = response.data;
-        
-        // Apply search filter
-        if (searchTerm) {
-          allOrders = allOrders.filter(order =>
-            order.orderId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            order.customerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            order.customerEmail?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            order.status?.toLowerCase().includes(searchTerm.toLowerCase())
-          );
-        }
-        
-        // Calculate pagination
-        const limit = 5;
-        const startIndex = (currentPage - 1) * limit;
-        const endIndex = startIndex + limit;
-        const paginatedOrders = allOrders.slice(startIndex, endIndex);
-        
-        setOrders(paginatedOrders);
-        setTotalOrders(allOrders.length);
-        setTotalPages(Math.ceil(allOrders.length / limit));
-        setPagination({
-          hasPrevPage: currentPage > 1,
-          hasNextPage: currentPage < Math.ceil(allOrders.length / limit)
-        });
-      } else {
-        toast.error('Failed to load orders');
+      // Apply search filter
+      if (searchTerm) {
+        filteredPayments = STATIC_PAYMENTS.filter(payment =>
+          payment.paymentId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          payment.orderId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          payment.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          payment.customerEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          payment.status.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          payment.paymentMethod.toLowerCase().includes(searchTerm.toLowerCase())
+        );
       }
+      
+      // Simulate pagination
+      const limit = 5;
+      const startIndex = (currentPage - 1) * limit;
+      const endIndex = startIndex + limit;
+      const paginatedPayments = filteredPayments.slice(startIndex, endIndex);
+      
+      setPayments(paginatedPayments);
+      setTotalPayments(filteredPayments.length);
+      setTotalPages(Math.ceil(filteredPayments.length / limit));
+      setPagination({
+        hasPrevPage: currentPage > 1,
+        hasNextPage: currentPage < Math.ceil(filteredPayments.length / limit)
+      });
     } catch (error) {
-      toast.error('Failed to fetch orders');
+      console.error('Error fetching payments:', error);
+      toast.error('Failed to fetch payments');
     } finally {
       setLoading(false);
     }
@@ -111,66 +179,59 @@ export default function AdminOrdersPage() {
     setSearchTimeout(timeout);
   };
 
-  const handleUpdateStatus = (order) => {
-    setSelectedOrder(order);
-    
-    // Format estimated delivery date properly
-    let formattedEstimatedDelivery = '';
-    if (order.estimatedDelivery) {
-      try {
-        const date = new Date(order.estimatedDelivery);
-        if (!isNaN(date.getTime())) {
-          formattedEstimatedDelivery = date.toISOString().split('T')[0];
-        }
-      } catch (error) {
-        formattedEstimatedDelivery = '';
-      }
-    }
-    
+  const handleUpdateStatus = (payment) => {
+    setSelectedPayment(payment);
     setUpdateData({
-      status: order.status || '',
-      notes: order.notes || '',
-      estimatedDelivery: formattedEstimatedDelivery
+      status: payment.status || '',
+      notes: payment.notes || ''
     });
     setShowUpdateModal(true);
   };
 
   const handleSubmitUpdate = async () => {
-    if (!selectedOrder) return;
+    if (!selectedPayment) return;
 
     try {
-      // Call API to update order status
-      const response = await adminOrderApi.updateOrderStatus(selectedOrder._id, updateData);
+      // Update the static data
+      setPayments(payments.map(payment => 
+        payment._id === selectedPayment._id 
+          ? { ...payment, ...updateData }
+          : payment
+      ));
       
-      if (response && response.success) {
-        toast.success('Order status updated successfully');
-        setShowUpdateModal(false);
-        
-        // Refresh orders to get latest data from server
-        await fetchOrders();
-      } else {
-        throw new Error(response?.message || 'Failed to update order status');
-      }
+      toast.success('Payment status updated successfully');
+      setShowUpdateModal(false);
     } catch (error) {
-      toast.error('Failed to update order status');
+      console.error('Error updating payment:', error);
+      toast.error('Failed to update payment status');
     }
   };
 
   const getStatusColor = (status) => {
     switch (status) {
+      case 'Completed': return 'bg-green-100 text-green-800';
       case 'Pending': return 'bg-yellow-100 text-yellow-800';
-      case 'Order Received': return 'bg-blue-100 text-blue-800';
-      case 'Processing': return 'bg-purple-100 text-purple-800';
-      case 'Packed': return 'bg-indigo-100 text-indigo-800';
-      case 'Shipped': return 'bg-cyan-100 text-cyan-800';
-      case 'In Transit': return 'bg-orange-100 text-orange-800';
-      case 'Out for Delivery': return 'bg-pink-100 text-pink-800';
-      case 'Delivered': return 'bg-green-100 text-green-800';
-      case 'Cancelled': return 'bg-red-100 text-red-800';
-      case 'Returned': return 'bg-gray-100 text-gray-800';
+      case 'Processing': return 'bg-blue-100 text-blue-800';
+      case 'Failed': return 'bg-red-100 text-red-800';
+      case 'Cancelled': return 'bg-gray-100 text-gray-800';
+      case 'Refunded': return 'bg-purple-100 text-purple-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
+
+  const getStatusIcon = (status) => {
+    switch (status) {
+      case 'Completed': return <FaCheck className="w-3 h-3" />;
+      case 'Pending': return <FaClock className="w-3 h-3" />;
+      case 'Processing': return <FaClock className="w-3 h-3" />;
+      case 'Failed': return <FaTimes className="w-3 h-3" />;
+      case 'Cancelled': return <FaTimes className="w-3 h-3" />;
+      case 'Refunded': return <FaExclamationTriangle className="w-3 h-3" />;
+      default: return <FaClock className="w-3 h-3" />;
+    }
+  };
+
+  console.log('AdminPayments render - loading:', loading, 'payments:', payments);
 
   if (loading) {
     return (
@@ -185,12 +246,12 @@ export default function AdminOrdersPage() {
       {/* Header Section - Responsive */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-3 sm:space-y-0">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Orders Management</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Payments Management</h1>
         </div>
         <div className="text-xs sm:text-sm text-gray-500">
-          Total Orders: {totalOrders}
+          Total Payments: {totalPayments}
         </div>
-        </div>
+      </div>
 
       {/* Search Bar - Responsive */}
       <div className="bg-white p-3 sm:p-4 rounded-lg shadow">
@@ -199,7 +260,7 @@ export default function AdminOrdersPage() {
           <input
             ref={searchInputRef}
             type="text"
-            placeholder="Search orders by ID, customer name, email, or status..."
+            placeholder="Search payments by ID, order ID, customer, status, or payment method..."
             value={localSearchTerm}
             onChange={handleSearch}
             className="w-full pl-8 sm:pl-10 pr-4 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -214,33 +275,30 @@ export default function AdminOrdersPage() {
         {localSearchTerm && (
           <div className="mt-2 text-xs sm:text-sm text-gray-500">
             Searching for: "{localSearchTerm}"
-                    </div>
-                    )}
-                  </div>
-                  
-      {/* Orders Table - Desktop View */}
+          </div>
+        )}
+      </div>
+
+      {/* Payments Table - Desktop View */}
       <div className="hidden lg:block bg-white rounded-lg shadow overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Order Details
+                  Payment Details
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Customer
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Amount & Method
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Status
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Amount
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Date
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Est. Delivery
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Actions
@@ -248,21 +306,24 @@ export default function AdminOrdersPage() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {orders.map((order) => (
-                <tr key={order._id}>
+              {payments.map((payment) => (
+                <tr key={payment._id}>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="flex-shrink-0 h-10 w-10">
-                        <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                          <FaShoppingCart className="w-5 h-5 text-blue-600" />
+                        <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
+                          <FaCreditCard className="w-5 h-5 text-green-600" />
                         </div>
                       </div>
                       <div className="ml-4">
                         <div className="text-sm font-medium text-gray-900">
-                          {order.orderId}
+                          {payment.paymentId}
                         </div>
                         <div className="text-sm text-gray-500">
-                          {order.items?.length || 0} items
+                          Order: {payment.orderId}
+                        </div>
+                        <div className="text-xs text-gray-400">
+                          {payment.transactionId}
                         </div>
                       </div>
                     </div>
@@ -270,30 +331,38 @@ export default function AdminOrdersPage() {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div>
                       <div className="text-sm font-medium text-gray-900">
-                        {order.customerName}
+                        {payment.customerName}
                       </div>
                       <div className="text-sm text-gray-500">
-                        {order.customerEmail}
+                        {payment.customerEmail}
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(order.status)}`}>
-                      {order.status}
+                    <div>
+                      <div className="text-sm font-medium text-gray-900">
+                        ₹{payment.amount.toLocaleString()}
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        {payment.paymentMethod}
+                      </div>
+                      <div className="text-xs text-gray-400">
+                        {payment.gateway}
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className={`inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(payment.status)}`}>
+                      {getStatusIcon(payment.status)}
+                      <span className="ml-1">{payment.status}</span>
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    ₹{order.totalAmount.toLocaleString()}
-                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {new Date(order.createdAt).toLocaleDateString()}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {order.estimatedDelivery ? new Date(order.estimatedDelivery).toLocaleDateString() : 'Not set'}
+                    {new Date(payment.createdAt).toLocaleDateString()}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <button
-                      onClick={() => handleUpdateStatus(order)}
+                      onClick={() => handleUpdateStatus(payment)}
                       className="text-blue-600 hover:text-blue-900 flex items-center"
                     >
                       <FaEdit className="w-4 h-4 mr-1" />
@@ -304,78 +373,67 @@ export default function AdminOrdersPage() {
               ))}
             </tbody>
           </table>
-                  </div>
-                </div>
+        </div>
+      </div>
 
       {/* Mobile Card View */}
       <div className="lg:hidden space-y-3">
-        {orders.map((order) => (
-          <div key={order._id} className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
+        {payments.map((payment) => (
+          <div key={payment._id} className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
             <div className="p-3">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center space-x-3">
                   <div className="flex-shrink-0">
-                    <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                      <FaShoppingCart className="w-4 h-4 text-blue-600" />
+                    <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
+                      <FaCreditCard className="w-4 h-4 text-green-600" />
                     </div>
                   </div>
                   <div>
                     <h3 className="text-sm font-semibold text-gray-900">
-                      {order.orderId}
+                      {payment.paymentId}
                     </h3>
                     <p className="text-xs text-gray-600">
-                      {order.items?.length || 0} items • ₹{order.totalAmount.toLocaleString()}
+                      Order: {payment.orderId} • ₹{payment.amount.toLocaleString()}
                     </p>
                   </div>
                 </div>
                 <button
-                  onClick={() => handleUpdateStatus(order)}
+                  onClick={() => handleUpdateStatus(payment)}
                   className="p-1.5 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded transition-colors duration-200"
-                  title="Update Order"
+                  title="Update Payment"
                 >
                   <FaEdit className="w-3 h-3" />
                 </button>
               </div>
               
-                  <div className="space-y-2">
+              <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <FaUser className="w-3 h-3 text-gray-400" />
-                    <span className="text-xs text-gray-900">{order.customerName}</span>
+                    <span className="text-xs text-gray-900">{payment.customerName}</span>
                   </div>
-                  <span className={`inline-flex px-2 py-0.5 text-xs font-medium rounded-full ${getStatusColor(order.status)}`}>
-                    {order.status}
-                        </span>
-                      </div>
+                  <span className={`inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full ${getStatusColor(payment.status)}`}>
+                    {getStatusIcon(payment.status)}
+                    <span className="ml-1">{payment.status}</span>
+                  </span>
+                </div>
                 
                 <div className="flex items-center space-x-2 text-xs text-gray-500">
-                  <FaPhone className="w-3 h-3" />
-                  <span>{order.customerPhone}</span>
-                  </div>
+                  <span>{payment.customerEmail}</span>
+                </div>
                 
-                <div className="flex items-center space-x-2 text-xs text-gray-500">
-                  <FaCalendar className="w-3 h-3" />
-                  <span>{new Date(order.createdAt).toLocaleDateString()}</span>
-                    </div>
+                <div className="flex items-center justify-between text-xs text-gray-500">
+                  <span>{payment.paymentMethod}</span>
+                  <span>{new Date(payment.createdAt).toLocaleDateString()}</span>
+                </div>
                 
-                {order.estimatedDelivery && (
-                  <div className="flex items-center space-x-2 text-xs text-gray-500">
-                    <FaTruck className="w-3 h-3" />
-                    <span>Est. Delivery: {new Date(order.estimatedDelivery).toLocaleDateString()}</span>
-                  </div>
-                )}
-                
-                {order.trackingNumber && (
-                  <div className="flex items-center space-x-2 text-xs text-gray-500">
-                    <FaTruck className="w-3 h-3" />
-                    <span>Tracking: {order.trackingNumber}</span>
-                  </div>
-                )}
+                <div className="text-xs text-gray-400">
+                  {payment.transactionId}
                 </div>
               </div>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
+      </div>
 
       {/* Pagination - Responsive */}
       <div className="bg-white px-3 sm:px-4 py-3 border-t border-gray-200">
@@ -386,9 +444,9 @@ export default function AdminOrdersPage() {
             <p className="text-xs text-gray-700">
               Showing <span className="font-medium">{((currentPage - 1) * 5) + 1}</span> to{' '}
               <span className="font-medium">
-                {Math.min(currentPage * 5, totalOrders)}
+                {Math.min(currentPage * 5, totalPayments)}
               </span>{' '}
-              of <span className="font-medium">{totalOrders}</span> results
+              of <span className="font-medium">{totalPayments}</span> results
             </p>
           </div>
           
@@ -451,9 +509,9 @@ export default function AdminOrdersPage() {
             <p className="text-sm text-gray-700">
               Showing <span className="font-medium">{((currentPage - 1) * 5) + 1}</span> to{' '}
               <span className="font-medium">
-                {Math.min(currentPage * 5, totalOrders)}
+                {Math.min(currentPage * 5, totalPayments)}
               </span>{' '}
-              of <span className="font-medium">{totalOrders}</span> results
+              of <span className="font-medium">{totalPayments}</span> results
             </p>
           </div>
           <div>
@@ -504,19 +562,19 @@ export default function AdminOrdersPage() {
         </div>
       </div>
 
-        {orders.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-gray-500">No orders found</p>
-          </div>
-        )}
+      {payments.length === 0 && (
+        <div className="text-center py-12">
+          <p className="text-gray-500">No payments found</p>
+        </div>
+      )}
 
       {/* Update Status Modal */}
-      {showUpdateModal && selectedOrder && (
+      {showUpdateModal && selectedPayment && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
             <div className="p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                Update Order Status - #{selectedOrder.orderId}
+                Update Payment Status - {selectedPayment.paymentId}
               </h3>
               
               <div className="space-y-4">
@@ -529,30 +587,13 @@ export default function AdminOrdersPage() {
                     onChange={(e) => setUpdateData({...updateData, status: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
+                    <option value="Completed">Completed</option>
                     <option value="Pending">Pending</option>
-                    <option value="Order Received">Order Received</option>
                     <option value="Processing">Processing</option>
-                    <option value="Packed">Packed</option>
-                    <option value="Shipped">Shipped</option>
-                    <option value="In Transit">In Transit</option>
-                    <option value="Out for Delivery">Out for Delivery</option>
-                    <option value="Delivered">Delivered</option>
+                    <option value="Failed">Failed</option>
                     <option value="Cancelled">Cancelled</option>
-                    <option value="Returned">Returned</option>
+                    <option value="Refunded">Refunded</option>
                   </select>
-                </div>
-
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Estimated Delivery
-                  </label>
-                  <input
-                    type="date"
-                    value={updateData.estimatedDelivery}
-                    onChange={(e) => setUpdateData({...updateData, estimatedDelivery: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
                 </div>
 
                 <div>
@@ -564,7 +605,7 @@ export default function AdminOrdersPage() {
                     onChange={(e) => setUpdateData({...updateData, notes: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     rows="3"
-                    placeholder="Add any notes for the customer"
+                    placeholder="Add any notes for the payment"
                   />
                 </div>
               </div>

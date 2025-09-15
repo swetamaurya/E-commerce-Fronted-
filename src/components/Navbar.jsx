@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from "react";
 import LoginModal from "./LoginModal";
 import CustomDialog from "./CustomDialog";
 import Toast from "./Toast";
+import Logo from "./Logo";
 
 const categories = [
   { label: "COTTON YOGA MATS", path: "/cotton-yoga-mats", description: "Premium cotton yoga mats for comfortable practice" },
@@ -107,7 +108,7 @@ export default function Navbar() {
     setShowLoginModal(false);
     setShowLoginSuccess(true);
     setTimeout(() => setShowLoginSuccess(false), 2500);
-    if (isAdmin) navigate('/admin');
+    // Admin navigation removed - admin panel should be accessed directly via URL
   };
 
   const handleLogout = () => setShowLogoutDialog(true);
@@ -136,14 +137,7 @@ export default function Navbar() {
             <div className="flex items-center justify-between w-full md:hidden">
               {/* Mobile Logo */}
               <Link to="/" className="flex items-center" onClick={closeMenu}>
-                <img 
-                  src="/logo2.png" 
-                  alt="Royal Thread Logo" 
-                  className="h-10 w-auto filter contrast-125 brightness-110 drop-shadow-md"
-                  style={{
-                    filter: 'contrast(1.5) brightness(1.3) saturate(1.4) drop-shadow(0 4px 8px rgba(0,0,0,0.2))'
-                  }}
-                />
+                <Logo size="small" />
               </Link>
               
               {/* Mobile Icons */}
@@ -204,18 +198,6 @@ export default function Navbar() {
                             </svg>
                             Address
                           </button>
-                          {user.role === 'admin' && (
-                            <button
-                              onClick={() => { navigate("/admin"); closeUserMenu(); }}
-                              className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                            >
-                              <svg className="h-3 w-3 mr-2" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                              </svg>
-                              Admin
-                            </button>
-                          )}
                           <div className="border-t border-gray-100"></div>
                           <button
                             onClick={() => { handleLogout(); closeUserMenu(); }}
@@ -286,15 +268,8 @@ export default function Navbar() {
             {/* Center: Logo */}
             <div className="flex-1 flex justify-center">
                <Link to="/" className="flex items-center" onClick={closeMenu}>
-                  <img 
-                   src="/logo2.png" 
-                    alt="Royal Thread Logo" 
-                   className="h-12 sm:h-14 md:h-16 w-auto filter contrast-125 brightness-110 drop-shadow-md"
-                   style={{
-                     filter: 'contrast(1.5) brightness(1.3) saturate(1.4) drop-shadow(0 4px 8px rgba(0,0,0,0.2))'
-                   }}
-                  />
-              </Link>
+                  <Logo size="large" />
+               </Link>
             </div>
               
             {/* Right: User + wishlist + cart */}
@@ -356,18 +331,6 @@ export default function Navbar() {
                           </svg>
                           Address
                         </button>
-                        {user.role === 'admin' && (
-                          <button
-                            onClick={() => { navigate("/admin"); closeUserMenu(); }}
-                            className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                          >
-                            <svg className="h-4 w-4 mr-3" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                            Admin Panel
-                    </button>
-                  )}
                         <div className="border-t border-gray-100"></div>
                   <button 
                           onClick={() => { handleLogout(); closeUserMenu(); }}
@@ -502,15 +465,15 @@ export default function Navbar() {
         isOpen={showLogoutDialog}
         onClose={() => setShowLogoutDialog(false)}
         title="Confirm Logout"
-        message="Are you sure you want to logout?"
-        confirmText="Logout"
+        message="Are you sure you want to logout? You will need to login again to access your account."
+        confirmText="Yes, Logout"
         cancelText="Cancel"
         onConfirm={confirmLogout}
-        variant="blue"
+        variant="danger"
         splitButtons
       />
       <Toast show={showLogoutSuccess} message="You have been logged out successfully" type="success" />
-      <Toast show={showLoginSuccess} message="You have been logged in successfully" type="success" />
+      <Toast show={showLoginSuccess} message="Welcome! You have been logged in successfully" type="success" />
     </>
   );
 }

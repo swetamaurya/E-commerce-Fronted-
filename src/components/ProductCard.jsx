@@ -2,6 +2,13 @@ import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { cartApi, wishlistApi } from "../services/api";
 import { toast } from "react-toastify";
+import { getImageUrl } from "../utils/imageUtils";
+import { 
+  addToGuestCart, 
+  addToGuestWishlist, 
+  removeFromGuestWishlist, 
+  isInGuestWishlist 
+} from "../utils/guestStorage";
 
 export default function ProductCard({ 
   product, 
@@ -15,19 +22,37 @@ export default function ProductCard({
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [isTogglingWishlist, setIsTogglingWishlist] = useState(false);
 
-  // Normalize images
+  // Normalize images and find primary image
   const images = useMemo(() => {
     if (Array.isArray(product?.images) && product.images.length > 0) {
       return product.images
-        .map((img) =>
-          typeof img === "string" ? { url: img, alt: product.name || product.title } : { url: img?.url, alt: img?.alt || product.name || product.title }
-        )
+        .map((img) => {
+          const url = typeof img === "string" ? img : img?.url;
+          return {
+            url: getImageUrl(url),
+            alt: typeof img === "string" ? product.name || product.title : img?.alt || product.name || product.title,
+            isPrimary: typeof img === "string" ? false : Boolean(img?.isPrimary)
+          };
+        })
         .filter((i) => i.url);
     }
-    return product?.image ? [{ url: product.image, alt: product.name || product.title }] : [];
+    return product?.image ? [{ url: getImageUrl(product.image), alt: product.name || product.title, isPrimary: true }] : [];
   }, [product]);
-  const primaryImg = images[0]?.url || product?.image || null;
-  const hoverImg = images[1]?.url || images[0]?.url || product?.image || null;
+  
+  // Debug: Log product data for troubleshooting
+  console.log('🔍 ProductCard Debug:', {
+    productName: product?.name,
+    imagesCount: images.length,
+    images: images.map(img => ({ url: img.url, isPrimary: img.isPrimary })),
+    primaryImages: images.filter(img => img.isPrimary === true)
+  });
+
+  // Find primary image or use first image as fallback
+  const primaryImage = images.find(img => img.isPrimary === true) || images[0];
+  const primaryImg = primaryImage?.url || getImageUrl(product?.image) || null;
+  const hoverImg = images.find(img => img.isPrimary !== true)?.url || images[1]?.url || images[0]?.url || getImageUrl(product?.image) || null;
+
+  console.log('🎯 Selected primary image:', primaryImg);
 
   // Extract variant data for display
   const variant = product?.variants?.[0] || {};
@@ -40,7 +65,7 @@ export default function ProductCard({
     setIsWishlisted(wishlistStatus);
   }, [wishlistStatus]);
 
-  // Only check wishlist status if not provided via props
+  // Check wishlist status (both logged in and guest users)
   useEffect(() => {
     if (onWishlistChange) {
       // Parent is managing wishlist status, no need to check individually
@@ -49,11 +74,13 @@ export default function ProductCard({
     
     const checkWishlistStatus = async () => {
       try {
+        const productId = product.id || product._id;
+        
         if (localStorage.getItem("token")) {
-          // Debounce the wishlist check to prevent multiple calls
+          // Logged in user - check server wishlist
           const timeoutId = setTimeout(async () => {
             try {
-              const res = await wishlistApi.checkWishlistItem(product.id || product._id);
+              const res = await wishlistApi.checkWishlistItem(productId);
               setIsWishlisted(!!res?.inWishlist);
             } catch (e) {
               console.error("Error checking wishlist status:", e);
@@ -63,7 +90,8 @@ export default function ProductCard({
           
           return () => clearTimeout(timeoutId);
         } else {
-          setIsWishlisted(false);
+          // Guest user - check local storage
+          setIsWishlisted(isInGuestWishlist(productId));
         }
       } catch (e) {
         console.error("Error in wishlist check setup:", e);
@@ -99,33 +127,44 @@ export default function ProductCard({
 
   const handleWishlistClick = async (e) => {
     e.stopPropagation();
-    if (!localStorage.getItem("token")) {
-      toast.info("Please login to add items to your wishlist");
-      return;
-    }
     setIsTogglingWishlist(true);
+    
     try {
-      if (isWishlisted) {
-        await wishlistApi.removeFromWishlist(product.id || product._id);
-        setIsWishlisted(false);
-        // Notify parent component
-        if (onWishlistChange) {
-          onWishlistChange(product.id || product._id, false);
+      const productId = product.id || product._id;
+      const productData = {
+        productId: productId,
+        title: product.name || product.title,
+        price: product.price,
+        image: primaryImg,
+      };
+      
+      if (localStorage.getItem("token")) {
+        // Logged in user - use API
+        if (isWishlisted) {
+          await wishlistApi.removeFromWishlist(productId);
+          setIsWishlisted(false);
+          toast.success("Removed from wishlist");
+        } else {
+          await wishlistApi.addToWishlist(productData);
+          setIsWishlisted(true);
+          toast.success("Added to wishlist");
         }
-        toast.success("Removed from wishlist");
       } else {
-        await wishlistApi.addToWishlist({
-          productId: product.id || product._id,
-          title: product.name || product.title,
-          price: product.price,
-          image: primaryImg,
-        });
-        setIsWishlisted(true);
-        // Notify parent component
-        if (onWishlistChange) {
-          onWishlistChange(product.id || product._id, true);
+        // Guest user - use local storage
+        if (isWishlisted) {
+          removeFromGuestWishlist(productId);
+          setIsWishlisted(false);
+          toast.success("Removed from wishlist");
+        } else {
+          addToGuestWishlist(productData);
+          setIsWishlisted(true);
+          toast.success("Added to wishlist");
         }
-        toast.success("Added to wishlist");
+      }
+      
+      // Notify parent component
+      if (onWishlistChange) {
+        onWishlistChange(productId, !isWishlisted);
       }
     } catch (error) {
       console.error("Error toggling wishlist:", error);
@@ -137,22 +176,28 @@ export default function ProductCard({
 
   const handleAddToCart = async (e) => {
     e.stopPropagation();
-    if (!localStorage.getItem("token")) {
-      toast.info("Please login to add items to your cart");
-      return;
-    }
     setIsAddingToCart(true);
+    
     try {
       const productId = product.id || product._id;
-      console.log('Adding to cart:', { product, productId });
-      await cartApi.addToCart({
+      const productData = {
         productId: productId,
         quantity: 1,
         price: product.price,
         title: product.name || product.title,
         image: primaryImg,
-      });
-      toast.success("Added to cart");
+      };
+      
+      if (localStorage.getItem("token")) {
+        // Logged in user - use API
+        console.log('Adding to cart:', { product, productId });
+        await cartApi.addToCart(productData);
+        toast.success("Added to cart");
+      } else {
+        // Guest user - use local storage
+        addToGuestCart(productData);
+        toast.success("Added to cart");
+      }
     } catch (error) {
       console.error("Error adding to cart:", error);
       toast.error("Failed to add to cart");

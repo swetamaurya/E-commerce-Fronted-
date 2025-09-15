@@ -22,18 +22,38 @@ const setCachedData = (key, data) => {
 };
 
 const adminApi = {
-  // Product Management - Use same API as users but with admin role
-  getProducts: async () => {
-    const cacheKey = 'products';
-    const cachedData = getCachedData(cacheKey);
-    if (cachedData) {
-      return cachedData;
+  // Authentication
+  login: async (credentials) => {
+    try {
+      const response = await api.post('/auth/admin/login', credentials);
+      return response.data;
+    } catch (error) {
+      console.error('Admin login error:', error);
+      throw new Error(error.response?.data?.message || 'Admin login failed');
     }
+  },
+
+  // Product Management - Admin API with pagination (using unified product endpoints)
+  getProducts: async (page = 1, limit = 10, search = '') => {
+    // Disable caching for admin products to ensure fresh data
+    // const cacheKey = `products_${page}_${limit}_${search}`;
+    // const cachedData = getCachedData(cacheKey);
+    // if (cachedData) {
+    //   return cachedData;
+    // }
 
     try {
-      const response = await api.get('/products/getAll');
+      const queryParams = new URLSearchParams({
+        page: page.toString(),
+        limit: limit.toString(),
+        admin: 'true',
+        _t: Date.now().toString(), // Cache busting parameter
+        ...(search && { search })
+      });
+
+      const response = await api.get(`/products/admin/all?${queryParams}`);
       const data = response.data;
-      setCachedData(cacheKey, data);
+      // setCachedData(cacheKey, data); // Disabled caching
       return data;
     } catch (error) {
       console.error('Get products error:', error);
@@ -41,11 +61,24 @@ const adminApi = {
     }
   },
 
+  uploadImage: async (imageData, filename) => {
+    try {
+      const response = await api.post('/upload/image', {
+        imageData,
+        filename
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Upload image error:', error);
+      throw new Error(error.response?.data?.message || 'Failed to upload image');
+    }
+  },
+
   createProduct: async (productData) => {
     try {
       const response = await api.post('/products/create', productData);
       // Clear products cache after creating
-      apiCache.delete('products');
+      apiCache.clear();
       return response.data;
     } catch (error) {
       console.error('Create product error:', error);
@@ -57,7 +90,7 @@ const adminApi = {
     try {
       const response = await api.put(`/products/update/${productId}`, productData);
       // Clear products cache after updating
-      apiCache.delete('products');
+      apiCache.clear();
       return response.data;
     } catch (error) {
       console.error('Update product error:', error);
@@ -69,7 +102,7 @@ const adminApi = {
     try {
       const response = await api.delete(`/products/delete/${productId}`);
       // Clear products cache after deleting
-      apiCache.delete('products');
+      apiCache.clear();
       return response.data;
     } catch (error) {
       console.error('Delete product error:', error);
@@ -105,7 +138,7 @@ const adminApi = {
     }
 
     try {
-      const response = await api.get('/admin/orders');
+      const response = await api.get('/orders/admin/all?admin=true');
       const data = response.data;
       setCachedData(cacheKey, data);
       return data;
@@ -117,7 +150,7 @@ const adminApi = {
 
   updateOrderStatus: async (orderId, status) => {
     try {
-      const response = await api.patch(`/admin/orders/${orderId}/status`, { status });
+      const response = await api.put(`/orders/admin/${orderId}/status`, { status });
       // Clear orders cache after updating
       apiCache.delete('orders');
       return response.data;
@@ -167,7 +200,7 @@ const adminApi = {
 
   updateInventory: async (productId, stock) => {
     try {
-      const response = await api.patch(`/admin/products/${productId}/inventory`, { stock });
+      const response = await api.put(`/products/update/${productId}`, { stock });
       // Clear inventory cache after updating
       apiCache.delete('inventory');
       return response.data;

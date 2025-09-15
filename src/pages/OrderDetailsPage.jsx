@@ -396,7 +396,7 @@ export default function OrderDetailsPage() {
                 <div className="space-y-3">
                   <div className="flex justify-between">
                   <span className="text-gray-600">Payment Method</span>
-                  <span className="font-medium text-gray-900">{order.paymentMethod || 'Cash on Delivery'}</span>
+                  <span className="font-medium text-gray-900">{order.paymentMethod || 'Online Payment'}</span>
                 </div>
                 
                 <div className="flex justify-between">

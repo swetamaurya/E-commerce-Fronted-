@@ -300,7 +300,7 @@ export default function OrderTrackingPage() {
                       <span>Payment Method</span>
                       <span className="font-medium">
                         {selectedOrder.paymentMethod === 'COD'
-                          ? 'Cash on Delivery'
+                          ? 'Online Payment'
                           : selectedOrder.paymentMethod === 'Card'
                           ? 'Credit/Debit Card'
                           : 'UPI'}

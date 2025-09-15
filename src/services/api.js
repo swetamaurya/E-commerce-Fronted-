@@ -66,9 +66,7 @@ export const cartApi = {
   // Update item quantity in cart
   updateCartItem: async (productId, quantity) => {
     try {
-      console.log('Updating cart item via API:', { productId, quantity });
       const response = await api.put(`/cart/update/${productId}`, { quantity });
-      console.log('Cart update API response:', response.data);
       return response.data;
     } catch (error) {
       console.error('Error updating cart item:', error);
@@ -273,12 +271,12 @@ export const addressApi = {
   }
 };
 
-// Admin Order API
+// Admin Order API (using unified order endpoints)
 export const adminOrderApi = {
   // Get all orders for admin
   getAllOrders: async () => {
     try {
-      const response = await api.get('/admin/orders');
+      const response = await api.get('/orders/admin/all?admin=true');
       return response.data;
     } catch (error) {
       console.error('Error fetching all orders:', error);
@@ -289,7 +287,7 @@ export const adminOrderApi = {
   // Update order status
   updateOrderStatus: async (orderId, statusData) => {
     try {
-      const response = await api.put(`/admin/orders/${orderId}/status`, statusData);
+      const response = await api.put(`/orders/admin/${orderId}/status`, statusData);
       return response.data;
     } catch (error) {
       console.error('Error updating order status:', error);
@@ -300,7 +298,7 @@ export const adminOrderApi = {
   // Get order details for admin
   getOrderDetails: async (orderId) => {
     try {
-      const response = await api.get(`/admin/orders/${orderId}`);
+      const response = await api.get(`/orders/admin/${orderId}?admin=true`);
       return response.data;
     } catch (error) {
       console.error('Error fetching order details:', error);
@@ -311,7 +309,7 @@ export const adminOrderApi = {
   // Get order statistics
   getOrderStats: async () => {
     try {
-      const response = await api.get('/admin/orders/stats');
+      const response = await api.get('/orders/admin/stats');
       return response.data;
     } catch (error) {
       console.error('Error fetching order stats:', error);
@@ -330,7 +328,7 @@ export const orderSSE = {
     }
     
     // Add token as query parameter since EventSource doesn't support headers
-    const eventSource = new EventSource(`${API_URL}/admin/orders/sse?token=${encodeURIComponent(token)}`);
+    const eventSource = new EventSource(`${API_URL}/orders/sse?token=${encodeURIComponent(token)}`);
     return eventSource;
   }
 };

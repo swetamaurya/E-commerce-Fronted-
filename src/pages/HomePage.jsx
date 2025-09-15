@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import ImageSlider from '../components/ImageSlider';
 import productApi from '../services/productApi';
+import { API_URL } from '../config';
 
 // Sample data for the homepage
 const categoryData = [
@@ -114,7 +115,7 @@ export default function HomePage() {
         console.log('Fetching all products...');
         
         // Test direct API call first
-        const directResponse = await fetch('https://e-commerce-backend-r6s0.onrender.com/api/products/getAll/');
+        const directResponse = await fetch(`${API_URL}/products/getAll/`);
         console.log('Direct API response status:', directResponse.status);
         
         if (!directResponse.ok) {

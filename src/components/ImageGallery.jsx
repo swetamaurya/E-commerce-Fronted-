@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { getImageUrl } from "../utils/imageUtils";
 
 export default function ImageGallery({ images = [], productName = "Product", onWishlistToggle, isWishlisted = false }) {
   const [selectedImage, setSelectedImage] = useState(0);
@@ -6,22 +7,34 @@ export default function ImageGallery({ images = [], productName = "Product", onW
 
   // Debug: Log received images (commented out for production)
 
-  // Normalize images array
+  // Normalize images array and preserve isPrimary
   const normalizedImages = images.map((img, index) => {
     if (typeof img === 'string') {
-      return { url: img, alt: `${productName} - Image ${index + 1}` };
+      return { 
+        url: getImageUrl(img), 
+        alt: `${productName} - Image ${index + 1}`,
+        isPrimary: index === 0
+      };
     }
     return {
-      url: img?.url || img?.src || '',
+      url: getImageUrl(img?.url || img?.src || ''),
       alt: img?.alt || `${productName} - Image ${index + 1}`,
-      thumbnail: img?.thumbnail || img?.url || img?.src || ''
+      thumbnail: getImageUrl(img?.thumbnail || img?.url || img?.src || ''),
+      isPrimary: Boolean(img?.isPrimary)
     };
   }).filter(img => img.url);
+
+  // Sort images to show primary first
+  const sortedImages = normalizedImages.sort((a, b) => {
+    if (a.isPrimary && !b.isPrimary) return -1;
+    if (!a.isPrimary && b.isPrimary) return 1;
+    return 0;
+  });
 
   // Debug: Log normalized images (commented out for production)
 
   // If no images, return placeholder
-  if (normalizedImages.length === 0) {
+  if (sortedImages.length === 0) {
     return (
       <div className="w-full h-96 bg-gray-200 rounded-lg flex items-center justify-center">
         <div className="text-center">
@@ -34,7 +47,7 @@ export default function ImageGallery({ images = [], productName = "Product", onW
     );
   }
 
-  const currentImage = normalizedImages[selectedImage];
+  const currentImage = sortedImages[selectedImage];
 
   const handleThumbnailClick = (index) => {
     setSelectedImage(index);
@@ -45,11 +58,11 @@ export default function ImageGallery({ images = [], productName = "Product", onW
       {/* Professional Image Gallery Layout */}
       <div className="flex h-40 sm:h-48 md:h-[300px] lg:h-[90vh] xl:h-[90vh]">
         {/* Left: Thumbnail Strip */}
-        {normalizedImages.length > 1 && (
+        {sortedImages.length > 1 && (
           <div className="flex flex-col w-12 sm:w-14 md:w-16 flex-shrink-0 h-full justify-center space-y-1">
-            {normalizedImages.map((image, index) => {
-              const thumbnailHeight = normalizedImages.length > 0 ? 
-                `${100 / normalizedImages.length}%` : '100%';
+            {sortedImages.map((image, index) => {
+              const thumbnailHeight = sortedImages.length > 0 ? 
+                `${100 / sortedImages.length}%` : '100%';
               return (
                 <button
                   key={index}

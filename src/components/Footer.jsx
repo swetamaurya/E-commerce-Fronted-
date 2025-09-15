@@ -1,4 +1,5 @@
 import { Link, NavLink } from "react-router-dom";
+import Logo from "./Logo";
 
 const categories = [
   { label: "COTTON YOGA MATS", path: "/cotton-yoga-mats" },
@@ -28,18 +29,7 @@ export default function Footer() {
           {/* Company Info */}
           <div className="sm:col-span-2 lg:col-span-1">
             <div className="mb-4 sm:mb-6">
-              <img 
-                src="/logo2.png" 
-                alt="Royal Thread" 
-                className="h-16 sm:h-18 md:h-20 w-auto filter contrast-125 brightness-110 drop-shadow-lg" 
-                style={{
-                  filter: 'contrast(1.6) brightness(1.4) saturate(1.5) drop-shadow(0 6px 12px rgba(0,0,0,0.3))'
-                }}
-                onError={(e) => {
-                  e.currentTarget.outerHTML = 
-                    '<div class="text-xl sm:text-2xl font-bold tracking-wide text-gray-900">Royal Thread</div>';
-                }}
-              />
+              <Logo size="xlarge" />
             </div>
             <p className="text-gray-600 leading-relaxed mb-4 sm:mb-6 text-sm">
               Welcome to Royal Thread, a MSE based out of India. We aim to deliver 

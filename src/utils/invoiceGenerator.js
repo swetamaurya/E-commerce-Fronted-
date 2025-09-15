@@ -64,7 +64,7 @@ export const generateInvoice = async (order) => {
     doc.setFontSize(9);
     doc.text(`Invoice Date: ${currentDate}`, pageWidth - 90, yPosition + 5);
     doc.text(`Order Date: ${orderDate}`, pageWidth - 90, yPosition + 10);
-    doc.text(`Payment: ${order.paymentMethod || 'COD'}`, pageWidth - 90, yPosition + 15);
+    doc.text(`Payment: ${order.paymentMethod || 'Online Payment'}`, pageWidth - 90, yPosition + 15);
     doc.text(`Status: ${order.status || 'Order Received'}`, pageWidth - 90, yPosition + 20);
     
     if (order.trackingNumber) {
@@ -220,7 +220,7 @@ const generateInvoiceHTML = (order) => {
         <div class="section-content">
           Invoice Date: ${currentDate}<br>
           Order Date: ${orderDate}<br>
-          Payment Method: ${order.paymentMethod || 'Cash on Delivery'}<br>
+          Payment Method: ${order.paymentMethod || 'Online Payment'}<br>
           Order Status: ${order.status || 'Pending'}<br>
           ${order.trackingNumber ? `Tracking: ${order.trackingNumber}<br>` : ''}
           ${order.estimatedDelivery ? `Est. Delivery: ${new Date(order.estimatedDelivery).toLocaleDateString('en-IN')}<br>` : ''}

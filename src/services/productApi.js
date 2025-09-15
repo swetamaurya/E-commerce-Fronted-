@@ -5,7 +5,7 @@ const productApi = {
   // Get all products
   getAllProducts: async () => {
     try {
-      const response = await api.get('/products/getAll/');
+      const response = await api.get(`/products/getAll/?_t=${Date.now()}`);
       return response.data;
     } catch (error) {
       console.error('Get all products error:', error);
@@ -16,7 +16,7 @@ const productApi = {
   // Get products by category
   getProductsByCategory: async (category) => {
     try {
-      const response = await api.get(`/products/category/${category}`);
+      const response = await api.get(`/products/category/${category}?_t=${Date.now()}`);
       return response.data;
     } catch (error) {
       console.error('Get products by category error:', error);
@@ -27,7 +27,7 @@ const productApi = {
   // Get product by ID
   getProductById: async (id) => {
     try {
-      const response = await api.get(`/products/${id}`);
+      const response = await api.get(`/products/${id}?_t=${Date.now()}`);
       return response.data;
     } catch (error) {
       console.error('Get product by ID error:', error);
@@ -38,7 +38,7 @@ const productApi = {
   // Get featured products
   getFeaturedProducts: async () => {
     try {
-      const response = await api.get('/products/featured');
+      const response = await api.get(`/products/featured?_t=${Date.now()}`);
       return response.data;
     } catch (error) {
       console.error('Get featured products error:', error);
@@ -49,7 +49,7 @@ const productApi = {
   // Search products
   searchProducts: async (query) => {
     try {
-      const response = await api.get(`/products/search?q=${encodeURIComponent(query)}`);
+      const response = await api.get(`/products/search?q=${encodeURIComponent(query)}&_t=${Date.now()}`);
       return response.data;
     } catch (error) {
       console.error('Search products error:', error);

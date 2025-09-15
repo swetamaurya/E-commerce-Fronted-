@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { orderApi, cartApi } from '../services/api';
+import { createRazorpayOrder, openRazorpayPayment, verifyPayment } from '../utils/razorpay';
 
 // UPI Payment UI Component
 const UpiPaymentUI = ({ upiId, onClose, onSuccess }) => {
@@ -81,7 +82,7 @@ export default function PaymentPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [processingOrder, setProcessingOrder] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState('COD');
+  const [paymentMethod, setPaymentMethod] = useState('razorpay');
   const [cardNumber, setCardNumber] = useState('');
   const [expiry, setExpiry] = useState('');
   const [cvv, setCvv] = useState('');
@@ -113,12 +114,13 @@ export default function PaymentPage() {
         try {
           setLoading(true);
           const response = await cartApi.getCart();
-          setCartData(response.data);
-          setCartFetched(true);
-          console.log('Initial cart data loaded:', {
-            itemsCount: response.data.items.length,
-            total: response.data.total
-          });
+          
+          if (response && response.data) {
+            setCartData(response.data);
+            setCartFetched(true);
+          } else {
+            toast.error('Invalid cart data received');
+          }
         } catch (error) {
           console.error('Error fetching cart:', error);
           toast.error('Failed to load cart data');
@@ -160,103 +162,90 @@ export default function PaymentPage() {
       // Update the local cart data with fresh data
       setCartData(freshCartData);
       
-      // Validate payment method specific fields
-      if (paymentMethod === 'card') {
-        if (!cardNumber || !expiry || !cvv) {
-          toast.error('Please fill all card details');
-          setLoading(false);
-          return;
-        }
-        
-        if (!/^\d{16}$/.test(cardNumber.replace(/\s/g, ''))) {
-          toast.error('Please enter a valid 16-digit card number');
-          setLoading(false);
-          return;
-        }
-      } else if (paymentMethod === 'upi') {
-        if (!upiId) {
-          toast.error('Please enter your UPI ID');
-          setLoading(false);
-          return;
-        }
-        
-        if (!upiId.includes('@')) {
-          toast.error('Please enter a valid UPI ID');
-          setLoading(false);
-          return;
-        }
-      }
+      // No validation needed for Razorpay as it handles all payment methods
       
       // Generate order ID
       const newOrderId = generateOrderId();
       setOrderId(newOrderId);
       
-      // For UPI and Card payments, show payment UI in the same page
-      if (paymentMethod === 'upi') {
-        // Simulate UPI payment processing
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        // Show UPI payment UI instead of redirecting
-        setShowUpiPaymentUI(true);
-      } else if (paymentMethod === 'card') {
-        // Simulate card payment processing
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        // Show card payment UI instead of redirecting
-        setShowCardPaymentUI(true);
-      } else if (paymentMethod === 'COD') {
-        // For COD, process the order directly
+      // Process payment through Razorpay
+      if (paymentMethod === 'razorpay') {
         try {
-          // Fetch fresh cart data before creating order
-          console.log('Fetching fresh cart data before COD order creation...');
-          const freshCartResponse = await cartApi.getCart();
-          const freshCartData = freshCartResponse.data;
+          console.log('Starting Razorpay payment process...');
+          console.log('Cart total:', freshCartData.total);
           
-          if (!freshCartData || !freshCartData.items || freshCartData.items.length === 0) {
-            toast.error('Your cart is empty. Please add items to cart first.');
-            navigate('/cart');
-            return;
-          }
-
-          console.log('Fresh cart data before COD order creation:', {
-            itemsCount: freshCartData.items.length,
-            total: freshCartData.total,
-            items: freshCartData.items.map(item => ({
-              productName: item.title,
-              quantity: item.quantity,
-              price: item.price,
-              total: item.quantity * item.price
-            }))
-          });
-
+          // Create Razorpay order
+          const orderData = await createRazorpayOrder(freshCartData.total);
+          console.log('Razorpay order created:', orderData);
+          
+          // Get user and shipping details
           const shippingAddress = JSON.parse(localStorage.getItem('shippingAddress') || '{}');
           const user = JSON.parse(localStorage.getItem('user') || '{}');
-
-          // Create order data
-          const orderData = {
-            customerName: user.name,
-            customerEmail: user.email,
-            customerPhone: user.mobile || '',
-            shippingAddress: shippingAddress,
-            paymentMethod: paymentMethod,
-            paymentStatus: 'COD',
-            discountAmount: 0,
-            shippingAmount: 0,
-            taxAmount: 0,
-            notes: 'Order placed via COD'
-          };
-
-          // Create order via API (this will automatically clear the cart)
-          await orderApi.createOrder(orderData);
           
-          // Clear shipping address
-          localStorage.removeItem('shippingAddress');
+          console.log('User details:', user);
+          console.log('Shipping address:', shippingAddress);
           
-          // Set order placed state to show confirmation
-          setOrderPlaced(true);
-          
-          toast.success('Order placed successfully!');
+          // Open Razorpay payment modal
+          await openRazorpayPayment(
+            {
+              ...orderData,
+              customer_name: user.name,
+              customer_email: user.email,
+              customer_phone: user.mobile || '',
+              order_id: newOrderId
+            },
+            async (paymentResponse) => {
+              // Payment successful
+              console.log('Payment successful callback triggered:', paymentResponse);
+              try {
+                // Verify payment
+                const verificationResult = await verifyPayment(paymentResponse);
+                console.log('Payment verification result:', verificationResult);
+                
+                if (verificationResult.success) {
+                  // Create order
+                  const orderData = {
+                    customerName: user.name,
+                    customerEmail: user.email,
+                    customerPhone: user.mobile || '',
+                    shippingAddress: shippingAddress,
+                    paymentMethod: 'Razorpay',
+                    paymentStatus: 'Paid',
+                    paymentId: paymentResponse.razorpay_payment_id,
+                    orderId: paymentResponse.razorpay_order_id,
+                    discountAmount: 0,
+                    shippingAmount: 0,
+                    taxAmount: 0,
+                    notes: 'Order placed via Razorpay'
+                  };
+                  
+                  console.log('Creating order with data:', orderData);
+                  await orderApi.createOrder(orderData);
+                  
+                  // Clear shipping address
+                  localStorage.removeItem('shippingAddress');
+                  
+                  // Set order placed state
+                  setOrderPlaced(true);
+                  
+                  toast.success('Payment successful! Order placed.');
+                } else {
+                  toast.error('Payment verification failed');
+                }
+              } catch (error) {
+                console.error('Error processing payment:', error);
+                toast.error('Payment processing failed');
+              }
+            },
+            (error) => {
+              // Payment failed or cancelled
+              console.error('Payment error callback triggered:', error);
+              toast.error(error || 'Payment failed');
+            }
+          );
         } catch (error) {
-          console.error('Error creating order:', error);
-          toast.error('Failed to create order. Please try again.');
+          console.error('Error creating Razorpay order:', error);
+          toast.error('Failed to initialize payment');
         }
       }
     } catch (error) {
@@ -312,7 +301,7 @@ export default function PaymentPage() {
         customerPhone: user.mobile || '',
         shippingAddress: shippingAddress,
         paymentMethod: paymentMethod,
-        paymentStatus: paymentMethod === 'COD' ? 'COD' : 'Paid',
+        paymentStatus: 'Paid',
         discountAmount: 0,
         shippingAmount: 0,
         taxAmount: 0,
@@ -360,7 +349,28 @@ export default function PaymentPage() {
           />
         )}
         
-        {orderPlaced ? (
+        {loading ? (
+          <div className="bg-white rounded-lg shadow-md p-6 text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading cart data...</p>
+          </div>
+        ) : !cartData ? (
+          <div className="bg-white rounded-lg shadow-md p-6 text-center">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="h-8 w-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+              </svg>
+            </div>
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">No Cart Data</h2>
+            <p className="text-gray-600 mb-4">Unable to load your cart items. Please try again.</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="bg-teal-600 text-white py-2 px-4 rounded-md font-medium hover:bg-teal-700 transition-colors"
+            >
+              Retry
+            </button>
+          </div>
+        ) : orderPlaced ? (
           <div className="bg-white rounded-lg shadow-md overflow-hidden p-6">
             <div className="text-center">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -389,6 +399,30 @@ export default function PaymentPage() {
         ) : (
           <div className="bg-white rounded-lg shadow-md overflow-hidden">
             <div className="p-4 sm:p-6">
+              {/* Cart Summary */}
+              {cartData && (
+                <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6">
+                  <h2 className="text-lg font-medium mb-4">Order Summary</h2>
+                  <div className="space-y-3">
+                    {cartData.items?.map((item, index) => (
+                      <div key={index} className="flex justify-between items-center py-2 border-b border-gray-100">
+                        <div className="flex-1">
+                          <h3 className="text-sm font-medium text-gray-900">{item.title}</h3>
+                          <p className="text-xs text-gray-500">Qty: {item.quantity} × ₹{item.price}</p>
+                        </div>
+                        <div className="text-sm font-medium text-gray-900">
+                          ₹{(item.quantity * item.price).toFixed(2)}
+                        </div>
+                      </div>
+                    ))}
+                    <div className="flex justify-between items-center pt-3 border-t border-gray-200">
+                      <span className="text-lg font-semibold text-gray-900">Total</span>
+                      <span className="text-lg font-semibold text-gray-900">₹{cartData.total?.toFixed(2) || '0.00'}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <form onSubmit={handleSubmit}>
               <div className="space-y-4 sm:space-y-6">
                 <div>
@@ -397,52 +431,55 @@ export default function PaymentPage() {
                   <div className="space-y-3 sm:space-y-4">
                     <div className="flex items-center">
                       <input
-                        id="COD"
+                        id="razorpay"
                         name="paymentMethod"
                         type="radio"
-                        value="COD"
-                        checked={paymentMethod === 'COD'}
-                        onChange={() => setPaymentMethod('COD')}
+                        value="razorpay"
+                        checked={paymentMethod === 'razorpay'}
+                        onChange={() => setPaymentMethod('razorpay')}
                         className="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300"
                       />
-                      <label htmlFor="COD" className="ml-3 block text-sm font-medium text-gray-700">
-                        Cash on Delivery (COD)
-                      </label>
-                    </div>
-                    
-                    <div className="flex items-center">
-                      <input
-                        id="card"
-                        name="paymentMethod"
-                        type="radio"
-                        value="card"
-                        checked={paymentMethod === 'card'}
-                        onChange={() => setPaymentMethod('card')}
-                        className="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300"
-                      />
-                      <label htmlFor="card" className="ml-3 block text-sm font-medium text-gray-700">
-                        Credit/Debit Card
-                      </label>
-                    </div>
-                    
-                    <div className="flex items-center">
-                      <input
-                        id="upi"
-                        name="paymentMethod"
-                        type="radio"
-                        value="upi"
-                        checked={paymentMethod === 'upi'}
-                        onChange={() => setPaymentMethod('upi')}
-                        className="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300"
-                      />
-                      <label htmlFor="upi" className="ml-3 block text-sm font-medium text-gray-700">
-                        UPI
+                      <label htmlFor="razorpay" className="ml-3 block text-sm font-medium text-gray-700">
+                        <div className="flex items-center">
+                          <span>Pay with Razorpay</span>
+                          <div className="ml-2 flex items-center space-x-1">
+                            <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">UPI</span>
+                            <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Cards</span>
+                            <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">Net Banking</span>
+                            <span className="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded">Wallets</span>
+                          </div>
+                        </div>
+                        <p className="text-xs text-gray-500 mt-1">Secure payment with multiple options</p>
                       </label>
                     </div>
                   </div>
                 </div>
                 
-                {paymentMethod === 'card' && (
+                {/* Razorpay Payment Information */}
+                <div className="border-t border-gray-200 pt-6">
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div className="flex items-start">
+                      <div className="flex-shrink-0">
+                        <svg className="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                      <div className="ml-3">
+                        <h3 className="text-sm font-medium text-blue-800">Secure Payment with Razorpay</h3>
+                        <div className="mt-2 text-sm text-blue-700">
+                          <p>Your payment will be processed securely through Razorpay. You can pay using:</p>
+                          <ul className="mt-2 list-disc list-inside space-y-1">
+                            <li>Credit/Debit Cards (Visa, Mastercard, RuPay)</li>
+                            <li>UPI (Google Pay, PhonePe, Paytm, BHIM)</li>
+                            <li>Net Banking (All major banks)</li>
+                            <li>Digital Wallets (Paytm, Mobikwik, Freecharge)</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {false && (
                   <div className="border-t border-gray-200 pt-6">
                     <h3 className="text-md font-medium mb-4">Card Details</h3>
                     
@@ -510,7 +547,7 @@ export default function PaymentPage() {
                   </div>
                 )}
                 
-                {paymentMethod === 'upi' && (
+                {false && (
                   <div className="border-t border-gray-200 pt-6">
                     <h3 className="text-md font-medium mb-4">UPI Details</h3>
                     
@@ -569,7 +606,7 @@ export default function PaymentPage() {
                   className="bg-teal-600 text-white py-2.5 px-4 sm:px-6 rounded-md font-medium hover:bg-teal-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
                   disabled={loading || processingOrder}
                 >
-                  {loading || processingOrder ? 'Processing Order...' : 'Place Order'}
+                  {loading || processingOrder ? 'Processing Payment...' : 'Pay with Razorpay'}
                 </button>
               </div>
             </form>

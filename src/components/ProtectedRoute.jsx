@@ -51,8 +51,11 @@ const ProtectedRoute = ({ element, requiredRole }) => {
     );
   }
 
-  // If user is not authorized, redirect to home page
+  // If user is not authorized, redirect to appropriate login page
   if (!authorized) {
+    if (requiredRole === 'admin') {
+      return <Navigate to="/admin/login" replace />;
+    }
     return <Navigate to="/" replace />;
   }
 

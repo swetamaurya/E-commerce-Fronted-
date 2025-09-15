@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FaKey, FaLock } from 'react-icons/fa';
+import { toast } from 'react-toastify';
 import CustomDialog from './CustomDialog';
+import { migrateGuestCartToUser, migrateGuestWishlistToUser } from '../utils/guestStorage';
+import { cartApi, wishlistApi } from '../services/api';
 
 export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
   const navigate = useNavigate();
@@ -16,8 +20,9 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
+  const [forgotPasswordLoading, setForgotPasswordLoading] = useState(false);
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -48,8 +53,8 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
             name: formData.name, 
             email: formData.email, 
             password: formData.password,
-            mobile: formData.mobile,
-            role: formData.email.includes('admin') ? 'admin' : 'user' // Automatically set admin role if email contains 'admin'
+            mobile: formData.mobile
+            // Role will be set to 'user' by default on the backend
           };
 
       const response = await fetch(`${API_BASE_URL}${endpoint}`, {
@@ -67,9 +72,15 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
         localStorage.setItem('token', data.data.token);
         localStorage.setItem('user', JSON.stringify(data.data.user));
         
-        // Show success message
-        setSuccessMessage(isLogin ? 'Login successful!' : 'Registration successful!');
-        setShowSuccessDialog(true);
+        // Migrate guest cart and wishlist to user account
+        try {
+          await migrateGuestCartToUser(cartApi);
+          await migrateGuestWishlistToUser(wishlistApi);
+          console.log('Guest data migrated successfully');
+        } catch (error) {
+          console.error('Error migrating guest data:', error);
+          // Don't show error to user, just log it
+        }
         
         // Call success callback with redirect flag for admin users
         if (onLoginSuccess) {
@@ -111,51 +122,56 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
     });
   };
 
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+    if (!forgotPasswordEmail) {
+      toast.error('Please enter your email address');
+      return;
+    }
+
+    setForgotPasswordLoading(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: forgotPasswordEmail }),
+      });
+
+      const data = await response.json();
+      
+      if (response.ok) {
+        toast.success('Password reset link sent to your email');
+        setShowForgotPassword(false);
+        setForgotPasswordEmail('');
+      } else {
+        toast.error(data.message || 'Failed to send reset link');
+      }
+    } catch (error) {
+      console.error('Error sending forgot password request:', error);
+      toast.error('Failed to send reset link. Please try again.');
+    } finally {
+      setForgotPasswordLoading(false);
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
     <>
-      <CustomDialog 
-        isOpen={showSuccessDialog}
-        onClose={() => setShowSuccessDialog(false)}
-        title="Success"
-        message={successMessage}
-        confirmText="OK"
-        showCancel={false}
-        onConfirm={() => {
-          setShowSuccessDialog(false);
-          // Call success callback
-          if (onLoginSuccess) {
-            const userData = JSON.parse(localStorage.getItem('user'));
-            const isAdmin = userData.role === 'admin';
-            onLoginSuccess(userData, isAdmin);
-          }
-          
-          // Close modal
-          onClose();
-          
-          // Reset form
-          setFormData({
-            name: '',
-            email: '',
-            password: '',
-            confirmPassword: '',
-            mobile: ''
-          });
-        }}
-      />
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
+      <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-4 sm:p-6 max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">
+        <div className="flex justify-between items-center mb-4 sm:mb-6">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
             {isLogin ? 'Login' : 'Register'}
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
+            className="text-gray-400 hover:text-gray-600 transition-colors p-1"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
@@ -169,11 +185,11 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
         )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
           {!isLogin && (
             <>
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="name" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                   Full Name
                 </label>
                 <input
@@ -183,12 +199,12 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
                   value={formData.name}
                   onChange={handleInputChange}
                   required={!isLogin}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                  className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                   placeholder="Enter your full name"
                 />
               </div>
               <div>
-                <label htmlFor="mobile" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="mobile" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                   Mobile Number
                 </label>
                 <input
@@ -198,7 +214,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
                   value={formData.mobile}
                   onChange={handleInputChange}
                   required={!isLogin}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                  className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                   placeholder="Enter your mobile number"
                 />
               </div>
@@ -206,7 +222,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
           )}
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="email" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
               Email
             </label>
             <input
@@ -216,13 +232,13 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
               value={formData.email}
               onChange={handleInputChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+              className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
               placeholder="Enter your email"
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="password" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
               Password
             </label>
             <div className="relative">
@@ -233,7 +249,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
                 value={formData.password}
                 onChange={handleInputChange}
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                 placeholder="Enter your password"
               />
               <button
@@ -257,7 +273,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
 
           {!isLogin && (
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="confirmPassword" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 Confirm Password
               </label>
               <div className="relative">
@@ -268,7 +284,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
                   required={!isLogin}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                  className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                   placeholder="Confirm your password"
                 />
                 <button
@@ -295,7 +311,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-gray-900 text-white py-2 px-4 rounded-md hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-gray-900 text-white py-2.5 sm:py-2 px-4 rounded-md hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
           >
             {loading ? (
               <span className="flex items-center justify-center">
@@ -311,6 +327,19 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
           </button>
         </form>
 
+        {/* Forgot Password Link - Only show on login */}
+        {isLogin && (
+          <div className="mt-4 text-center">
+            <button
+              onClick={() => setShowForgotPassword(true)}
+              className="text-sm text-blue-600 hover:text-blue-800 flex items-center justify-center mx-auto"
+            >
+              <FaKey className="w-4 h-4 mr-1" />
+              Forgot Password?
+            </button>
+          </div>
+        )}
+
         {/* Toggle Mode */}
         <div className="mt-6 text-center">
           <p className="text-gray-600">
@@ -324,6 +353,84 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
           </p>
         </div>
       </div>
+
+      {/* Forgot Password Modal */}
+      {showForgotPassword && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
+          <div className="bg-white rounded-lg p-4 sm:p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-base sm:text-lg font-medium text-gray-900 flex items-center">
+                <FaLock className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-blue-600" />
+                Forgot Password
+              </h3>
+              <button
+                onClick={() => {
+                  setShowForgotPassword(false);
+                  setForgotPasswordEmail('');
+                }}
+                className="text-gray-400 hover:text-gray-600 p-1"
+              >
+                <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            <form onSubmit={handleForgotPassword} className="space-y-3 sm:space-y-4">
+              <div>
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  value={forgotPasswordEmail}
+                  onChange={(e) => setForgotPasswordEmail(e.target.value)}
+                  placeholder="Enter your email address"
+                  className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                />
+              </div>
+              
+              <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
+                <p className="text-sm text-blue-800">
+                  <strong>Note:</strong> A password reset link will be sent to your email address. 
+                  Please check your inbox and follow the instructions to reset your password.
+                </p>
+              </div>
+              
+              <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowForgotPassword(false);
+                    setForgotPasswordEmail('');
+                  }}
+                  className="w-full sm:w-auto px-4 py-2 text-xs sm:text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={forgotPasswordLoading}
+                  className="w-full sm:w-auto px-4 py-2 text-xs sm:text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                >
+                  {forgotPasswordLoading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <FaKey className="w-4 h-4 mr-2" />
+                      Send Reset Link
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
     </>
   );

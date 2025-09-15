@@ -138,12 +138,6 @@ export default function FilterBar({ filters, setFilters, products = [], total = 
             </div>
           </div>
 
-          {/* Results Count */}
-          <div className="mt-4 pt-4 border-t border-gray-200">
-            <p className="text-sm text-gray-600">
-              Showing <span className="font-medium text-gray-900">{total}</span> products
-            </p>
-          </div>
         </div>
 
         {/* Active filters display */}

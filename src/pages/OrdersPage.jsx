@@ -58,7 +58,11 @@ export default function OrdersPage() {
 
         eventSource.onmessage = (event) => {
           try {
+            console.log('=== SSE MESSAGE RECEIVED ===');
+            console.log('Raw event data:', event.data);
+            
             const data = JSON.parse(event.data);
+            console.log('Parsed data:', data);
             
             // Handle error responses
             if (data.success === false) {
@@ -69,25 +73,33 @@ export default function OrdersPage() {
             }
             
             if (data.type === 'order_update') {
+              console.log('Processing order update:', data);
+              console.log('Current orders before update:', orders);
+              
               // Update specific order status
-              setOrders(prevOrders => 
-                prevOrders.map(order => 
-                  order._id === data.orderId 
-                    ? { 
-                        ...order, 
-                        status: data.newStatus,
-                        trackingNumber: data.orderData.trackingNumber,
-                        notes: data.orderData.notes,
-                        estimatedDelivery: data.orderData.estimatedDelivery,
-                        deliveredAt: data.orderData.deliveredAt
-                      }
-                    : order
-                )
-              );
+              setOrders(prevOrders => {
+                const updatedOrders = prevOrders.map(order => {
+                  if (order._id === data.orderId) {
+                    console.log('Updating order:', order._id, 'to status:', data.newStatus);
+                    return { 
+                      ...order, 
+                      status: data.newStatus,
+                      trackingNumber: data.orderData.trackingNumber,
+                      notes: data.orderData.notes,
+                      estimatedDelivery: data.orderData.estimatedDelivery,
+                      deliveredAt: data.orderData.deliveredAt
+                    };
+                  }
+                  return order;
+                });
+                console.log('Updated orders:', updatedOrders);
+                return updatedOrders;
+              });
               
               // Show notification
               toast.success(`Order ${data.orderId} status updated to ${data.newStatus}`);
             } else if (data.type === 'initial_data') {
+              console.log('Received initial data:', data.orders);
               // Update orders with fresh data
               setOrders(data.orders || []);
             } else if (data.type === 'connected') {
@@ -95,6 +107,8 @@ export default function OrdersPage() {
             } else if (data.type === 'ping') {
               // Keep alive ping - no action needed
             }
+            
+            console.log('=== END SSE MESSAGE PROCESSING ===');
           } catch (error) {
             console.error('Error parsing SSE data:', error);
           }

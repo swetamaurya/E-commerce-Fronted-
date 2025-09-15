@@ -6,6 +6,7 @@ import { cartApi, wishlistApi } from "../services/api";
 import { toast } from "react-toastify";
 import SEO from "../components/SEO";
 import ImageGallery from "../components/ImageGallery";
+import { getImageUrl } from "../utils/imageUtils";
  
 
 export default function ProductDetailPage() {
@@ -199,20 +200,29 @@ export default function ProductDetailPage() {
   }
   if (!product) return null;
 
-  // Prepare images for gallery - ensure proper format
+  // Prepare images for gallery - ensure proper format and preserve isPrimary
   const galleryImages = product.images?.length
     ? product.images.map((img, index) => ({
-        url: typeof img === 'string' ? img : img.url,
+        url: getImageUrl(typeof img === 'string' ? img : img.url),
         alt: typeof img === 'string' ? `${product.name || product.title} - Image ${index + 1}` : img.alt || `${product.name || product.title} - Image ${index + 1}`,
-        thumbnail: typeof img === 'string' ? img : img.thumbnail || img.url
+        thumbnail: getImageUrl(typeof img === 'string' ? img : img.thumbnail || img.url),
+        isPrimary: typeof img === 'string' ? index === 0 : Boolean(img.isPrimary)
       }))
     : product.image
     ? [{ 
-        url: product.image, 
+        url: getImageUrl(product.image), 
         alt: product.name || product.title,
-        thumbnail: product.image
+        thumbnail: getImageUrl(product.image),
+        isPrimary: true
       }]
     : [];
+
+  // Sort images to show primary first
+  const sortedGalleryImages = galleryImages.sort((a, b) => {
+    if (a.isPrimary && !b.isPrimary) return -1;
+    if (!a.isPrimary && b.isPrimary) return 1;
+    return 0;
+  });
 
   // Debug: Log images data (commented out for production)
 
@@ -262,7 +272,7 @@ export default function ProductDetailPage() {
             {/* LEFT: Image Gallery - Fixed */}
             <div className="lg:sticky lg:top-0 lg:h-screen lg:overflow-hidden lg:z-10">
               <ImageGallery 
-                images={galleryImages} 
+                images={sortedGalleryImages} 
                 productName={product.name || product.title}
                 onWishlistToggle={toggleWishlist}
                 isWishlisted={isWishlisted}
@@ -320,11 +330,7 @@ export default function ProductDetailPage() {
               </div>
 
               {/* Features Strip */}
-              <div className="grid grid-cols-3 gap-1 sm:gap-2">
-                <div className="text-center p-2 border border-gray-200 rounded-lg bg-gray-50">
-                  <div className="text-sm font-semibold text-gray-900 mb-1">Cash on Delivery</div>
-                  <div className="text-xs text-gray-600">Available</div>
-                </div>
+              <div className="grid grid-cols-2 gap-1 sm:gap-2">
                 <div className="text-center p-2 border border-gray-200 rounded-lg bg-gray-50">
                   <div className="text-sm font-semibold text-gray-900 mb-1">Easy Returns</div>
                   <div className="text-xs text-gray-600">3 days return</div>

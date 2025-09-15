@@ -2,6 +2,10 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { wishlistApi, cartApi } from "../services/api";
 import { toast } from "react-toastify";
+import { 
+  getGuestWishlist, 
+  removeFromGuestWishlist 
+} from "../utils/guestStorage";
 
 export default function WishlistPage() {
   const [wishlist, setWishlist] = useState(null);
@@ -15,16 +19,25 @@ export default function WishlistPage() {
     if (dataFetched) return;
     
     const fetchWishlist = async () => {
-      if (!localStorage.getItem('token')) {
-        setLoading(false);
-        return;
-      }
-
       try {
         setLoading(true);
-        const response = await wishlistApi.getWishlist();
-        // Fix: Use response.data instead of response
-        setWishlist(response.data);
+        
+        if (localStorage.getItem('token')) {
+          // Logged in user - fetch from server
+          const response = await wishlistApi.getWishlist();
+          setWishlist(response.data);
+        } else {
+          // Guest user - get from local storage
+          const guestWishlist = getGuestWishlist();
+          setWishlist({
+            items: guestWishlist.map(item => ({
+              product: item.productId,
+              title: item.title,
+              price: item.price,
+              image: item.image
+            }))
+          });
+        }
         setDataFetched(true);
       } catch (error) {
         console.error('Error fetching wishlist:', error);
@@ -41,7 +54,14 @@ export default function WishlistPage() {
   const handleRemoveItem = async (productId) => {
     try {
       setProcessing(true);
-      await wishlistApi.removeFromWishlist(productId);
+      
+      if (localStorage.getItem('token')) {
+        // Logged in user - use API
+        await wishlistApi.removeFromWishlist(productId);
+      } else {
+        // Guest user - update local storage
+        removeFromGuestWishlist(productId);
+      }
       
       // Update local state
       setWishlist(prevWishlist => ({

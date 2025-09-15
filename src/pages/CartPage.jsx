@@ -2,6 +2,12 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { cartApi } from "../services/api";
 import { toast } from "react-toastify";
+import { 
+  getGuestCart, 
+  updateGuestCartQuantity, 
+  removeFromGuestCart, 
+  clearGuestCart 
+} from "../utils/guestStorage";
 
 export default function CartPage() {
   const navigate = useNavigate();
@@ -15,17 +21,22 @@ export default function CartPage() {
     if (dataFetched) return;
 
     const fetchCart = async () => {
-      if (!localStorage.getItem("token")) {
-        setLoading(false);
-        return;
-      }
-
       try {
         setLoading(true);
-        const response = await cartApi.getCart();
-        console.log('Cart data received:', response.data);
-        console.log('Cart items:', response.data?.items);
-        setCart(response.data);
+        
+        if (localStorage.getItem("token")) {
+          // Logged in user - fetch from server
+          const response = await cartApi.getCart();
+          setCart(response.data);
+        } else {
+          // Guest user - get from local storage
+          const guestCart = getGuestCart();
+          setCart({
+            items: guestCart,
+            totalItems: guestCart.reduce((sum, item) => sum + item.quantity, 0),
+            totalAmount: guestCart.reduce((sum, item) => sum + (item.price * item.quantity), 0)
+          });
+        }
         setDataFetched(true);
       } catch (error) {
         console.error("Error fetching cart:", error);
@@ -44,10 +55,14 @@ export default function CartPage() {
 
     try {
       setUpdating(true);
-      console.log('Updating cart item:', { productId, newQuantity });
       
-      // Backend likely uses productId + userId to update quantity
-      await cartApi.updateCartItem(productId, { quantity: newQuantity });
+      if (localStorage.getItem("token")) {
+        // Logged in user - use API
+        await cartApi.updateCartItem(productId, { quantity: newQuantity });
+      } else {
+        // Guest user - update local storage
+        updateGuestCartQuantity(productId, newQuantity);
+      }
 
       setCart((prevCart) => {
         const updatedItems = prevCart.items.map((item) => {
@@ -59,17 +74,6 @@ export default function CartPage() {
           (sum, item) => sum + item.price * item.quantity,
           0
         );
-
-        console.log('Cart updated locally:', {
-          itemsCount: updatedItems.length,
-          newTotal: newTotal,
-          items: updatedItems.map(item => ({
-            productName: item.title,
-            quantity: item.quantity,
-            price: item.price,
-            total: item.quantity * item.price
-          }))
-        });
 
         return { ...prevCart, items: updatedItems, total: newTotal };
       });
@@ -87,7 +91,6 @@ export default function CartPage() {
   const handleRemoveItem = async (productId) => {
     try {
       setUpdating(true);
-      console.log('Removing cart item:', { productId, type: typeof productId });
       
       // Check if we're in the middle of checkout
       const currentPath = window.location.pathname;
@@ -104,7 +107,13 @@ export default function CartPage() {
         return;
       }
       
-      await cartApi.removeFromCart(productId);
+      if (localStorage.getItem("token")) {
+        // Logged in user - use API
+        await cartApi.removeFromCart(productId);
+      } else {
+        // Guest user - update local storage
+        removeFromGuestCart(productId);
+      }
 
       setCart((prevCart) => {
         if (!prevCart || !prevCart.items) {
@@ -302,7 +311,6 @@ export default function CartPage() {
                             type="button"
                             onClick={() => {
                               const productId = item.product || item.productId;
-                              console.log('Remove button clicked:', { item, productId });
                               handleRemoveItem(productId);
                             }}
                             disabled={updating}
