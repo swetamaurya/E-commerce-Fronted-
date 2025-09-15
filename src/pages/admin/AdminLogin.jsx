@@ -13,6 +13,9 @@ const AdminLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // Debug log to check if component is rendering
+  console.log('AdminLogin component rendered');
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -31,7 +34,10 @@ const AdminLogin = () => {
     setLoading(true);
 
     try {
-      console.log('Attempting admin login with:', { email: formData.email, url: `${API_URL}/auth/login` });
+      console.log('=== ADMIN LOGIN DEBUG ===');
+      console.log('Email:', formData.email);
+      console.log('API URL:', API_URL);
+      console.log('Full URL:', `${API_URL}/auth/login`);
       
       const response = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
@@ -41,9 +47,13 @@ const AdminLogin = () => {
         body: JSON.stringify(formData),
       });
 
-      console.log('Login response status:', response.status);
+      console.log('Response Status:', response.status);
+      console.log('Response OK:', response.ok);
+      console.log('Response Headers:', response.headers);
+      
       const data = await response.json();
-      console.log('Login response data:', data);
+      console.log('Response Data:', data);
+      console.log('=== END DEBUG ===');
 
       if (response.ok && data.success) {
         // Check if user is admin
