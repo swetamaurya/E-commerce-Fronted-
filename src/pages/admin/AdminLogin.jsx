@@ -15,6 +15,8 @@ const AdminLogin = () => {
 
   // Debug log to check if component is rendering
   console.log('AdminLogin component rendered');
+  console.log('Current URL:', window.location.href);
+  console.log('Current pathname:', window.location.pathname);
 
   const handleChange = (e) => {
     setFormData({

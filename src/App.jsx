@@ -81,6 +81,7 @@ export default function App() {
         <Route path="/return" element={<ReturnPage />} />
         <Route path="/shipping" element={<ShippingPage />} />
         <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/test" element={<div className="p-8"><h1 className="text-2xl font-bold">Admin Test Page</h1><p>If you can see this, routing is working!</p></div>} />
         <Route path="/admin" element={<ProtectedRoute element={<AdminPage />} requiredRole="admin" />} />
         <Route path="/admin/dashboard" element={<AdminLayout><AdminDashboard /></AdminLayout>} />
         <Route path="/admin/products" element={<AdminLayout><AdminProducts /></AdminLayout>} />

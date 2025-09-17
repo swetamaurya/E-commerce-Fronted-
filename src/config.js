@@ -4,13 +4,13 @@ const isProduction = import.meta.env.PROD;
 
 // Backend URL Configuration - Comment/Uncomment as needed
 // Option 1: Local Development
-// export const BASE_URL = 'http://localhost:5001';
+// export const BASE_URL = 'http://localhost:5000';
 
 // Option 2: Production Server
 export const BASE_URL = 'https://e-commerce-backend-r6s0.onrender.com';
 
 // Option 3: Environment Variable (if you want to use .env file)
-// export const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+// export const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 // Full API URL (with /api)
 export const API_URL = `${BASE_URL}/api`;
