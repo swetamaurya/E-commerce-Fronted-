@@ -6,11 +6,11 @@ import Toast from "./Toast";
 import Logo from "./Logo";
 
 const categories = [
-  { label: "COTTON YOGA MATS", path: "/cotton-yoga-mats", description: "Premium cotton yoga mats for comfortable practice" },
+  { label: "AREA RUGS",        path: "/area-rugs", description: "Beautiful area rugs for home decoration" },
   { label: "BEDSIDE RUNNERS",  path: "/bedside-runners", description: "Elegant bedside runners for bedroom decor" },
   { label: "MATS COLLECTION",  path: "/mats-collection", description: "Complete collection of home and yoga mats" },
   { label: "BATH MATS",        path: "/bath-mats", description: "Luxurious bath mats for bathroom comfort" },
-  { label: "AREA RUGS",        path: "/area-rugs", description: "Beautiful area rugs for home decoration" },
+  { label: "COTTON YOGA MATS", path: "/cotton-yoga-mats", description: "Premium cotton yoga mats for comfortable practice" },
 ];
 
 export default function Navbar() {

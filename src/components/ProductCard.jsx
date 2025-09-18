@@ -56,9 +56,9 @@ export default function ProductCard({
 
   // Extract variant data for display
   const variant = product?.variants?.[0] || {};
-  const displaySize = variant.size || product?.size;
-  const displayColor = variant.color || product?.color;
-  const displayThickness = product?.thickness;
+  const displaySize = variant.size || product?.size || (product?.sizes && product.sizes.join(', '));
+  const displayColor = variant.color || product?.color || (product?.colors && product.colors.join(', '));
+  const displayThickness = product?.thickness || product?.meterial;
 
   // Update wishlist status when props change
   useEffect(() => {
@@ -267,10 +267,12 @@ export default function ProductCard({
           <h3 className="font-bold text-sm text-gray-900 leading-tight mb-1 sm:mb-2 line-clamp-2">
             {product.title || product.name}
           </h3>
+          {product.description && (
+            <p className="text-xs text-gray-500 mb-2 line-clamp-2">
+              {product.description}
+            </p>
+          )}
           <div className="flex flex-wrap gap-1 sm:gap-2 text-sm text-gray-600 mb-1 sm:mb-2">
-            {product.category && <span className="px-1.5 sm:px-2 py-0.5 sm:py-1 bg-gray-100 rounded-full text-sm">{product.category}</span>}
-            {displaySize && <span className="px-1.5 sm:px-2 py-0.5 sm:py-1 bg-gray-100 rounded-full text-sm">{displaySize}</span>}
-            {displayColor && <span className="px-1.5 sm:px-2 py-0.5 sm:py-1 bg-gray-100 rounded-full text-sm">{displayColor}</span>}
             {displayThickness && <span className="px-1.5 sm:px-2 py-0.5 sm:py-1 bg-gray-100 rounded-full text-sm">{displayThickness}</span>}
           </div>
           <div className="flex items-baseline gap-1 sm:gap-2">
@@ -374,21 +376,6 @@ export default function ProductCard({
       <div className="p-2 sm:p-4 flex flex-col flex-1">
         {/* Product Tags */}
         <div className="flex flex-wrap gap-1 mb-1.5 sm:mb-3">
-          {product.category && (
-            <span className="px-1.5 sm:px-3 py-0.5 sm:py-1 bg-gray-100 text-gray-600 text-[10px] sm:text-xs rounded-full font-medium">
-              {product.category}
-            </span>
-          )}
-          {displaySize && (
-            <span className="px-1.5 sm:px-3 py-0.5 sm:py-1 bg-gray-100 text-gray-600 text-[10px] sm:text-xs rounded-full font-medium">
-              {displaySize}
-            </span>
-          )}
-          {displayColor && (
-            <span className="px-1.5 sm:px-3 py-0.5 sm:py-1 bg-gray-100 text-gray-600 text-[10px] sm:text-xs rounded-full font-medium">
-              {displayColor}
-            </span>
-          )}
           {displayThickness && (
             <span className="px-1.5 sm:px-3 py-0.5 sm:py-1 bg-gray-100 text-gray-600 text-[10px] sm:text-xs rounded-full font-medium">
               {displayThickness}
@@ -400,6 +387,13 @@ export default function ProductCard({
         <h3 className="font-semibold text-[11px] sm:text-sm text-gray-700 leading-tight mb-1.5 sm:mb-3 line-clamp-2 group-hover:text-gray-900 transition-colors">
           {product.title || product.name}
         </h3>
+
+        {/* Product Description */}
+        {product.description && (
+          <p className="text-[10px] sm:text-xs text-gray-500 mb-2 line-clamp-2">
+            {product.description}
+          </p>
+        )}
 
         {/* Pricing Section */}
         <div className="flex items-baseline gap-1.5 sm:gap-3 mb-2 sm:mb-4 flex-1">

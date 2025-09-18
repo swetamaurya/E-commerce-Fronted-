@@ -228,17 +228,19 @@ export default function ProductDetailPage() {
 
   // Extract variant data for display
   const variant = product?.variants?.[0] || {};
-  const displaySize = variant.size || product?.size || selectedSize;
-  const displayColor = variant.color || product?.color || "Fade-Resistant And Maintains Color Over Time";
+  const displaySize = variant.size || product?.size || (product?.sizes && product.sizes.join(', ')) || selectedSize;
+  const displayColor = variant.color || product?.color || (product?.colors && product.colors.join(', ')) || "Fade-Resistant And Maintains Color Over Time";
 
   // specs demo (fill from product when available)
   const specs = [
     ["Brand", product.brand || "Royal Thread"],
     ["Type", product.category || "—"],
-    ["Material", "Cotton"],
+    ["Material", product.meterial || product.material || "Cotton"],
     ["Pack Of", "1"],
     ["Color", displayColor],
     ["Size", displaySize],
+    ["SKU", product.sku || "—"],
+    ["Special Feature", product.specialFeature || "—"],
   ];
 
   // Zoom functionality now handled by ImageGallery component
@@ -344,8 +346,8 @@ export default function ProductDetailPage() {
 
               {/* Size and Quantity Selection */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {/* Size Selection */}
-                <div>
+                {/* Size Selection - Commented out */}
+                {/* <div>
                   <label className="block text-sm font-semibold text-gray-900 mb-1">Select Size</label>
                   <select
                     value={selectedSize}
@@ -356,11 +358,31 @@ export default function ProductDetailPage() {
                       <option key={index} value={variant.size}>
                         {variant.size} - ₹{variant.price}
                       </option>
+                    )) || product.sizes?.map((size, index) => (
+                      <option key={index} value={size}>
+                        {size}
+                      </option>
                     )) || (
                       <option value={displaySize}>{displaySize}</option>
                     )}
                   </select>
-                </div>
+                </div> */}
+
+                {/* Color Selection - Commented out */}
+                {/* {product.colors && product.colors.length > 1 && (
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-900 mb-1">Select Color</label>
+                    <select
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:border-gray-900 focus:outline-none transition-colors"
+                    >
+                      {product.colors.map((color, index) => (
+                        <option key={index} value={color}>
+                          {color}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )} */}
 
                 {/* Quantity */}
                 <div>
@@ -402,7 +424,7 @@ export default function ProductDetailPage() {
                 {/* Additional Info */}
                 <div className="text-center text-sm text-gray-600">
                   <p>✓ Free shipping on orders above ₹999</p>
-                  <p>✓ 30-day return policy</p>
+                  <p>✓ 3-4 day return policy</p>
                 </div>
               </div>
 

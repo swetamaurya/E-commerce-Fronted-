@@ -2,11 +2,11 @@ import { Link, NavLink } from "react-router-dom";
 import Logo from "./Logo";
 
 const categories = [
-  { label: "COTTON YOGA MATS", path: "/cotton-yoga-mats" },
+  { label: "AREA RUGS", path: "/area-rugs" },
   { label: "BEDSIDE RUNNERS", path: "/bedside-runners" },
   { label: "MATS COLLECTION", path: "/mats-collection" },
   { label: "BATH MATS", path: "/bath-mats" },
-  { label: "AREA RUGS", path: "/area-rugs" },
+  { label: "COTTON YOGA MATS", path: "/cotton-yoga-mats" },
 ];
 
 const quickLinks = [
