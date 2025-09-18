@@ -111,7 +111,9 @@ export default function ProductCard({
       "Bedside Runners": "bedside-runners", 
       "Mats Collection": "mats-collection",
       "Bath Mats": "bath-mats",
-      "Area Rugs": "area-rugs"
+      "Area Rugs": "area-rugs",
+      "In Door Mats": "mats-collection",
+      "Out Door Mats": "mats-collection"
     };
     
     return categoryMap[categoryName] || categoryName.toLowerCase().replace(/\s+/g, '-');
