@@ -16,25 +16,25 @@ const categoryData = [
   {
     id: 2,
     name: "BEDSIDE RUNNERS",
-    image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+    image: "https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     link: "/bedside-runners"
   },
   {
     id: 3,
     name: "MATS COLLECTION",
-    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+    image: "https://images.unsplash.com/photo-1671576414507-d229f3211069?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8ODR8fHJ1ZyUyMG1hdHMlMjBjb2xsZWN0aW9uc3xlbnwwfHwwfHx8MA%3D%3D",
     link: "/mats-collection"
   },
   {
     id: 4,
     name: "BATH MATS",
-    image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+    image: "https://images.unsplash.com/photo-1741282306930-a145155ba880?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDE0fHx8ZW58MHx8fHx8",
     link: "/bath-mats"
   },
   {
     id: 5,
     name: "AREA RUGS",
-    image: "https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+    image: "https://images.unsplash.com/photo-1600166898405-da9535204843?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDEzfHx8ZW58MHx8fHx8",
     link: "/area-rugs"
   }
 ];
@@ -46,25 +46,25 @@ const customerReviews = [
     id: 1,
     name: "Jatin Pathak",
     rating: 5,
-    date: "29/08/25",
-    review: "love love love this little rug - even better than the picture!",
-    image: "/images/review-rug-1.jpg"
+    date: "29/08/2025",
+    review: "Feels plush, hides spills, no smell, room quieter instantly.",
+    image: "/images/IMG_2022.JPG"
   },
   {
     id: 2,
     name: "Pratik",
     rating: 5,
-    date: "27/08/25",
+    date: "27/08/2025",
     review: "The Package Came In Neatly Packed. The Rug Is Woven beautifully.",
-    image: "/images/review-rug-2.jpg"
+    image: "/images/IMG_2034.JPG"
   },
   {
     id: 3,
     name: "Vivan",
     rating: 5,
-    date: "26/08/25",
-    review: "Perfect For My Sofa. I Am Using The Runner In Front Of my living room.",
-    image: "/images/review-rug-3.jpg"
+    date: "25/08/2025",
+    review: "Soft underfoot, neutral tone, chai wiped fast, zero odor, living room noticeably quieter now.",
+    image: "/images/IMG_2059.JPG"
   }
 ];
 
@@ -77,6 +77,8 @@ export default function HomePage() {
   const [isMobile, setIsMobile] = useState(false);
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
+  const [hasMoreFeatured, setHasMoreFeatured] = useState(false);
+  const [hasMoreAllProducts, setHasMoreAllProducts] = useState(false);
 
   // Debug: Log the current state
   // console.log('HomePage render - allProducts:', allProducts);
@@ -94,16 +96,24 @@ export default function HomePage() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  // Reset carousel index when layout (itemsPerView) changes to avoid blank gaps
+  useEffect(() => {
+    setCurrentCategoryIndex(0);
+  }, [isMobile]);
+
   useEffect(() => {
     const fetchFeaturedProducts = async () => {
       try {
         setLoading(true);
         const response = await productApi.getFeaturedProducts();
-        setFeaturedProducts(response.data || []);
+        const list = response.data || [];
+        setHasMoreFeatured(list.length > 4);
+        setFeaturedProducts(list.slice(0, 4));
       } catch (error) {
         console.error('Error fetching featured products:', error);
         // No fallback data - show empty state
         setFeaturedProducts([]);
+        setHasMoreFeatured(false);
       } finally {
         setLoading(false);
       }
@@ -131,12 +141,14 @@ export default function HomePage() {
         const products = response.data || [];
         console.log('Products data:', products);
         // Take only first 4 products
+        setHasMoreAllProducts(products.length > 4);
         setAllProducts(products.slice(0, 4));
         console.log('Set all products:', products.slice(0, 4));
       } catch (error) {
         console.error('Error fetching all products:', error);
         console.error('Error details:', error.message);
         setAllProducts([]);
+        setHasMoreAllProducts(false);
       } finally {
         setAllProductsLoading(false);
       }
@@ -242,7 +254,14 @@ export default function HomePage() {
             {/* Categories Carousel - Show 4 at a time on desktop, 1 on mobile */}
             <div 
               className="flex transition-transform duration-1000 ease-in-out"
-              style={{ transform: `translateX(-${currentCategoryIndex * (isMobile ? 100 : 25)}%)` }}
+              style={{
+                transform: (() => {
+                  const itemsPerView = isMobile ? 1 : 4;
+                  const maxIndex = Math.max(0, categoryData.length - itemsPerView);
+                  const safeIndex = Math.min(currentCategoryIndex, maxIndex);
+                  return `translateX(-${safeIndex * (isMobile ? 100 : 25)}%)`;
+                })()
+              }}
             >
               {categoryData.map((category, index) => (
                 <div key={category.id} className="w-full sm:w-1/2 md:w-1/4 flex-shrink-0">
@@ -276,9 +295,9 @@ export default function HomePage() {
                             <p className="text-sm sm:text-base md:text-lg font-light mb-4 sm:mb-6 opacity-90">
                               Click to explore
                             </p>
-                            <div className="bg-white bg-opacity-25 backdrop-blur-sm px-6 sm:px-8 py-2 sm:py-3 rounded-full group-hover:bg-opacity-35 transition-all duration-300 shadow-lg">
-                              <span className="text-sm sm:text-base font-bold text-white">SHOP NOW</span>
-                            </div>
+                            {/* <div className="bg-white bg-opacity-25 backdrop-blur-sm px-6 sm:px-8 py-2 sm:py-3 rounded-full group-hover:bg-opacity-35 transition-all duration-300 shadow-lg">
+                              {/* <span className="text-sm sm:text-base font-bold text-white">SHOP NOW</span> */}
+                            {/* </div> */} 
                           </div>
                         </div>
                       </div>
@@ -348,9 +367,11 @@ export default function HomePage() {
         <div className="container mx-auto px-3 sm:px-4">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-8 sm:mb-12 gap-4">
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-800">IN THE SPOTLIGHT</h2>
-            <Link to="/cotton-yoga-mats" className="text-gray-600 underline hover:text-gray-800 text-sm sm:text-base">
-              VIEW ALL
-            </Link>
+            {hasMoreFeatured && (
+              <Link to="/cotton-yoga-mats" className="text-gray-600 underline hover:text-gray-800 text-sm sm:text-base">
+                VIEW ALL
+              </Link>
+            )}
           </div>
           
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-6 items-stretch">
@@ -362,7 +383,16 @@ export default function HomePage() {
               <ProductCard key={product._id || product.id} product={product} />
             )) : (
               <div className="col-span-full text-center py-12">
-                <p className="text-gray-500">No featured products available</p>
+                <div className="flex flex-col items-center">
+                  <img
+                    src="/logo9.png"
+                    alt="Coming Soon Illustration"
+                    className="w-20 h-20 sm:w-24 sm:h-24 mb-4 opacity-80"
+                    loading="lazy"
+                  />
+                  <p className="text-gray-700 text-lg font-semibold">Coming Soon</p>
+                  <p className="text-gray-500 text-sm mt-2">Featured products will appear here shortly.</p>
+                </div>
               </div>
             )}
           </div>
@@ -374,9 +404,11 @@ export default function HomePage() {
         <div className="container mx-auto px-3 sm:px-4">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-8 sm:mb-12 gap-4">
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-800">ALL PRODUCT</h2>
-            <Link to="/all-products" className="text-gray-600 underline hover:text-gray-800 text-sm sm:text-base">
-              VIEW ALL
-            </Link>
+            {hasMoreAllProducts && (
+              <Link to="/all-products" className="text-gray-600 underline hover:text-gray-800 text-sm sm:text-base">
+                VIEW ALL
+              </Link>
+            )}
           </div>
           
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-6 items-stretch">
@@ -403,9 +435,9 @@ export default function HomePage() {
         <div className="container mx-auto px-3 sm:px-4">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-8 sm:mb-12 gap-4">
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-800">CUSTOMERS FEEDBACK</h2>
-            <Link to="/cotton-yoga-mats" className="text-gray-600 underline hover:text-gray-800 text-sm sm:text-base">
+            {/* <Link to="/cotton-yoga-mats" className="text-gray-600 underline hover:text-gray-800 text-sm sm:text-base">
               VIEW ALL
-            </Link>
+            </Link> */}
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">

@@ -82,7 +82,7 @@ export default function PaymentPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [processingOrder, setProcessingOrder] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState('razorpay');
+  const [paymentMethod, setPaymentMethod] = useState('cod');
   const [cardNumber, setCardNumber] = useState('');
   const [expiry, setExpiry] = useState('');
   const [cvv, setCvv] = useState('');
@@ -168,7 +168,37 @@ export default function PaymentPage() {
       const newOrderId = generateOrderId();
       setOrderId(newOrderId);
       
-      // Process payment through Razorpay
+      // If COD, directly create the order without Razorpay
+      if (paymentMethod === 'cod') {
+        try {
+          const shippingAddress = JSON.parse(localStorage.getItem('shippingAddress') || '{}');
+          const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+          const orderData = {
+            customerName: user.name,
+            customerEmail: user.email,
+            customerPhone: user.mobile || '',
+            shippingAddress: shippingAddress,
+            paymentMethod: 'COD',
+            paymentStatus: 'Pending',
+            orderId: newOrderId,
+            discountAmount: 0,
+            shippingAmount: 0,
+            taxAmount: 0,
+            notes: 'Order placed with Cash on Delivery'
+          };
+
+          await orderApi.createOrder(orderData);
+          localStorage.removeItem('shippingAddress');
+          setOrderPlaced(true);
+          toast.success('Order placed with Cash on Delivery');
+        } catch (error) {
+          console.error('Error placing COD order:', error);
+          toast.error('Failed to place COD order');
+        }
+      }
+
+      // Process payment through Razorpay (temporarily disabled in UI)
       if (paymentMethod === 'razorpay') {
         try {
           console.log('Starting Razorpay payment process...');
@@ -429,56 +459,78 @@ export default function PaymentPage() {
                   <h2 className="text-lg font-medium mb-4">Select Payment Method</h2>
                   
                   <div className="space-y-3 sm:space-y-4">
+                    {/* COD Option (enabled) */}
                     <div className="flex items-center">
                       <input
-                        id="razorpay"
+                        id="cod"
                         name="paymentMethod"
                         type="radio"
-                        value="razorpay"
-                        checked={paymentMethod === 'razorpay'}
-                        onChange={() => setPaymentMethod('razorpay')}
+                        value="cod"
+                        checked={paymentMethod === 'cod'}
+                        onChange={() => setPaymentMethod('cod')}
                         className="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300"
                       />
-                      <label htmlFor="razorpay" className="ml-3 block text-sm font-medium text-gray-700">
-                        <div className="flex items-center">
-                          <span>Pay with Razorpay</span>
-                          <div className="ml-2 flex items-center space-x-1">
-                            <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">UPI</span>
-                            <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Cards</span>
-                            <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">Net Banking</span>
-                            <span className="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded">Wallets</span>
-                          </div>
-                        </div>
-                        <p className="text-xs text-gray-500 mt-1">Secure payment with multiple options</p>
+                      <label htmlFor="cod" className="ml-3 block text-sm font-medium text-gray-700">
+                        Cash on Delivery
+                        <p className="text-xs text-gray-500 mt-1">Pay at delivery time</p>
                       </label>
                     </div>
+
+                    {/* Razorpay Option (temporarily hidden) */}
+                    {false && (
+                      <div className="flex items-center">
+                        <input
+                          id="razorpay"
+                          name="paymentMethod"
+                          type="radio"
+                          value="razorpay"
+                          checked={paymentMethod === 'razorpay'}
+                          onChange={() => setPaymentMethod('razorpay')}
+                          className="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300"
+                        />
+                        <label htmlFor="razorpay" className="ml-3 block text-sm font-medium text-gray-700">
+                          <div className="flex items-center">
+                            <span>Pay with Razorpay</span>
+                            <div className="ml-2 flex items-center space-x-1">
+                              <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">UPI</span>
+                              <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Cards</span>
+                              <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">Net Banking</span>
+                              <span className="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded">Wallets</span>
+                            </div>
+                          </div>
+                          <p className="text-xs text-gray-500 mt-1">Secure payment with multiple options</p>
+                        </label>
+                      </div>
+                    )}
                   </div>
                 </div>
                 
-                {/* Razorpay Payment Information */}
-                <div className="border-t border-gray-200 pt-6">
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <div className="flex items-start">
-                      <div className="flex-shrink-0">
-                        <svg className="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                      <div className="ml-3">
-                        <h3 className="text-sm font-medium text-blue-800">Secure Payment with Razorpay</h3>
-                        <div className="mt-2 text-sm text-blue-700">
-                          <p>Your payment will be processed securely through Razorpay. You can pay using:</p>
-                          <ul className="mt-2 list-disc list-inside space-y-1">
-                            <li>Credit/Debit Cards (Visa, Mastercard, RuPay)</li>
-                            <li>UPI (Google Pay, PhonePe, Paytm, BHIM)</li>
-                            <li>Net Banking (All major banks)</li>
-                            <li>Digital Wallets (Paytm, Mobikwik, Freecharge)</li>
-                          </ul>
+                {/* Razorpay Payment Information (hidden) */}
+                {false && (
+                  <div className="border-t border-gray-200 pt-6">
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                      <div className="flex items-start">
+                        <div className="flex-shrink-0">
+                          <svg className="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                        <div className="ml-3">
+                          <h3 className="text-sm font-medium text-blue-800">Secure Payment with Razorpay</h3>
+                          <div className="mt-2 text-sm text-blue-700">
+                            <p>Your payment will be processed securely through Razorpay. You can pay using:</p>
+                            <ul className="mt-2 list-disc list-inside space-y-1">
+                              <li>Credit/Debit Cards (Visa, Mastercard, RuPay)</li>
+                              <li>UPI (Google Pay, PhonePe, Paytm, BHIM)</li>
+                              <li>Net Banking (All major banks)</li>
+                              <li>Digital Wallets (Paytm, Mobikwik, Freecharge)</li>
+                            </ul>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                )}
                 {false && (
                   <div className="border-t border-gray-200 pt-6">
                     <h3 className="text-md font-medium mb-4">Card Details</h3>
@@ -606,7 +658,7 @@ export default function PaymentPage() {
                   className="bg-teal-600 text-white py-2.5 px-4 sm:px-6 rounded-md font-medium hover:bg-teal-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
                   disabled={loading || processingOrder}
                 >
-                  {loading || processingOrder ? 'Processing Payment...' : 'Pay with Razorpay'}
+                  {loading || processingOrder ? 'Processing...' : (paymentMethod === 'cod' ? 'Place Order (COD)' : 'Pay with Razorpay')}
                 </button>
               </div>
             </form>

@@ -4,6 +4,12 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import productApi from "../services/productApi";
 import { cartApi, wishlistApi } from "../services/api";
 import { toast } from "react-toastify";
+import { 
+  addToGuestWishlist, 
+  removeFromGuestWishlist, 
+  isInGuestWishlist,
+  addToGuestCart
+} from "../utils/guestStorage";
 import SEO from "../components/SEO";
 import ImageGallery from "../components/ImageGallery";
 import { getImageUrl } from "../utils/imageUtils";
@@ -85,18 +91,16 @@ export default function ProductDetailPage() {
           setProduct(found);
         }
 
-        // Check wishlist status only if user is logged in
-        if (localStorage.getItem("token")) {
-          try {
+        // Check wishlist status for both logged-in and guest users
+        try {
+          if (localStorage.getItem("token")) {
             const res = await wishlistApi.checkWishlistItem(productId);
-            if (isMounted) {
-              setIsWishlisted(res.inWishlist);
-            }
-          } catch (e) {
-            if (isMounted) {
-              setIsWishlisted(false);
-            }
+            if (isMounted) setIsWishlisted(!!res?.inWishlist);
+          } else {
+            if (isMounted) setIsWishlisted(isInGuestWishlist(productId));
           }
+        } catch (e) {
+          if (isMounted) setIsWishlisted(false);
         }
       } catch (e) {
         console.error(`❌ [${Date.now()}] Product fetch error:`, e);
@@ -121,20 +125,20 @@ export default function ProductDetailPage() {
 
   // --------- API handlers (UNCHANGED SIGNATURES) ----------
   const handleAddToCart = async () => {
-    if (!localStorage.getItem("token")) {
-      // Show custom login modal
-      setShowLoginModal(true);
-      return;
-    }
     setIsAddingToCart(true);
     try {
-      await cartApi.addToCart({
+      const payload = {
         productId: product.id || product._id,
         quantity,
         price: product.price,
         title: product.name || product.title,
         image: product.images?.[0]?.url || product.image,
-      });
+      };
+      if (localStorage.getItem("token")) {
+        await cartApi.addToCart(payload);
+      } else {
+        addToGuestCart(payload);
+      }
       toast.success("Added to cart");
     } catch (err) {
       console.error("Error adding to cart:", err);
@@ -156,26 +160,43 @@ export default function ProductDetailPage() {
   };
 
   const toggleWishlist = async () => {
-    if (!localStorage.getItem("token")) {
-      // Show custom login modal for wishlist too
-      setShowLoginModal(true);
-      return;
-    }
+    const pid = product?.id || product?._id;
+    if (!pid) return;
     setIsTogglingWishlist(true);
     try {
-      if (isWishlisted) {
-        await wishlistApi.removeFromWishlist(product.id || product._id);
-        setIsWishlisted(false);
-        toast.success("Removed from wishlist");
+      if (localStorage.getItem("token")) {
+        // Server wishlist for logged-in users
+        if (isWishlisted) {
+          await wishlistApi.removeFromWishlist(pid);
+          setIsWishlisted(false);
+          toast.success("Removed from wishlist");
+        } else {
+          await wishlistApi.addToWishlist({
+            productId: pid,
+            title: product.name || product.title,
+            price: product.price,
+            image: product.images?.[0]?.url || product.image,
+          });
+          setIsWishlisted(true);
+          toast.success("Added to wishlist");
+        }
       } else {
-        await wishlistApi.addToWishlist({
-          productId: product.id || product._id,
+        // Guest wishlist in localStorage
+        const productData = {
+          productId: pid,
           title: product.name || product.title,
           price: product.price,
           image: product.images?.[0]?.url || product.image,
-        });
-        setIsWishlisted(true);
-        toast.success("Added to wishlist");
+        };
+        if (isWishlisted) {
+          removeFromGuestWishlist(pid);
+          setIsWishlisted(false);
+          toast.success("Removed from wishlist");
+        } else {
+          addToGuestWishlist(productData);
+          setIsWishlisted(true);
+          toast.success("Added to wishlist");
+        }
       }
     } catch (err) {
       console.error("Error toggling wishlist:", err);

@@ -274,9 +274,6 @@ export default function ProductCard({
               {product.description}
             </p>
           )}
-          <div className="flex flex-wrap gap-1 sm:gap-2 text-sm text-gray-600 mb-1 sm:mb-2">
-            {displayThickness && <span className="px-1.5 sm:px-2 py-0.5 sm:py-1 bg-gray-100 rounded-full text-sm">{displayThickness}</span>}
-          </div>
           <div className="flex items-baseline gap-1 sm:gap-2">
             <div className="font-black text-base sm:text-lg text-gray-900">₹{product.price}</div>
             {product.mrp && product.mrp > product.price && (
@@ -376,14 +373,6 @@ export default function ProductCard({
 
       {/* Product Details */}
       <div className="p-2 sm:p-4 flex flex-col flex-1">
-        {/* Product Tags */}
-        <div className="flex flex-wrap gap-1 mb-1.5 sm:mb-3">
-          {displayThickness && (
-            <span className="px-1.5 sm:px-3 py-0.5 sm:py-1 bg-gray-100 text-gray-600 text-[10px] sm:text-xs rounded-full font-medium">
-              {displayThickness}
-            </span>
-          )}
-        </div>
 
         {/* Product Title */}
         <h3 className="font-semibold text-[11px] sm:text-sm text-gray-700 leading-tight mb-1.5 sm:mb-3 line-clamp-2 group-hover:text-gray-900 transition-colors">

@@ -56,7 +56,7 @@ export default function ImageGallery({ images = [], productName = "Product", onW
   return (
     <div className="w-full">
       {/* Professional Image Gallery Layout */}
-      <div className="flex h-40 sm:h-48 md:h-[300px] lg:h-[90vh] xl:h-[90vh]">
+      <div className="flex justify-center h-40 sm:h-48 md:h-[300px] lg:h-[55vh] xl:h-[55vh]">
         {/* Left: Thumbnail Strip */}
         {sortedImages.length > 1 && (
           <div className="flex flex-col w-12 sm:w-14 md:w-16 flex-shrink-0 h-full justify-center space-y-1">
@@ -89,9 +89,9 @@ export default function ImageGallery({ images = [], productName = "Product", onW
         )}
 
         {/* Right: Main Image */}
-        <div className="flex-1 ml-1.5 sm:ml-2 relative">
+        <div className="flex-1 ml-1.5 sm:ml-2 relative lg:max-w-[720px] xl:max-w-[820px] mx-auto flex items-center justify-center">
           <div 
-            className="w-full h-full bg-white border border-gray-200 rounded-lg overflow-hidden relative shadow-sm cursor-pointer"
+            className="h-full inline-flex items-center justify-center bg-white border border-gray-200 rounded-lg overflow-hidden relative shadow-sm cursor-pointer max-w-full"
             onClick={() => {
               console.log('Image container clicked, currentImage.url:', currentImage.url);
               if (currentImage.url) {
@@ -104,7 +104,7 @@ export default function ImageGallery({ images = [], productName = "Product", onW
               <img
                 src={currentImage.url}
                 alt={currentImage.alt}
-                className="w-full h-full object-contain hover:scale-105 transition-transform duration-500"
+                className="h-full w-auto max-w-full object-contain hover:scale-105 transition-transform duration-500"
                 loading="lazy"
               />
             ) : (

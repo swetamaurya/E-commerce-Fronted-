@@ -8,8 +8,8 @@ const ImageSlider = () => {
   const slides = [
     {
       id: 1,
-      image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2016&q=80",
-      title: "Premium Handmade Rugs",
+      image: "https://images.unsplash.com/photo-1646592491854-6caaaf4d8ee7?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDE0fHx8ZW58MHx8fHx8",
+      title: "Bedside Runners Mats",
       subtitle: "Discover our exclusive collection",
       description: "Transform your home with our beautifully crafted rugs and mats",
       buttonText: "Shop Now",
@@ -28,7 +28,7 @@ const ImageSlider = () => {
     },
     {
       id: 3,
-      image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2016&q=80",
+      image: "https://images.unsplash.com/photo-1726463450351-4b603da0f507?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NTV8fGFyZWElMjBydWd8ZW58MHx8MHx8fDA%3D",
       title: "Area Rugs Collection",
       subtitle: "Elevate your space",
       description: "Beautiful area rugs to enhance any room in your home",
@@ -38,12 +38,22 @@ const ImageSlider = () => {
     },
     {
       id: 4,
-      image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2016&q=80",
-      title: "Bath Mats & Runners",
+      image: "https://images.unsplash.com/photo-1587527901949-ab0341697c1e?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDE5fHx8ZW58MHx8fHx8",
+      title: "Bath Mats Collection",
       subtitle: "Luxury for your bathroom",
       description: "Soft and absorbent bath mats and bedside runners",
       buttonText: "Shop Bath Mats",
       buttonLink: "/bath-mats",
+      overlay: "rgba(0, 0, 0, 0.4)"
+    },
+    {
+      id: 5,
+      image: "https://images.unsplash.com/photo-1740168254713-1e8695f89ffe?w=1000&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8cnVnJTIwbWF0cyUyMGNvbGxlY3Rpb25zfGVufDB8fDB8fHww",
+      title: "Mats Collection",
+      subtitle: "Luxury for your home",
+      description: "Soft and absorbent mats collections",
+      buttonText: "Shop Mats Collection",
+      buttonLink: "/mats-collection",
       overlay: "rgba(0, 0, 0, 0.4)"
     }
   ];

@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import CustomDialog from './CustomDialog';
 import { migrateGuestCartToUser, migrateGuestWishlistToUser } from '../utils/guestStorage';
 import { cartApi, wishlistApi } from '../services/api';
+import { API_URL } from '../config';
 
 export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
   const navigate = useNavigate();
@@ -24,7 +25,8 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
   const [forgotPasswordLoading, setForgotPasswordLoading] = useState(false);
 
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  // Use unified API base from config to avoid mismatched ports
+  const API_BASE_URL = API_URL;
 
   const handleInputChange = (e) => {
     setFormData({
