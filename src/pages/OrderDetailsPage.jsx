@@ -314,7 +314,7 @@ export default function OrderDetailsPage() {
                             <div className="flex items-center space-x-3">
                               <div className="w-12 h-12 bg-gray-100 rounded-md overflow-hidden">
                         {item.image ? (
-                                  <img src={item.image} alt={item.productName || item.title} className="w-full h-full object-cover" />
+                                  <img src={item.image} alt={item.productName || item.title} className="w-full h-full object-contain" />
                         ) : (
                                   <div className="w-full h-full flex items-center justify-center text-gray-400">
                                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -353,7 +353,7 @@ export default function OrderDetailsPage() {
                       <div className="flex items-start space-x-3">
                         <div className="w-16 h-16 bg-gray-100 rounded-md overflow-hidden flex-shrink-0">
                           {item.image ? (
-                            <img src={item.image} alt={item.productName || item.title} className="w-full h-full object-cover" />
+                            <img src={item.image} alt={item.productName || item.title} className="w-full h-full object-contain" />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center text-gray-400">
                               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

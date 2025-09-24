@@ -217,7 +217,7 @@ export default function WishlistPage() {
                   <img
                     src={item.image}
                     alt={item.title}
-                    className="w-full h-40 sm:h-48 md:h-52 lg:h-44 object-cover"
+                    className="w-full h-40 sm:h-48 md:h-52 lg:h-44 object-contain"
                   />
                 ) : (
                   <div className="w-full h-40 sm:h-48 md:h-52 lg:h-44 flex items-center justify-center text-gray-400 bg-gray-100">

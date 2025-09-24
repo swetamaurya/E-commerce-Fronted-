@@ -226,7 +226,7 @@ export default function ProductCard({
               <img
                 src={primaryImg}
                 alt={product.title || product.name}
-                className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300 opacity-100"
+                className="absolute inset-0 w-full h-full object-contain transition-opacity duration-300 opacity-100"
                 loading="lazy"
                 title={product.title || product.name}
               />
@@ -235,7 +235,7 @@ export default function ProductCard({
               <img
                 src={hoverImg}
                 alt={product.title || product.name}
-                className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300 opacity-0 hover:opacity-100"
+                className="absolute inset-0 w-full h-full object-contain transition-opacity duration-300 opacity-0 hover:opacity-100"
                 loading="lazy"
               />
             )}
@@ -356,7 +356,7 @@ export default function ProductCard({
           <img
             src={primaryImg}
             alt={product.name || product.title}
-            className="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-110"
+            className="w-full h-full object-contain transform transition-transform duration-500 group-hover:scale-110"
             loading="lazy"
             title={product.name || product.title}
           />
