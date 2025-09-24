@@ -14,20 +14,104 @@ export default function FilterBar({ filters, setFilters, products = [], total = 
         .sort((a, b) => a[0].localeCompare(b[0]))
         .map(([value, count]) => ({ value, count }));
 
+    // Predefined product types for mats collection
+    const predefinedTypes = [
+      { value: "In Door Mats", label: "In Door Mats" },
+      { value: "Out Door Mats", label: "Out Door Mats" },
+      { value: "Cotton Yoga Mats", label: "Cotton Yoga Mats" },
+      { value: "Bath Mats", label: "Bath Mats" },
+      { value: "Bedside Runners", label: "Bedside Runners" },
+      { value: "Aasan Mat", label: "Aasan Mat" },
+      { value: "Area Rugs", label: "Area Rugs" },
+      { value: "Mats Collection", label: "Mats Collection" },
+    ];
+
+    // Predefined sizes
+    const predefinedSizes = [
+      { value: "Small", label: "Small" },
+      { value: "Medium", label: "Medium" },
+      { value: "Large", label: "Large" },
+      { value: "Extra Large", label: "Extra Large" },
+      { value: "30×45 cm", label: "30×45 cm" },
+      { value: "35×50 cm", label: "35×50 cm" },
+      { value: "40×58 cm", label: "40×58 cm" },
+      { value: "44×70 cm", label: "44×70 cm" },
+      { value: "50×79 cm", label: "50×79 cm" },
+      { value: "60×90 cm", label: "60×90 cm" },
+      { value: "70×100 cm", label: "70×100 cm" },
+      { value: "80×120 cm", label: "80×120 cm" },
+      { value: "12×18 inc", label: "12×18 inc" },
+      { value: "14×20 inc", label: "14×20 inc" },
+      { value: "16×23 inc", label: "16×23 inc" },
+      { value: "17×27.5 inc", label: "17×27.5 inc" },
+      { value: "20×31 inc", label: "20×31 inc" },
+      { value: "24×36 inc", label: "24×36 inc" },
+      { value: "28×40 inc", label: "28×40 inc" },
+      { value: "32×48 inc", label: "32×48 inc" },
+    ];
+
+    // Predefined colors
+    const predefinedColors = [
+      { value: "Red", label: "Red" },
+      { value: "Blue", label: "Blue" },
+      { value: "Green", label: "Green" },
+      { value: "Yellow", label: "Yellow" },
+      { value: "Orange", label: "Orange" },
+      { value: "Purple", label: "Purple" },
+      { value: "Pink", label: "Pink" },
+      { value: "Brown", label: "Brown" },
+      { value: "Black", label: "Black" },
+      { value: "White", label: "White" },
+      { value: "Gray", label: "Gray" },
+      { value: "Beige", label: "Beige" },
+      { value: "Cream", label: "Cream" },
+      { value: "Navy", label: "Navy" },
+      { value: "Maroon", label: "Maroon" },
+      { value: "Teal", label: "Teal" },
+      { value: "Turquoise", label: "Turquoise" },
+      { value: "Gold", label: "Gold" },
+      { value: "Silver", label: "Silver" },
+      { value: "Multi Color", label: "Multi Color" },
+      { value: "Brown multicolour", label: "Brown Multicolour" },
+      { value: "Blue, Multi _color pattern", label: "Blue Multi Color Pattern" },
+      { value: "Brown multi colors pattern", label: "Brown Multi Colors Pattern" },
+    ];
+
+    // Get actual product data for counts
+    const actualTypes = toList(countBy(products, "category"));
+    const actualSizes = toList(countBy(products, "size"));
+    const actualColors = toList(countBy(products, "color"));
+
+    // Combine predefined options with actual data
+    const types = predefinedTypes.map(type => {
+      const actual = actualTypes.find(t => t.value === type.value);
+      return { ...type, count: actual?.count || 0 };
+    }).filter(type => type.count > 0 || predefinedTypes.includes(type));
+
+    const sizes = predefinedSizes.map(size => {
+      const actual = actualSizes.find(s => s.value === size.value);
+      return { ...size, count: actual?.count || 0 };
+    }).filter(size => size.count > 0 || predefinedSizes.includes(size));
+
+    const colors = predefinedColors.map(color => {
+      const actual = actualColors.find(c => c.value === color.value);
+      return { ...color, count: actual?.count || 0 };
+    }).filter(color => color.count > 0 || predefinedColors.includes(color));
+
     return {
-      types: toList(countBy(products, "type")),
-      sizes: toList(countBy(products, "size")),
-      colors: toList(countBy(products, "color")),
+      types,
+      sizes,
+      colors,
       prices: [
         { value: "ALL", label: "All prices" },
-        { value: "0-200", label: "0 - 200" },
-        { value: "200-500", label: "200 - 500" },
-        { value: "500-700", label: "500 - 700" },
-        { value: "700-1000", label: "700 - 1000" },
-        { value: "1000-1500", label: "1000 - 1500" },
-        { value: "1500-2000", label: "1500 - 2000" },
-        { value: "2000-2500", label: "2000 - 2500" },
-        { value: "2500P", label: "2500+" },
+        { value: "0-200", label: "₹0 - ₹200" },
+        { value: "200-500", label: "₹200 - ₹500" },
+        { value: "500-700", label: "₹500 - ₹700" },
+        { value: "700-1000", label: "₹700 - ₹1000" },
+        { value: "1000-1500", label: "₹1000 - ₹1500" },
+        { value: "1500-2000", label: "₹1500 - ₹2000" },
+        { value: "2000-2500", label: "₹2000 - ₹2500" },
+        { value: "2500P", label: "₹2500+" },
       ],
       sorts: [
         { value: "pop", label: "Popularity" },
@@ -237,7 +321,7 @@ function CheckboxList({ title, options, selected, onToggle }) {
       <div className="mb-3 text-sm font-semibold text-gray-900">{title}</div>
       <div className="max-h-[40vh] overflow-auto pr-1 custom-scroll">
         <ul className="space-y-1">
-          {options.map(({ value, count }) => (
+          {options.map(({ value, label, count }) => (
             <li key={value}>
               <label className="flex items-center gap-3 py-2 hover:bg-gray-50 cursor-pointer">
                 <input
@@ -246,8 +330,10 @@ function CheckboxList({ title, options, selected, onToggle }) {
                   checked={selected.includes(value)}
                   onChange={() => onToggle(value)}
                 />
-                <span className="flex-1 text-sm text-gray-900">{value}</span>
-                <span className="text-sm text-gray-500">{count}</span>
+                <span className="flex-1 text-sm text-gray-900">{label || value}</span>
+                {count !== undefined && (
+                  <span className="text-sm text-gray-500">{count}</span>
+                )}
               </label>
             </li>
           ))}
