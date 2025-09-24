@@ -31,9 +31,16 @@ export default function ProductDetailPage() {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [isTogglingWishlist, setIsTogglingWishlist] = useState(false);
+  const [isBuyingNow, setIsBuyingNow] = useState(false);
+  const [isFromBuyNow, setIsFromBuyNow] = useState(false);
   
   // login modal
   const [showLoginModal, setShowLoginModal] = useState(false);
+
+  // Debug: Monitor login modal state
+  useEffect(() => {
+    console.log("Login modal state changed:", showLoginModal);
+  }, [showLoginModal]);
 
   // info table expand
   const [showFullInfo, setShowFullInfo] = useState(false);
@@ -147,16 +154,77 @@ export default function ProductDetailPage() {
       setIsAddingToCart(false);
     }
   };
+
+  const handleBuyNow = async () => {
+    console.log("BUY NOW clicked!");
+    
+    if (!product) {
+      console.log("No product found");
+      return;
+    }
+
+    setIsBuyingNow(true);
+
+    console.log("Product:", product);
+    console.log("Quantity:", quantity);
+
+    // Check if user is logged in
+    if (!localStorage.getItem("token")) {
+      console.log("User not logged in, showing login modal");
+      setIsFromBuyNow(true); // Mark that this is from BUY NOW
+      setShowLoginModal(true);
+      console.log("Login modal state set to true");
+      setIsBuyingNow(false);
+      return;
+    }
+
+    console.log("User is logged in, proceeding with buy now");
+
+    try {
+      const payload = {
+        productId: product.id || product._id,
+        quantity,
+        price: product.price,
+        title: product.name || product.title,
+        image: product.images?.[0]?.url || product.image,
+      };
+
+      console.log("Payload:", payload);
+
+      // Add to cart first
+      console.log("Adding to cart...");
+      await cartApi.addToCart(payload);
+      console.log("Added to cart successfully");
+
+      // Navigate to cart page
+      console.log("Navigating to cart page...");
+      navigate('/cart');
+    } catch (error) {
+      console.error("Error in buy now:", error);
+      toast.error("Failed to proceed to checkout");
+    } finally {
+      setIsBuyingNow(false);
+    }
+  };
   
   const handleLoginConfirm = () => {
-    // Save current page to return after login
-    localStorage.setItem("returnToUrl", window.location.pathname);
     setShowLoginModal(false);
-    navigate("/account");
+    
+    if (isFromBuyNow) {
+      // If coming from BUY NOW, redirect to cart page
+      console.log("Redirecting to cart page after login from BUY NOW");
+      navigate("/cart");
+      setIsFromBuyNow(false); // Reset the flag
+    } else {
+      // For other cases, redirect to account page
+      localStorage.setItem("returnToUrl", window.location.pathname);
+      navigate("/account");
+    }
   };
   
   const handleLoginCancel = () => {
     setShowLoginModal(false);
+    setIsFromBuyNow(false); // Reset the flag when cancelled
   };
 
   const toggleWishlist = async () => {
@@ -278,7 +346,7 @@ export default function ProductDetailPage() {
       />
 
       <div className="bg-white min-h-screen">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 md:py-8 bg-white">
+          <div className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8 bg-white">
           {/* Breadcrumb */}
           <nav className="flex items-center mb-4 sm:mb-6 text-sm">
             <button
@@ -291,9 +359,9 @@ export default function ProductDetailPage() {
             <span className="text-gray-900 font-medium text-sm">{product.name || product.title}</span>
           </nav>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+          <div className="flex flex-col md:flex-row gap-3 sm:gap-4 md:gap-6 lg:gap-8">
             {/* LEFT: Image Gallery - Fixed */}
-            <div className="lg:sticky lg:top-0 lg:h-screen lg:overflow-hidden lg:z-10">
+            <div className="md:w-1/2 md:sticky md:top-4 md:self-start md:h-fit">
               <ImageGallery 
                 images={sortedGalleryImages} 
                 productName={product.name || product.title}
@@ -303,14 +371,14 @@ export default function ProductDetailPage() {
             </div>
 
             {/* RIGHT: Product Details - Scrollable */}
-            <div className="space-y-4 sm:space-y-6 lg:overflow-y-auto lg:max-h-screen lg:pr-4 scrollbar-hide lg:relative lg:z-0 lg:pb-20">
+            <div className="md:w-1/2 space-y-3 sm:space-y-4 md:space-y-5">
               {/* Product Title */}
               <div>
-                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 leading-tight mb-2">
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 leading-tight mb-2">
                   {product.name || product.title}
                 </h1>
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 text-sm text-gray-600">
-                  <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-sm font-medium w-fit">
+                  <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium w-fit">
                     {product.category || "Premium Quality"}
                   </span>
                 </div>
@@ -319,11 +387,11 @@ export default function ProductDetailPage() {
               {/* Price Section */}
               <div className="space-y-2">
                 <div className="flex flex-wrap items-baseline gap-2 sm:gap-3">
-                  <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">₹{product.price}</div>
+                  <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">₹{product.price}</div>
                   {product.mrp && product.mrp > product.price && (
                     <>
-                      <div className="text-sm sm:text-lg text-gray-500 line-through">₹{product.mrp}</div>
-                      <div className="bg-red-100 text-red-800 px-2 py-1 rounded-full text-sm font-semibold">
+                      <div className="text-lg sm:text-xl text-gray-500 line-through">₹{product.mrp}</div>
+                      <div className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-semibold">
                         {Math.round(((product.mrp - product.price) / product.mrp) * 100)}% OFF
                       </div>
                     </>
@@ -437,8 +505,12 @@ export default function ProductDetailPage() {
                   >
                     {isAddingToCart ? "Adding to cart..." : "ADD TO CART"}
                   </button>
-                  <button className="flex-1 bg-orange-500 text-white py-2.5 rounded-lg font-semibold text-sm hover:bg-orange-600 transition-all duration-200">
-                    BUY NOW
+                  <button 
+                    onClick={handleBuyNow}
+                    disabled={isBuyingNow}
+                    className="flex-1 bg-orange-500 text-white py-2.5 rounded-lg font-semibold text-sm hover:bg-orange-600 disabled:bg-gray-400 disabled:text-gray-200 transition-all duration-200"
+                  >
+                    {isBuyingNow ? "Processing..." : "BUY NOW"}
                   </button>
                 </div>
                 
@@ -494,19 +566,34 @@ export default function ProductDetailPage() {
 
       {/* Login Modal */}
       {showLoginModal && (
-        <div className="modal-overlay">
-          <div className="modal-container">
-            <div className="modal-header">
-              <h3 className="modal-title">Login Required</h3>
-              <button onClick={handleLoginCancel} className="modal-close">&times;</button>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+            <div className="flex justify-between items-center p-6 border-b">
+              <h3 className="text-lg font-semibold text-gray-900">Login Required</h3>
+              <button 
+                onClick={handleLoginCancel} 
+                className="text-gray-400 hover:text-gray-600 text-2xl font-bold"
+              >
+                &times;
+              </button>
             </div>
-            <div className="modal-body">
-              <p>Please login to add items to your cart or wishlist.</p>
-              <p>Would you like to login now?</p>
+            <div className="p-6">
+              <p className="text-gray-700 mb-2">Please login to add items to your cart or wishlist.</p>
+              <p className="text-gray-700 mb-4">Would you like to login now?</p>
             </div>
-            <div className="modal-footer">
-              <button onClick={handleLoginCancel} className="modal-button cancel-button">Cancel</button>
-              <button onClick={handleLoginConfirm} className="modal-button confirm-button">Login</button>
+            <div className="flex justify-end gap-3 p-6 border-t">
+              <button 
+                onClick={handleLoginCancel} 
+                className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleLoginConfirm} 
+                className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
+              >
+                Login
+              </button>
             </div>
           </div>
         </div>

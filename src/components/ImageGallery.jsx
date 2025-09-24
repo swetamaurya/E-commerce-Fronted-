@@ -56,42 +56,11 @@ export default function ImageGallery({ images = [], productName = "Product", onW
   return (
     <div className="w-full">
       {/* Professional Image Gallery Layout */}
-      <div className="flex justify-center h-40 sm:h-48 md:h-[300px] lg:h-[55vh] xl:h-[55vh]">
-        {/* Left: Thumbnail Strip */}
-        {sortedImages.length > 1 && (
-          <div className="flex flex-col w-12 sm:w-14 md:w-16 flex-shrink-0 h-full justify-center space-y-1">
-            {sortedImages.map((image, index) => {
-              const thumbnailHeight = sortedImages.length > 0 ? 
-                `${100 / sortedImages.length}%` : '100%';
-              return (
-                <button
-                  key={index}
-                  onClick={() => handleThumbnailClick(index)}
-                  className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-lg border-2 overflow-hidden transition-all ${
-                    selectedImage === index
-                      ? 'border-blue-500 ring-2 ring-blue-200 shadow-lg'
-                      : 'border-gray-200 hover:border-gray-400 hover:shadow-md'
-                  }`}
-                  style={{ height: thumbnailHeight }}
-                >
-                  {(image.thumbnail || image.url) && (
-                    <img
-                      src={image.thumbnail || image.url}
-                      alt={image.alt}
-                      className="w-full h-full object-cover"
-                      loading="lazy"
-                    />
-                  )}
-                </button>
-              );
-            })}
-          </div>
-        )}
-
-        {/* Right: Main Image */}
-        <div className="flex-1 ml-1.5 sm:ml-2 relative lg:max-w-[720px] xl:max-w-[820px] mx-auto flex items-center justify-center">
+      <div className="flex flex-col justify-center">
+        {/* Main Image */}
+        <div className="relative h-48 sm:h-56 md:h-64 lg:h-72 xl:h-80 flex items-center justify-center mb-2 bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
           <div 
-            className="h-full inline-flex items-center justify-center bg-white border border-gray-200 rounded-lg overflow-hidden relative shadow-sm cursor-pointer max-w-full"
+            className="h-full inline-flex items-center justify-center overflow-hidden relative cursor-pointer max-w-full"
             onClick={() => {
               console.log('Image container clicked, currentImage.url:', currentImage.url);
               if (currentImage.url) {
@@ -114,41 +83,67 @@ export default function ImageGallery({ images = [], productName = "Product", onW
                 </svg>
               </div>
             )}
-            
-            {/* Wishlist Button - Top Right Corner */}
-            {onWishlistToggle && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onWishlistToggle();
-                }}
-                className={`absolute top-2 right-2 p-2 rounded-full shadow-lg transition-all duration-300 ${
+          </div>
+          
+          {/* Wishlist Button - Top Right Corner of Container */}
+          {onWishlistToggle && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onWishlistToggle();
+              }}
+              className={`absolute top-3 right-3 p-2 rounded-full shadow-lg transition-all duration-300 z-10 ${
+                isWishlisted 
+                  ? 'bg-red-500 hover:bg-red-600' 
+                  : 'bg-white bg-opacity-95 hover:bg-opacity-100'
+              }`}
+            >
+              <svg 
+                className={`w-5 h-5 ${
                   isWishlisted 
-                    ? 'bg-red-500 hover:bg-red-600' 
-                    : 'bg-white bg-opacity-90 hover:bg-opacity-100'
+                    ? 'text-white fill-current' 
+                    : 'text-gray-700 hover:text-red-500'
+                }`} 
+                fill={isWishlisted ? 'currentColor' : 'none'} 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth={2} 
+                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" 
+                />
+              </svg>
+            </button>
+          )}
+        </div>
+
+        {/* Bottom: Thumbnail Strip */}
+        {sortedImages.length > 1 && (
+          <div className="flex justify-center space-x-2 mt-2">
+            {sortedImages.map((image, index) => (
+              <button
+                key={index}
+                onClick={() => handleThumbnailClick(index)}
+                className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 rounded-lg border-2 overflow-hidden transition-all ${
+                  selectedImage === index
+                    ? 'border-blue-500 ring-2 ring-blue-200 shadow-lg'
+                    : 'border-gray-200 hover:border-gray-400 hover:shadow-md'
                 }`}
               >
-                <svg 
-                  className={`w-5 h-5 ${
-                    isWishlisted 
-                      ? 'text-white fill-current' 
-                      : 'text-gray-700 hover:text-red-500'
-                  }`} 
-                  fill={isWishlisted ? 'currentColor' : 'none'} 
-                  stroke="currentColor" 
-                  viewBox="0 0 24 24"
-                >
-                  <path 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
-                    strokeWidth={2} 
-                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" 
+                {(image.thumbnail || image.url) && (
+                  <img
+                    src={image.thumbnail || image.url}
+                    alt={image.alt}
+                    className="w-full h-full object-contain"
+                    loading="lazy"
                   />
-                </svg>
+                )}
               </button>
-            )}
+            ))}
           </div>
-        </div>
+        )}
       </div>
       
       {/* Zoom Modal */}

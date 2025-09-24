@@ -4,7 +4,7 @@ const isProduction = import.meta.env.PROD;
 
 // Backend URL Configuration - Comment/Uncomment as needed
 // Option 1: Local Development
-// export const BASE_URL = 'http://localhost:5001';
+// export const BASE_URL = 'http://localhost:6001';
 
 // Option 2: Production Server
 export const BASE_URL = 'https://e-commerce-backend-r6s0.onrender.com';
