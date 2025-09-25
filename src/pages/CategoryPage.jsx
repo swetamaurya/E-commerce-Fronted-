@@ -99,6 +99,7 @@ export default function CategoryPage({ title, slug }) {
       setLoading(true);
       
       try {
+        console.log(`[CategoryPage] Fetching products for category: ${slug}`);
         const response = await productApi.getProductsByCategory(slug);
         const data = response.data || [];
         
@@ -107,6 +108,7 @@ export default function CategoryPage({ title, slug }) {
         }
         
         const products = Array.isArray(data) ? data : [];
+        console.log(`[CategoryPage] Found ${products.length} products for ${slug}`);
         setItems(products);
         
         // Fetch wishlist status for all products
@@ -117,6 +119,7 @@ export default function CategoryPage({ title, slug }) {
         if (error.name === 'AbortError') {
           return;
         }
+        console.error(`[CategoryPage] Error fetching products for ${slug}:`, error);
         if (isMounted) {
           setItems([]);
         }

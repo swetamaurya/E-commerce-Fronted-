@@ -122,31 +122,20 @@ export default function HomePage() {
     const fetchAllProducts = async () => {
       try {
         setAllProductsLoading(true);
-        console.log('Fetching all products...');
+        console.log('[HomePage] Fetching all products...');
         
-        // Test direct API call first
-        const directResponse = await fetch(`${API_URL}/products/getAll/`);
-        console.log('Direct API response status:', directResponse.status);
-        
-        if (!directResponse.ok) {
-          throw new Error(`HTTP error! status: ${directResponse.status}`);
-        }
-        
-        const directData = await directResponse.json();
-        console.log('Direct API data:', directData);
-        
-        // Now try with productApi
+        // Use only productApi to avoid duplicate calls
         const response = await productApi.getAllProducts();
-        console.log('All products API response:', response);
+        console.log('[HomePage] All products API response:', response);
         const products = response.data || [];
-        console.log('Products data:', products);
+        console.log('[HomePage] Products data:', products);
+        
         // Take only first 4 products
         setHasMoreAllProducts(products.length > 4);
         setAllProducts(products.slice(0, 4));
-        console.log('Set all products:', products.slice(0, 4));
+        console.log('[HomePage] Set all products:', products.slice(0, 4));
       } catch (error) {
-        console.error('Error fetching all products:', error);
-        console.error('Error details:', error.message);
+        console.error('[HomePage] Error fetching all products:', error);
         setAllProducts([]);
         setHasMoreAllProducts(false);
       } finally {

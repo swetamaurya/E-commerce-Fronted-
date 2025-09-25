@@ -171,37 +171,51 @@ export default function CartPage() {
     );
   }
 
+  // Guest cart handling - show guest cart if no token
   if (!localStorage.getItem("token")) {
-    return (
-      <div className="bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-2 text-center">Your Bag</h1>
-          <div className="flex flex-col items-center justify-center py-20">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-16 w-16 text-gray-400 mb-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M16 11V7a4 4 0 0 0-8 0v4M5 9h14l1 12H4L5 9z"
-              />
-            </svg>
-            <p className="text-sm text-gray-500 mb-2">Please login to view your cart</p>
-            <p className="text-sm text-gray-500 mb-6">Your bag is empty</p>
-            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-6">
-              <Link to="/cotton-yoga-mats" className="text-sm font-semibold text-black underline text-center">
-                CONTINUE SHOPPING
-              </Link>
+    const guestCart = getGuestCart();
+    
+    if (!guestCart || guestCart.length === 0) {
+      return (
+        <div className="bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-2 text-center">Your Bag</h1>
+            <div className="flex flex-col items-center justify-center py-20">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-16 w-16 text-gray-400 mb-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M16 11V7a4 4 0 0 0-8 0v4M5 9h14l1 12H4L5 9z"
+                />
+              </svg>
+              <p className="text-sm text-gray-500 mb-2">Your bag is empty</p>
+              <p className="text-sm text-gray-500 mb-6">Add some items to get started</p>
+              <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-6">
+                <Link to="/cotton-yoga-mats" className="text-sm font-semibold text-black underline text-center">
+                  CONTINUE SHOPPING
+                </Link>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    );
+      );
+    }
+    
+    // Show guest cart with items
+    const guestCartData = {
+      items: guestCart,
+      totalItems: guestCart.reduce((sum, item) => sum + item.quantity, 0),
+      totalAmount: guestCart.reduce((sum, item) => sum + (item.price * item.quantity), 0)
+    };
+    
+    setCart(guestCartData);
   }
 
   if (!cart || !cart.items || cart.items.length === 0) {

@@ -4,7 +4,8 @@ import { wishlistApi, cartApi } from "../services/api";
 import { toast } from "react-toastify";
 import { 
   getGuestWishlist, 
-  removeFromGuestWishlist 
+  removeFromGuestWishlist,
+  addToGuestCart
 } from "../utils/guestStorage";
 
 export default function WishlistPage() {
@@ -82,13 +83,23 @@ export default function WishlistPage() {
   const handleAddToCart = async (item) => {
     try {
       setProcessing(true);
-      await cartApi.addToCart({
+      
+      const productData = {
         productId: item.product,
         quantity: 1,
         price: item.price,
         title: item.title,
         image: item.image
-      });
+      };
+      
+      if (localStorage.getItem("token")) {
+        // Logged in user - use API
+        await cartApi.addToCart(productData);
+      } else {
+        // Guest user - use local storage
+        addToGuestCart(productData);
+      }
+      
       toast.success('Added to cart');
     } catch (error) {
       console.error('Error adding to cart:', error);
@@ -102,14 +113,23 @@ export default function WishlistPage() {
   const handleBuyNow = async (item) => {
     try {
       setProcessing(true);
-      // First add to cart
-      await cartApi.addToCart({
+      
+      const productData = {
         productId: item.product,
         quantity: 1,
         price: item.price,
         title: item.title,
         image: item.image
-      });
+      };
+      
+      // First add to cart
+      if (localStorage.getItem("token")) {
+        // Logged in user - use API
+        await cartApi.addToCart(productData);
+      } else {
+        // Guest user - use local storage
+        addToGuestCart(productData);
+      }
       
       // Then navigate to checkout
       window.location.href = '/address';

@@ -66,36 +66,37 @@ export default function ProductDetailPage() {
       try {
         console.log('Fetching product:', { category, productId });
         
-        // First try to get products by category
-        const response = await productApi.getProductsByCategory(category);
-        const products = response.data || [];
-        console.log('Products from category:', products);
-        
-        const found = products.find((p) => (p.id || p._id) === productId);
-        console.log('Found product:', found);
-        
-        if (!isMounted) return;
-        
-        if (!found) {
-          console.log('Product not found in category, trying direct fetch by ID');
-          // Try to fetch product directly by ID as fallback
-          try {
-            const directResponse = await productApi.getProductById(productId);
-            if (directResponse.success && directResponse.data) {
-              console.log('Found product via direct fetch:', directResponse.data);
+        // Try to fetch product directly by ID first (more efficient)
+        try {
+          const directResponse = await productApi.getProductById(productId);
+          if (directResponse.success && directResponse.data) {
+            console.log('Found product via direct fetch:', directResponse.data);
+            if (isMounted) {
               setProduct(directResponse.data);
-            } else {
-              console.log('Product not found via direct fetch, redirecting to 404');
-              navigate("/not-found");
-              return;
             }
-          } catch (directError) {
-            console.log('Direct fetch failed, redirecting to 404:', directError);
+          } else {
+            throw new Error('Product not found via direct fetch');
+          }
+        } catch (directError) {
+          console.log('Direct fetch failed, trying category fetch:', directError.message);
+          
+          // Fallback: get products by category only if direct fetch fails
+          const response = await productApi.getProductsByCategory(category);
+          const products = response.data || [];
+          console.log('Products from category:', products);
+          
+          const found = products.find((p) => (p.id || p._id) === productId);
+          console.log('Found product:', found);
+          
+          if (!isMounted) return;
+          
+          if (!found) {
+            console.log('Product not found in category, redirecting to 404');
             navigate("/not-found");
             return;
+          } else {
+            setProduct(found);
           }
-        } else {
-          setProduct(found);
         }
 
         // Check wishlist status for both logged-in and guest users
@@ -168,18 +169,6 @@ export default function ProductDetailPage() {
     console.log("Product:", product);
     console.log("Quantity:", quantity);
 
-    // Check if user is logged in
-    if (!localStorage.getItem("token")) {
-      console.log("User not logged in, showing login modal");
-      setIsFromBuyNow(true); // Mark that this is from BUY NOW
-      setShowLoginModal(true);
-      console.log("Login modal state set to true");
-      setIsBuyingNow(false);
-      return;
-    }
-
-    console.log("User is logged in, proceeding with buy now");
-
     try {
       const payload = {
         productId: product.id || product._id,
@@ -193,7 +182,13 @@ export default function ProductDetailPage() {
 
       // Add to cart first
       console.log("Adding to cart...");
-      await cartApi.addToCart(payload);
+      if (localStorage.getItem("token")) {
+        // Logged in user - use API
+        await cartApi.addToCart(payload);
+      } else {
+        // Guest user - use local storage
+        addToGuestCart(payload);
+      }
       console.log("Added to cart successfully");
 
       // Navigate to cart page
