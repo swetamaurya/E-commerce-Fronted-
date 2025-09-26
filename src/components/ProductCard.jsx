@@ -216,7 +216,7 @@ export default function ProductCard({
         onClick={handleProductClick}
       >
         <div className="flex-shrink-0">
-          <div className="w-24 h-24 sm:w-32 sm:h-32 bg-gray-100 border border-gray-200 rounded-md overflow-hidden relative">
+          <div className="w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 bg-white border border-gray-200 rounded-md overflow-hidden relative">
             {product.badge && (
               <div className="absolute left-1 top-1 bg-red-600 text-white text-[10px] font-extrabold px-1.5 py-0.5 rounded">
                 {product.badge}
@@ -226,17 +226,25 @@ export default function ProductCard({
               <img
                 src={primaryImg}
                 alt={product.title || product.name}
-                className="absolute inset-0 w-full h-full object-contain transition-opacity duration-300 opacity-100"
+                className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300 opacity-100"
                 loading="lazy"
                 title={product.title || product.name}
+                onError={(e) => {
+                  e.target.style.objectFit = 'cover';
+                  e.target.style.backgroundColor = '#ffffff';
+                }}
               />
             )}
             {hoverImg && hoverImg !== primaryImg && (
               <img
                 src={hoverImg}
                 alt={product.title || product.name}
-                className="absolute inset-0 w-full h-full object-contain transition-opacity duration-300 opacity-0 hover:opacity-100"
+                className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300 opacity-0 hover:opacity-100"
                 loading="lazy"
+                onError={(e) => {
+                  e.target.style.objectFit = 'cover';
+                  e.target.style.backgroundColor = '#ffffff';
+                }}
               />
             )}
             {/* Wishlist Icon */}
@@ -244,17 +252,17 @@ export default function ProductCard({
               onClick={handleWishlistClick}
               disabled={isTogglingWishlist}
               aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
-              className={`absolute right-1 top-1 z-20 p-0.5 sm:p-1 rounded-full flex items-center justify-center transition-all duration-300 ${
+              className={`absolute right-1 top-1 z-20 p-1 sm:p-1.5 rounded-full flex items-center justify-center transition-all duration-300 shadow-md ${
                 isWishlisted ? "bg-red-600" : "bg-white"
               }`}
-              style={{ width: 20, height: 20 }}
+              style={{ width: 28, height: 28 }}
             >
               {isWishlisted ? (
-                <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3" fill="white" viewBox="0 0 24 24" stroke="none">
+                <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="white" viewBox="0 0 24 24" stroke="none">
                   <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09 1.09-1.28 2.76-2.09 4.5-2.09 3.08 0 5.5 2.42 5.5 5.5 0 3.78-3.4 6.86-8.55 11.54z" />
                 </svg>
               ) : (
-                <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3" fill="none" stroke="black" strokeWidth={2} viewBox="0 0 24 24">
+                <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="black" strokeWidth={2} viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -317,15 +325,15 @@ export default function ProductCard({
         onClick={handleWishlistClick}
         disabled={isTogglingWishlist}
         aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
-        className={`absolute right-1.5 sm:right-3 top-1.5 sm:top-3 z-20 p-1 sm:p-2 rounded-full flex items-center justify-center transition-all duration-300 ${
+        className={`absolute right-2 sm:right-3 md:right-4 top-2 sm:top-3 md:top-4 z-20 p-1.5 sm:p-2 md:p-2.5 rounded-full flex items-center justify-center transition-all duration-300 shadow-md ${
           isWishlisted ? "bg-red-600" : "bg-white"
         }`}
-        style={{ width: 24, height: 24 }}
+        style={{ width: 32, height: 32 }}
       >
         {isWishlisted ? (
           // White filled heart on red bg
           <svg
-            className="w-3 h-3 sm:w-4 sm:h-4"
+            className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6"
             fill="white"
             viewBox="0 0 24 24"
             stroke="none"
@@ -335,7 +343,7 @@ export default function ProductCard({
         ) : (
           // Black outlined heart on white bg
           <svg
-            className="w-3 h-3 sm:w-4 sm:h-4"
+            className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6"
             fill="none"
             stroke="black"
             strokeWidth={2}
@@ -351,18 +359,22 @@ export default function ProductCard({
       </button>
 
       {/* Product Image */}
-      <div className="aspect-square sm:aspect-[3/2] bg-gray-50 overflow-hidden relative group/image">
+      <div className="aspect-square bg-white overflow-hidden relative group/image">
         {primaryImg ? (
           <img
             src={primaryImg}
             alt={product.name || product.title}
-            className="w-full h-full object-contain transform transition-transform duration-500 group-hover:scale-110"
+            className="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-105"
             loading="lazy"
             title={product.name || product.title}
+            onError={(e) => {
+              e.target.style.objectFit = 'cover';
+              e.target.style.backgroundColor = '#ffffff';
+            }}
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-gray-400">
-            <svg className="w-12 h-12 sm:w-16 sm:h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-full h-full flex items-center justify-center text-gray-400 bg-gray-50">
+            <svg className="w-12 h-12 md:w-16 md:h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
           </div>

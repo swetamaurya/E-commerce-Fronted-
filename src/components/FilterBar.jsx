@@ -79,24 +79,52 @@ export default function FilterBar({ filters, setFilters, products = [], total = 
 
     // Get actual product data for counts
     const actualTypes = toList(countBy(products, "category"));
-    const actualSizes = toList(countBy(products, "size"));
-    const actualColors = toList(countBy(products, "color"));
+    
+    // Handle sizes - can be array or single value
+    const actualSizes = toList(products.reduce((acc, product) => {
+      const sizes = product.sizes || [];
+      if (Array.isArray(sizes)) {
+        sizes.forEach(size => {
+          if (size && size.trim()) {
+            acc.push({ size: size.trim() });
+          }
+        });
+      } else if (sizes && sizes.trim()) {
+        acc.push({ size: sizes.trim() });
+      }
+      return acc;
+    }, []), "size");
+    
+    // Handle colors - can be array or single value
+    const actualColors = toList(products.reduce((acc, product) => {
+      const colors = product.colors || [];
+      if (Array.isArray(colors)) {
+        colors.forEach(color => {
+          if (color && color.trim()) {
+            acc.push({ color: color.trim() });
+          }
+        });
+      } else if (colors && colors.trim()) {
+        acc.push({ color: colors.trim() });
+      }
+      return acc;
+    }, []), "color");
 
     // Combine predefined options with actual data
     const types = predefinedTypes.map(type => {
       const actual = actualTypes.find(t => t.value === type.value);
       return { ...type, count: actual?.count || 0 };
-    }).filter(type => type.count > 0 || predefinedTypes.includes(type));
+    });
 
     const sizes = predefinedSizes.map(size => {
       const actual = actualSizes.find(s => s.value === size.value);
       return { ...size, count: actual?.count || 0 };
-    }).filter(size => size.count > 0 || predefinedSizes.includes(size));
+    });
 
     const colors = predefinedColors.map(color => {
       const actual = actualColors.find(c => c.value === color.value);
       return { ...color, count: actual?.count || 0 };
-    }).filter(color => color.count > 0 || predefinedColors.includes(color));
+    });
 
     return {
       types,

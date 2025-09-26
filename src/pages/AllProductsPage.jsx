@@ -167,8 +167,16 @@ export default function AllProductsPage() {
         return true;
       })
       .filter((p) => inSel(filters.type, p.type || p.category))
-      .filter((p) => inSel(filters.size, p.size || p.variants?.[0]?.size))
-      .filter((p) => inSel(filters.color, p.color || p.variants?.[0]?.color))
+      .filter((p) => {
+        if (filters.size.length === 0) return true;
+        const productSizes = Array.isArray(p.sizes) ? p.sizes : [p.size].filter(Boolean);
+        return filters.size.some(filterSize => productSizes.includes(filterSize));
+      })
+      .filter((p) => {
+        if (filters.color.length === 0) return true;
+        const productColors = Array.isArray(p.colors) ? p.colors : [p.color].filter(Boolean);
+        return filters.color.some(filterColor => productColors.includes(filterColor));
+      })
       .filter((p) => priceMatch(Number(p.price ?? 0)));
   }, [products, filters, searchQuery]);
 
