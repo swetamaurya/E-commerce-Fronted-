@@ -164,7 +164,7 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="w-full sticky top-0 z-50 bg-white isolation-auto">
+      <header className="w-full fixed top-0 left-0 right-0 z-50 bg-white shadow-md">
         {/* Discount banner */}
         <div className="w-full bg-black text-white text-center text-xs py-2 px-2">
           <span className="font-medium">GET 10% off upto Rs. 150 on Orders above 1349 | GET10</span>

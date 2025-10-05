@@ -28,8 +28,8 @@ export default function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-12">
           {/* Company Info */}
           <div className="sm:col-span-2 lg:col-span-1">
-            <div className="mb-4 sm:mb-6 p-3 bg-gray-50 rounded-lg">
-              <Logo size="xlarge" className="justify-start" showText={false} />
+            <div className="mb-4 sm:mb-6">
+              <Logo size="xlarge" className="justify-start" showText={true} />
             </div>
             <p className="text-gray-600 leading-relaxed mb-4 sm:mb-6 text-sm">
               Welcome to Royal Thread, a MSE based out of India. We aim to deliver 

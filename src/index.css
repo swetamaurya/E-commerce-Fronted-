@@ -13,6 +13,7 @@ html, body {
 #root {
   width: 100%;
   min-height: 100vh;
+  padding-top: 80px; /* Account for fixed navbar height */
 }
 
 /* Basic custom styles */
@@ -122,7 +123,12 @@ html, body {
   scrollbar-width: none;
 }
 
-/* Hide scrollbar for IE and Edge */
-.scrollbar-hide {
-  -ms-overflow-style: none;
+/* Fixed navbar spacing */
+.navbar-spacing {
+  padding-top: 80px;
+}
+
+/* Ensure content doesn't hide behind fixed navbar */
+body {
+  padding-top: 80px;
 }
