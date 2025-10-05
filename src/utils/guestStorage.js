@@ -78,7 +78,10 @@ export const clearGuestCart = () => {
 export const getGuestWishlist = () => {
   try {
     const wishlist = localStorage.getItem(GUEST_WISHLIST_KEY);
-    return wishlist ? JSON.parse(wishlist) : [];
+    const parsedWishlist = wishlist ? JSON.parse(wishlist) : [];
+    console.log('🔍 getGuestWishlist - Raw data:', wishlist);
+    console.log('🔍 getGuestWishlist - Parsed data:', parsedWishlist);
+    return parsedWishlist;
   } catch (error) {
     console.error('Error getting guest wishlist:', error);
     return [];
@@ -96,6 +99,9 @@ export const addToGuestWishlist = (item) => {
         addedAt: new Date().toISOString()
       });
       localStorage.setItem(GUEST_WISHLIST_KEY, JSON.stringify(wishlist));
+      
+      // Dispatch custom event to update navbar count
+      window.dispatchEvent(new CustomEvent('wishlistUpdated'));
     }
     
     return wishlist;
@@ -110,6 +116,10 @@ export const removeFromGuestWishlist = (productId) => {
     const wishlist = getGuestWishlist();
     const updatedWishlist = wishlist.filter(item => item.productId !== productId);
     localStorage.setItem(GUEST_WISHLIST_KEY, JSON.stringify(updatedWishlist));
+    
+    // Dispatch custom event to update navbar count
+    window.dispatchEvent(new CustomEvent('wishlistUpdated'));
+    
     return updatedWishlist;
   } catch (error) {
     console.error('Error removing from guest wishlist:', error);
@@ -120,7 +130,11 @@ export const removeFromGuestWishlist = (productId) => {
 export const isInGuestWishlist = (productId) => {
   try {
     const wishlist = getGuestWishlist();
-    return wishlist.some(item => item.productId === productId);
+    const isInWishlist = wishlist.some(item => item.productId === productId);
+    console.log('🔍 isInGuestWishlist - ProductId:', productId);
+    console.log('🔍 isInGuestWishlist - Wishlist items:', wishlist.map(item => item.productId));
+    console.log('🔍 isInGuestWishlist - Is in wishlist:', isInWishlist);
+    return isInWishlist;
   } catch (error) {
     console.error('Error checking guest wishlist:', error);
     return false;

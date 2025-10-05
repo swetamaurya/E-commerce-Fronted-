@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { wishlistApi, cartApi } from "../services/api";
 import { toast } from "react-toastify";
+import CustomDialog from "../components/CustomDialog";
 import { 
   getGuestWishlist, 
   removeFromGuestWishlist,
@@ -13,6 +14,7 @@ export default function WishlistPage() {
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
   const [dataFetched, setDataFetched] = useState(false);
+  const [showClearDialog, setShowClearDialog] = useState(false);
 
   // Fetch wishlist data
   useEffect(() => {
@@ -30,6 +32,8 @@ export default function WishlistPage() {
         } else {
           // Guest user - get from local storage
           const guestWishlist = getGuestWishlist();
+          console.log('🔍 Guest wishlist data:', guestWishlist);
+          
           setWishlist({
             items: guestWishlist.map(item => ({
               product: item.productId,
@@ -50,6 +54,27 @@ export default function WishlistPage() {
 
     fetchWishlist();
   }, [dataFetched]);
+
+  // Refresh wishlist when page becomes visible (for guest users)
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden && !localStorage.getItem('token')) {
+        // Page became visible and user is guest - refresh wishlist
+        const guestWishlist = getGuestWishlist();
+        setWishlist({
+          items: guestWishlist.map(item => ({
+            product: item.productId,
+            title: item.title,
+            price: item.price,
+            image: item.image
+          }))
+        });
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, []);
 
   // Handle remove from wishlist
   const handleRemoveItem = async (productId) => {
@@ -142,12 +167,26 @@ export default function WishlistPage() {
   };
 
   // Handle clear wishlist
-  const handleClearWishlist = async () => {
-    if (!window.confirm('Are you sure you want to clear your wishlist?')) return;
-    
+  const handleClearWishlist = () => {
+    setShowClearDialog(true);
+  };
+
+  // Confirm clear wishlist
+  const confirmClearWishlist = async () => {
     try {
       setProcessing(true);
-      await wishlistApi.clearWishlist();
+      setShowClearDialog(false);
+      
+      if (localStorage.getItem('token')) {
+        // Logged in user - use API
+        await wishlistApi.clearWishlist();
+      } else {
+        // Guest user - clear local storage
+        localStorage.removeItem('guest_wishlist');
+        // Dispatch event to update navbar count
+        window.dispatchEvent(new CustomEvent('wishlistUpdated'));
+      }
+      
       setWishlist(prev => ({ ...prev, items: [] }));
       toast.success('Wishlist cleared');
     } catch (error) {
@@ -169,26 +208,7 @@ export default function WishlistPage() {
     );
   }
 
-  // Not logged in
-  if (!localStorage.getItem('token')) {
-    return (
-      <div className="bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <h1 className="text-2xl font-semibold text-center my-8">YOUR WISHLIST</h1>
-          <div className="flex flex-col items-center justify-center py-20">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mb-4" fill="none" viewBox="0 0 24 24" stroke="red">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-            </svg>
-            <p className="text-sm text-gray-500 mb-2">Please login to view your wishlist</p>
-            <p className="text-sm text-gray-500 mb-6">Your wishlist is empty</p>
-            <Link to="/cotton-yoga-mats" className="text-sm font-semibold text-black underline">
-              CONTINUE SHOPPING
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // Guest users can now view their wishlist - this check is removed
 
   // Empty wishlist
   if (!wishlist || !wishlist.items || wishlist.items.length === 0) {
@@ -298,6 +318,19 @@ export default function WishlistPage() {
           </button>
         </div>
       </div>
+      
+      {/* Custom Clear Wishlist Dialog */}
+      <CustomDialog
+        isOpen={showClearDialog}
+        onClose={() => setShowClearDialog(false)}
+        title="Clear Wishlist"
+        message="Are you sure you want to clear your wishlist? This action cannot be undone."
+        confirmText="Clear All"
+        cancelText="Cancel"
+        onConfirm={confirmClearWishlist}
+        variant="danger"
+        showCancel={true}
+      />
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { cartApi, wishlistApi } from "../services/api";
 import { toast } from "react-toastify";
 import { getImageUrl } from "../utils/imageUtils";
@@ -7,7 +7,8 @@ import {
   addToGuestCart, 
   addToGuestWishlist, 
   removeFromGuestWishlist, 
-  isInGuestWishlist 
+  isInGuestWishlist,
+  getGuestWishlist
 } from "../utils/guestStorage";
 
 export default function ProductCard({ 
@@ -18,6 +19,7 @@ export default function ProductCard({
   onWishlistChange
 }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isWishlisted, setIsWishlisted] = useState(wishlistStatus);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [isTogglingWishlist, setIsTogglingWishlist] = useState(false);
@@ -75,12 +77,17 @@ export default function ProductCard({
     const checkWishlistStatus = async () => {
       try {
         const productId = product.id || product._id;
+        console.log('🔍 ProductCard - Product object:', product);
+        console.log('🔍 ProductCard - Product ID (id):', product.id);
+        console.log('🔍 ProductCard - Product ID (_id):', product._id);
+        console.log('🔍 ProductCard - Final productId:', productId);
         
         if (localStorage.getItem("token")) {
           // Logged in user - check server wishlist
           const timeoutId = setTimeout(async () => {
             try {
               const res = await wishlistApi.checkWishlistItem(productId);
+              console.log('🔍 ProductCard - Server wishlist check result:', res);
               setIsWishlisted(!!res?.inWishlist);
             } catch (e) {
               console.error("Error checking wishlist status:", e);
@@ -91,7 +98,16 @@ export default function ProductCard({
           return () => clearTimeout(timeoutId);
         } else {
           // Guest user - check local storage
-          setIsWishlisted(isInGuestWishlist(productId));
+          const isInWishlist = isInGuestWishlist(productId);
+          console.log('🔍 ProductCard - Guest wishlist check result:', isInWishlist);
+          console.log('🔍 ProductCard - Setting isWishlisted to:', isInWishlist);
+          setIsWishlisted(isInWishlist);
+          
+          // Double-check by getting the raw wishlist data
+          const rawWishlist = getGuestWishlist();
+          console.log('🔍 ProductCard - Raw wishlist data:', rawWishlist);
+          console.log('🔍 ProductCard - Looking for productId:', productId);
+          console.log('🔍 ProductCard - Found in raw data:', rawWishlist.some(item => item.productId === productId));
         }
       } catch (e) {
         console.error("Error in wishlist check setup:", e);
@@ -100,7 +116,247 @@ export default function ProductCard({
     };
     
     checkWishlistStatus();
+    
+    // Multiple delayed refreshes to ensure status is checked after component is fully loaded
+    const delayedRefresh1 = setTimeout(() => {
+      if (!localStorage.getItem("token")) {
+        const productId = product.id || product._id;
+        const currentStatus = isInGuestWishlist(productId);
+        console.log('🔍 ProductCard - Delayed refresh 1 (500ms):', currentStatus);
+        setIsWishlisted(currentStatus);
+      }
+    }, 500);
+    
+    const delayedRefresh2 = setTimeout(() => {
+      if (!localStorage.getItem("token")) {
+        const productId = product.id || product._id;
+        const currentStatus = isInGuestWishlist(productId);
+        console.log('🔍 ProductCard - Delayed refresh 2 (1000ms):', currentStatus);
+        setIsWishlisted(currentStatus);
+      }
+    }, 1000);
+    
+    const delayedRefresh3 = setTimeout(() => {
+      if (!localStorage.getItem("token")) {
+        const productId = product.id || product._id;
+        const currentStatus = isInGuestWishlist(productId);
+        console.log('🔍 ProductCard - Delayed refresh 3 (2000ms):', currentStatus);
+        setIsWishlisted(currentStatus);
+      }
+    }, 2000);
+    
+    return () => {
+      clearTimeout(delayedRefresh1);
+      clearTimeout(delayedRefresh2);
+      clearTimeout(delayedRefresh3);
+    };
   }, [product.id || product._id, onWishlistChange]);
+
+  // Listen for wishlist updates to refresh status
+  useEffect(() => {
+    const handleWishlistUpdate = () => {
+      if (!onWishlistChange) {
+        const productId = product.id || product._id;
+        if (!localStorage.getItem("token")) {
+          // Only for guest users
+          const isInWishlist = isInGuestWishlist(productId);
+          console.log('🔍 ProductCard - Wishlist updated, new status:', isInWishlist);
+          setIsWishlisted(isInWishlist);
+        }
+      }
+    };
+
+    const handleVisibilityChange = () => {
+      if (!document.hidden && !onWishlistChange && !localStorage.getItem("token")) {
+        // Page became visible - refresh wishlist status
+        const productId = product.id || product._id;
+        const currentStatus = isInGuestWishlist(productId);
+        console.log('🔍 ProductCard - Page visible, refreshing status:', currentStatus);
+        setIsWishlisted(currentStatus);
+      }
+    };
+
+    const handleFocus = () => {
+      if (!onWishlistChange && !localStorage.getItem("token")) {
+        // Window focused - refresh wishlist status
+        const productId = product.id || product._id;
+        const currentStatus = isInGuestWishlist(productId);
+        console.log('🔍 ProductCard - Window focused, refreshing status:', currentStatus);
+        setIsWishlisted(currentStatus);
+      }
+    };
+
+    window.addEventListener('wishlistUpdated', handleWishlistUpdate);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('focus', handleFocus);
+    
+    // Also add a manual refresh every 500ms for debugging
+    const intervalId = setInterval(() => {
+      if (!onWishlistChange && !localStorage.getItem("token")) {
+        const productId = product.id || product._id;
+        const currentStatus = isInGuestWishlist(productId);
+        if (currentStatus !== isWishlisted) {
+          console.log('🔍 ProductCard - Status mismatch detected, updating:', currentStatus);
+          setIsWishlisted(currentStatus);
+        }
+      }
+    }, 500);
+
+    return () => {
+      window.removeEventListener('wishlistUpdated', handleWishlistUpdate);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('focus', handleFocus);
+      clearInterval(intervalId);
+    };
+  }, [product.id || product._id, onWishlistChange, isWishlisted]);
+
+  // Listen for route changes to refresh wishlist status
+  useEffect(() => {
+    if (!onWishlistChange && !localStorage.getItem("token")) {
+      const productId = product.id || product._id;
+      const currentStatus = isInGuestWishlist(productId);
+      console.log('🔍 ProductCard - Route changed, refreshing status:', currentStatus);
+      setIsWishlisted(currentStatus);
+    }
+  }, [location.pathname, product.id, product._id, onWishlistChange]);
+
+  // Additional refresh on window load (when returning from other pages)
+  useEffect(() => {
+    const handleWindowLoad = () => {
+      if (!onWishlistChange && !localStorage.getItem("token")) {
+        const productId = product.id || product._id;
+        const currentStatus = isInGuestWishlist(productId);
+        console.log('🔍 ProductCard - Window loaded, refreshing status:', currentStatus);
+        setIsWishlisted(currentStatus);
+      }
+    };
+
+    // Check immediately
+    handleWindowLoad();
+
+    // Also listen for window load events
+    window.addEventListener('load', handleWindowLoad);
+    
+    return () => {
+      window.removeEventListener('load', handleWindowLoad);
+    };
+  }, [product.id, product._id, onWishlistChange]);
+
+  // Force refresh on component mount (for page navigation)
+  useEffect(() => {
+    if (!onWishlistChange && !localStorage.getItem("token")) {
+      const productId = product.id || product._id;
+      
+      // Immediate check
+      const immediateCheck = () => {
+        const currentStatus = isInGuestWishlist(productId);
+        console.log('🔍 ProductCard - Immediate mount check:', currentStatus);
+        setIsWishlisted(currentStatus);
+      };
+      
+      // Multiple delayed checks to ensure we catch the status
+      const delayedChecks = [
+        setTimeout(() => {
+          const currentStatus = isInGuestWishlist(productId);
+          console.log('🔍 ProductCard - Mount check 1 (100ms):', currentStatus);
+          setIsWishlisted(currentStatus);
+        }, 100),
+        
+        setTimeout(() => {
+          const currentStatus = isInGuestWishlist(productId);
+          console.log('🔍 ProductCard - Mount check 2 (300ms):', currentStatus);
+          setIsWishlisted(currentStatus);
+        }, 300),
+        
+        setTimeout(() => {
+          const currentStatus = isInGuestWishlist(productId);
+          console.log('🔍 ProductCard - Mount check 3 (500ms):', currentStatus);
+          setIsWishlisted(currentStatus);
+        }, 500),
+        
+        setTimeout(() => {
+          const currentStatus = isInGuestWishlist(productId);
+          console.log('🔍 ProductCard - Mount check 4 (1000ms):', currentStatus);
+          setIsWishlisted(currentStatus);
+        }, 1000),
+        
+        setTimeout(() => {
+          const currentStatus = isInGuestWishlist(productId);
+          console.log('🔍 ProductCard - Mount check 5 (2000ms):', currentStatus);
+          setIsWishlisted(currentStatus);
+        }, 2000)
+      ];
+      
+      immediateCheck();
+      
+      return () => {
+        delayedChecks.forEach(clearTimeout);
+      };
+    }
+  }, [product.id, product._id, onWishlistChange]);
+
+  // Aggressive refresh for wishlist status (especially for already added items)
+  useEffect(() => {
+    if (!onWishlistChange && !localStorage.getItem("token")) {
+      const productId = product.id || product._id;
+      
+      // Check every 500ms for the first 10 seconds after component mount
+      const aggressiveInterval = setInterval(() => {
+        const currentStatus = isInGuestWishlist(productId);
+        if (currentStatus !== isWishlisted) {
+          console.log('🔍 ProductCard - Aggressive refresh detected mismatch, updating:', currentStatus);
+          setIsWishlisted(currentStatus);
+        }
+      }, 500);
+      
+      // Clear the aggressive interval after 10 seconds
+      const clearAggressive = setTimeout(() => {
+        clearInterval(aggressiveInterval);
+        console.log('🔍 ProductCard - Stopped aggressive refresh');
+      }, 10000);
+      
+      return () => {
+        clearInterval(aggressiveInterval);
+        clearTimeout(clearAggressive);
+      };
+    }
+  }, [product.id, product._id, onWishlistChange, isWishlisted]);
+
+  // Specific handler for page visibility changes (returning from other pages)
+  useEffect(() => {
+    const handlePageVisible = () => {
+      if (!onWishlistChange && !localStorage.getItem("token")) {
+        const productId = product.id || product._id;
+        const currentStatus = isInGuestWishlist(productId);
+        console.log('🔍 ProductCard - Page became visible, checking status:', currentStatus);
+        setIsWishlisted(currentStatus);
+        
+        // Also do multiple checks with delays
+        setTimeout(() => {
+          const delayedStatus = isInGuestWishlist(productId);
+          console.log('🔍 ProductCard - Delayed visibility check:', delayedStatus);
+          setIsWishlisted(delayedStatus);
+        }, 200);
+        
+        setTimeout(() => {
+          const delayedStatus2 = isInGuestWishlist(productId);
+          console.log('🔍 ProductCard - Second delayed visibility check:', delayedStatus2);
+          setIsWishlisted(delayedStatus2);
+        }, 500);
+      }
+    };
+
+    // Listen for visibility changes
+    document.addEventListener('visibilitychange', handlePageVisible);
+    
+    // Also listen for when the window regains focus
+    window.addEventListener('focus', handlePageVisible);
+    
+    return () => {
+      document.removeEventListener('visibilitychange', handlePageVisible);
+      window.removeEventListener('focus', handlePageVisible);
+    };
+  }, [product.id, product._id, onWishlistChange]);
 
   // Convert category name to URL-friendly format
   const categoryToUrl = (categoryName) => {
@@ -130,16 +386,24 @@ export default function ProductCard({
   const handleWishlistClick = async (e) => {
     e.stopPropagation();
     setIsTogglingWishlist(true);
-    
+
     try {
       const productId = product.id || product._id;
+      console.log('🔍 ProductCard - Adding/Removing product:', product);
+      console.log('🔍 ProductCard - Product ID (id):', product.id);
+      console.log('🔍 ProductCard - Product ID (_id):', product._id);
+      console.log('🔍 ProductCard - Final productId:', productId);
+      console.log('🔍 ProductCard - Current isWishlisted state:', isWishlisted);
+
       const productData = {
         productId: productId,
         title: product.name || product.title,
         price: product.price,
         image: primaryImg,
       };
-      
+
+      console.log('🔍 ProductCard - Product data being stored:', productData);
+
       if (localStorage.getItem("token")) {
         // Logged in user - use API
         if (isWishlisted) {
@@ -153,21 +417,36 @@ export default function ProductCard({
         }
       } else {
         // Guest user - use local storage
-        if (isWishlisted) {
+        // First check the actual status from localStorage
+        const actualStatus = isInGuestWishlist(productId);
+        console.log('🔍 ProductCard - Actual status from localStorage:', actualStatus);
+        
+        if (actualStatus) {
+          console.log('🔍 ProductCard - Removing from guest wishlist:', productId);
           removeFromGuestWishlist(productId);
           setIsWishlisted(false);
           toast.success("Removed from wishlist");
         } else {
+          console.log('🔍 ProductCard - Adding to guest wishlist:', productData);
           addToGuestWishlist(productData);
           setIsWishlisted(true);
           toast.success("Added to wishlist");
         }
       }
-      
+
       // Notify parent component
       if (onWishlistChange) {
         onWishlistChange(productId, !isWishlisted);
       }
+
+      // Force refresh wishlist status after a short delay
+      setTimeout(() => {
+        if (!localStorage.getItem("token")) {
+          const newStatus = isInGuestWishlist(productId);
+          console.log('🔍 ProductCard - Force refresh status:', newStatus);
+          setIsWishlisted(newStatus);
+        }
+      }, 100);
     } catch (error) {
       console.error("Error toggling wishlist:", error);
       toast.error("Failed to update wishlist");

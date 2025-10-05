@@ -4,6 +4,7 @@ import LoginModal from "./LoginModal";
 import CustomDialog from "./CustomDialog";
 import Toast from "./Toast";
 import Logo from "./Logo";
+import { getGuestWishlist } from "../utils/guestStorage";
 
 const categories = [
   { label: "AREA RUGS",        path: "/area-rugs", description: "Beautiful area rugs for home decoration" },
@@ -24,11 +25,49 @@ export default function Navbar() {
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
   const [showLogoutSuccess, setShowLogoutSuccess] = useState(false);
   const [showLoginSuccess, setShowLoginSuccess] = useState(false);
+  const [wishlistCount, setWishlistCount] = useState(0);
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) setUser(JSON.parse(storedUser));
   }, []);
+
+  // Update wishlist count
+  useEffect(() => {
+    const updateWishlistCount = () => {
+      if (user) {
+        // For logged-in users, we'll need to fetch from API
+        // For now, we'll use guest wishlist as fallback
+        const guestWishlist = getGuestWishlist();
+        console.log('🔍 Navbar - Logged in user wishlist:', guestWishlist);
+        setWishlistCount(guestWishlist.length);
+      } else {
+        // For guest users, get from localStorage
+        const guestWishlist = getGuestWishlist();
+        console.log('🔍 Navbar - Guest user wishlist:', guestWishlist);
+        setWishlistCount(guestWishlist.length);
+      }
+    };
+
+    updateWishlistCount();
+
+    // Listen for storage changes to update count in real-time
+    const handleStorageChange = (e) => {
+      if (e.key === 'guest_wishlist') {
+        updateWishlistCount();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Also listen for custom events when wishlist is updated
+    window.addEventListener('wishlistUpdated', updateWishlistCount);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('wishlistUpdated', updateWishlistCount);
+    };
+  }, [user]);
 
   // Close user menu when clicking outside
   useEffect(() => {
@@ -132,7 +171,7 @@ export default function Navbar() {
         </div>
         {/* Main navigation bar */}
         <div className="w-full border-b border-gray-200 bg-white shadow-sm">
-          <div className="max-w-7xl mx-auto flex items-center justify-between py-1 sm:py-2 md:py-3 px-3 sm:px-4 md:px-6 lg:px-8">
+          <div className="w-full flex items-center justify-between py-1 sm:py-2 md:py-3 px-2 sm:px-4 md:px-6 lg:px-8">
             {/* Mobile: Logo + Icons */}
             <div className="flex items-center justify-between w-full md:hidden">
               {/* Mobile Logo */}
@@ -224,6 +263,23 @@ export default function Navbar() {
                     </svg>
                   </button>
                 )}
+                
+                {/* Wishlist */}
+                <button 
+                  onClick={() => { navigate("/wishlist"); closeMenu(); }} 
+                  aria-label="Wishlist" 
+                  className="p-1 transition-colors relative"
+                  title="Wishlist"
+                >
+                  <svg className="h-4 w-4" fill="none" stroke="#222" strokeWidth="1.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                  </svg>
+                  {wishlistCount > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center font-bold">
+                      {wishlistCount > 99 ? '99+' : wishlistCount}
+                    </span>
+                  )}
+                </button>
                 
                 {/* Cart - Separate */}
                 <button 
@@ -358,6 +414,23 @@ export default function Navbar() {
                 </button>
               )}
                 
+              {/* Wishlist */}
+              <button 
+                onClick={() => { navigate("/wishlist"); closeMenu(); }} 
+                aria-label="Wishlist" 
+                className="p-2 transition-colors relative"
+                title="Wishlist"
+              >
+                <svg className="h-5 w-5" fill="none" stroke="#222" strokeWidth="1.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+                {wishlistCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
+                    {wishlistCount > 99 ? '99+' : wishlistCount}
+                  </span>
+                )}
+              </button>
+              
               {/* Cart */}
               <button 
                 onClick={() => { navigate("/cart"); closeMenu(); }} 
@@ -402,7 +475,7 @@ export default function Navbar() {
 
         {/* Categories Navigation */}
         <div className="w-full border-b border-gray-200 bg-white">
-          <nav className="max-w-[1200px] mx-auto" aria-label="Main navigation">
+          <nav className="w-full px-2 sm:px-4 md:px-6 lg:px-8" aria-label="Main navigation">
             <ul className="hidden md:flex justify-center text-sm font-semibold text-gray-700">
               {categories.map(({ label, path, description }) => (
                 <li key={path} className="relative">
@@ -420,31 +493,18 @@ export default function Navbar() {
                 </li>
               ))}
             </ul>
-            <div className="md:hidden">
-              <button
-                onClick={() => setMenuOpen(!menuOpen)}
-                className="w-full px-4 py-3 text-left text-sm font-semibold text-gray-700 flex items-center justify-between border-b border-gray-100"
-                aria-expanded={menuOpen}
-                aria-controls="mobile-menu"
-              >
-                <span>Browse Categories</span>
-                <svg className={`h-5 w-5 transition-transform ${menuOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/>
-                </svg>
-              </button>
-            </div>
           </nav>
         </div>
 
         {/* Mobile Menu */}
         {menuOpen && (
           <div className="md:hidden bg-white border-b border-gray-200 relative z-50 overflow-hidden">
-            <div className="px-4 py-2">
+            <div className="px-3 py-2 space-y-1">
               {categories.map(({ label, path, description }) => (
                 <Link
                   key={path}
                   to={path}
-                  className="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-md"
+                  className="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-md transition-colors"
                   onClick={() => setMenuOpen(false)}
                 >
                   {label}
