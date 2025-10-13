@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Logo = ({ className = "", showText = true, size = "medium", variant = "default" }) => {
+const Logo = ({ className = "", showText = true, size = "medium", variant = "default", noWrapTagline = false }) => {
   const sizeClasses = {
     small: "w-8 h-8",
     medium: "w-12 h-12", 
@@ -36,7 +36,7 @@ const Logo = ({ className = "", showText = true, size = "medium", variant = "def
             <h1 className={`font-bold tracking-wide ${variant === 'white' ? 'text-white' : 'text-[#8B4513]'} ${textSizeClasses[size]} leading-tight`}>
               Royal Thread
             </h1>
-            <p className={`font-medium ${variant === 'white' ? 'text-white' : 'text-gray-600'} ${subtextSizeClasses[size]} leading-tight mt-0.5 whitespace-nowrap`}>
+            <p className={`font-medium ${variant === 'white' ? 'text-white' : 'text-gray-600'} ${subtextSizeClasses[size]} leading-tight mt-0.5 ${noWrapTagline ? 'whitespace-nowrap' : ''}`}>
               Carpet Rugs & Home Decor
             </p>
           </div>

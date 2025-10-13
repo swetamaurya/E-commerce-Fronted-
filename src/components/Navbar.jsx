@@ -174,22 +174,10 @@ export default function Navbar() {
           <div className="w-full flex items-center justify-between py-1 sm:py-2 md:py-3 px-2 sm:px-4 md:px-6 lg:px-8">
             {/* Mobile: Logo + Icons */}
             <div className="flex items-center justify-between w-full md:hidden">
-              {/* Mobile: Left - Hamburger + Logo */}
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setMenuOpen(!menuOpen)}
-                  aria-label="Toggle menu"
-                  title="Menu"
-                  className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-md transition-colors"
-                >
-                  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
-                  </svg>
-                </button>
-                <Link to="/" className="flex items-center" onClick={closeMenu}>
-                  <Logo size="small" />
-                </Link>
-              </div>
+              {/* Mobile: Left - Logo only (move hamburger near search) */}
+              <Link to="/" className="flex items-center" onClick={closeMenu}>
+                <Logo size="small" noWrapTagline />
+              </Link>
               
               {/* Mobile Icons */}
               <div className="flex items-center gap-1.5 sm:gap-2">
@@ -311,7 +299,7 @@ export default function Navbar() {
             {/* Desktop Layout */}
             <div className="hidden md:flex items-center justify-between w-full">
             {/* Left: Search */}
-            <div className="flex-1 max-w-md mr-4">
+            <div className="flex-1 max-w-md md:max-w-lg mr-4 md:mr-8 lg:mr-10">
               <form onSubmit={handleSearch} className="relative">
                 <input
                   type="text"
@@ -334,9 +322,9 @@ export default function Navbar() {
             </div>
               
             {/* Center: Logo */}
-            <div className="flex-1 flex justify-center">
+            <div className="flex-1 flex justify-center px-2 md:px-4">
                <Link to="/" className="flex items-center" onClick={closeMenu}>
-                  <Logo size="large" />
+                  <Logo size="large" noWrapTagline />
                </Link>
             </div>
               
@@ -462,54 +450,46 @@ export default function Navbar() {
 
         {/* Mobile Search Bar */}
         <div className="w-full border-b border-gray-200 bg-white md:hidden">
-          <div className="max-w-7xl mx-auto px-3 sm:px-4 py-3">
-            <form onSubmit={handleSearch} className="relative">
-                  <input
-                    type="text"
-                    placeholder="Search products..."
-                    value={searchQuery}
-                    onChange={handleSearchChange}
-                    className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
-                    aria-label="Search products"
-                  />
+          <div className="max-w-7xl mx-auto px-3 sm:px-4 py-2.5">
+            <div className="flex items-center gap-2">
+              {/* Mobile Hamburger near Search */}
               <button
-                type="submit"
-                className="absolute left-3 top-1/2 transform -translate-y-1/2"
-                aria-label="Search"
+                onClick={() => setMenuOpen(!menuOpen)}
+                aria-label="Toggle menu"
+                title="Menu"
+                className="p-2 rounded-md border border-gray-200 bg-white active:bg-gray-50"
               >
-                <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
                 </svg>
               </button>
-            </form>
+              {/* Search */}
+              <form onSubmit={handleSearch} className="relative flex-1">
+                <input
+                  type="text"
+                  placeholder="Search products..."
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                  className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
+                  aria-label="Search products"
+                />
+                <button
+                  type="submit"
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2"
+                  aria-label="Search"
+                >
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                  </svg>
+                </button>
+              </form>
+            </div>
           </div>
         </div>
 
         {/* Categories Navigation */}
         <div className="w-full border-b border-gray-200 bg-white">
           <nav className="w-full px-2 sm:px-4 md:px-6 lg:px-8" aria-label="Main navigation">
-            {/* Mobile: Horizontal scrollable pills */}
-            <div className="md:hidden py-2 -mx-2 px-2 overflow-x-auto scrollbar-hide">
-              <div className="flex items-center gap-2">
-                {categories.map(({ label, path }) => (
-                  <NavLink
-                    key={path}
-                    to={path}
-                    onClick={() => setMenuOpen(false)}
-                    className={({ isActive }) =>
-                      `whitespace-nowrap px-3 py-1.5 rounded-full border text-xs font-semibold transition-colors ${
-                        isActive ? "bg-black text-white border-black" : "bg-white text-gray-800 border-gray-300"
-                      }`
-                    }
-                    aria-label={`Navigate to ${label} page`}
-                  >
-                    {label}
-                  </NavLink>
-                ))}
-              </div>
-            </div>
-
-            {/* Desktop: Centered tab list */}
             <ul className="hidden md:flex justify-center text-sm font-semibold text-gray-700">
               {categories.map(({ label, path, description }) => (
                 <li key={path} className="relative">
