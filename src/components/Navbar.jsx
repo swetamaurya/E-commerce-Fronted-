@@ -174,10 +174,22 @@ export default function Navbar() {
           <div className="w-full flex items-center justify-between py-1 sm:py-2 md:py-3 px-2 sm:px-4 md:px-6 lg:px-8">
             {/* Mobile: Logo + Icons */}
             <div className="flex items-center justify-between w-full md:hidden">
-              {/* Mobile Logo */}
-              <Link to="/" className="flex items-center" onClick={closeMenu}>
-                <Logo size="small" />
-              </Link>
+              {/* Mobile: Left - Hamburger + Logo */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setMenuOpen(!menuOpen)}
+                  aria-label="Toggle menu"
+                  title="Menu"
+                  className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-md transition-colors"
+                >
+                  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
+                  </svg>
+                </button>
+                <Link to="/" className="flex items-center" onClick={closeMenu}>
+                  <Logo size="small" />
+                </Link>
+              </div>
               
               {/* Mobile Icons */}
               <div className="flex items-center gap-1.5 sm:gap-2">
