@@ -488,6 +488,28 @@ export default function Navbar() {
         {/* Categories Navigation */}
         <div className="w-full border-b border-gray-200 bg-white">
           <nav className="w-full px-2 sm:px-4 md:px-6 lg:px-8" aria-label="Main navigation">
+            {/* Mobile: Horizontal scrollable pills */}
+            <div className="md:hidden py-2 -mx-2 px-2 overflow-x-auto scrollbar-hide">
+              <div className="flex items-center gap-2">
+                {categories.map(({ label, path }) => (
+                  <NavLink
+                    key={path}
+                    to={path}
+                    onClick={() => setMenuOpen(false)}
+                    className={({ isActive }) =>
+                      `whitespace-nowrap px-3 py-1.5 rounded-full border text-xs font-semibold transition-colors ${
+                        isActive ? "bg-black text-white border-black" : "bg-white text-gray-800 border-gray-300"
+                      }`
+                    }
+                    aria-label={`Navigate to ${label} page`}
+                  >
+                    {label}
+                  </NavLink>
+                ))}
+              </div>
+            </div>
+
+            {/* Desktop: Centered tab list */}
             <ul className="hidden md:flex justify-center text-sm font-semibold text-gray-700">
               {categories.map(({ label, path, description }) => (
                 <li key={path} className="relative">
