@@ -62,6 +62,28 @@ export default function ProductCard({
   const displayColor = variant.color || product?.color || (product?.colors && product.colors.join(', '));
   const displayThickness = product?.thickness || product?.meterial;
 
+  // Presentational helpers for color meta
+  const getShortColor = (color) => {
+    if (!color || typeof color !== 'string') return '';
+    const lower = color.trim();
+    // Prefer left side before common separators
+    const firstPart = lower.split(/,|\//)[0].split(/\s+with\s+/i)[0];
+    // Keep at most two words
+    const words = firstPart.split(/\s+/).slice(0, 2).join(' ');
+    return words;
+  };
+
+  const getColorSwatch = (color) => {
+    if (!color || typeof color !== 'string') return '';
+    const hexMatch = color.match(/#([0-9a-fA-F]{3,8})/);
+    if (hexMatch) return hexMatch[0];
+    // Try a simple CSS color name (first word)
+    const simple = color.trim().toLowerCase().split(/[,\s/]+/)[0];
+    const named = ['black','white','gray','grey','red','blue','navy','green','teal','yellow','orange','purple','pink','beige','brown','maroon','olive','cyan','magenta','gold','silver'];
+    if (named.includes(simple)) return simple;
+    return '';
+  };
+
   // Update wishlist status when props change
   useEffect(() => {
     setIsWishlisted(wishlistStatus);
@@ -365,7 +387,7 @@ export default function ProductCard({
     const categoryMap = {
       "Cotton Yoga Mats": "cotton-yoga-mats",
       "Bedside Runners": "bedside-runners", 
-      "Mats Collection": "mats-collection",
+      "UniqueCollection": "mats-collection",
       "Bath Mats": "bath-mats",
       "Area Rugs": "area-rugs",
       "In Door Mats": "mats-collection",
@@ -556,11 +578,29 @@ export default function ProductCard({
           <h3 className="font-bold text-sm text-gray-900 leading-tight mb-1 sm:mb-2 line-clamp-2">
             {product.title || product.name}
           </h3>
-          {product.description && (
-            <p className="text-xs text-gray-500 mb-2 line-clamp-2">
-              {product.description}
-            </p>
+          {/* Description hidden as requested */}
+          {/* Size & Color */}
+          {(displaySize || displayColor) && (
+            <div className="flex flex-wrap items-center gap-2 mb-2">
+              {displaySize && (
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full border border-gray-300 text-gray-700 text-[10px] sm:text-xs font-medium">
+                  {displaySize}
+                </span>
+              )}
+              {displayColor && (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gray-100 text-gray-700 text-[10px] sm:text-xs font-medium max-w-full">
+                  {(() => {
+                    const sw = getColorSwatch(displayColor);
+                    return sw ? (
+                      <span className="inline-block w-2.5 h-2.5 rounded-full border border-gray-300" style={{ background: sw }}></span>
+                    ) : null;
+                  })()}
+                  <span className="truncate">{getShortColor(displayColor)}</span>
+                </span>
+              )}
+            </div>
           )}
+
           <div className="flex items-baseline gap-1 sm:gap-2">
             <div className="font-black text-base sm:text-lg text-gray-900">₹{product.price}</div>
             {product.mrp && product.mrp > product.price && (
@@ -670,11 +710,28 @@ export default function ProductCard({
           {product.title || product.name}
         </h3>
 
-        {/* Product Description */}
-        {product.description && (
-          <p className="text-[10px] sm:text-xs text-gray-500 mb-2 line-clamp-2">
-            {product.description}
-          </p>
+        {/* Description hidden as requested */}
+
+        {/* Size & Color */}
+        {(displaySize || displayColor) && (
+          <div className="flex flex-wrap items-center gap-2 mb-2">
+            {displaySize && (
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full border border-gray-300 text-gray-700 text-[10px] sm:text-xs font-medium">
+                {displaySize}
+              </span>
+            )}
+            {displayColor && (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gray-100 text-gray-700 text-[10px] sm:text-xs font-medium max-w-full">
+                {(() => {
+                  const sw = getColorSwatch(displayColor);
+                  return sw ? (
+                    <span className="inline-block w-2.5 h-2.5 rounded-full border border-gray-300" style={{ background: sw }}></span>
+                  ) : null;
+                })()}
+                <span className="truncate">{getShortColor(displayColor)}</span>
+              </span>
+            )}
+          </div>
         )}
 
         {/* Pricing Section */}

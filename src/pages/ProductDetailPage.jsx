@@ -354,9 +354,9 @@ export default function ProductDetailPage() {
             <span className="text-gray-900 font-medium text-sm">{product.name || product.title}</span>
           </nav>
 
-          <div className="flex flex-col md:flex-row gap-3 sm:gap-4 md:gap-6 lg:gap-8">
-            {/* LEFT: Image Gallery - Fixed */}
-            <div className="md:w-1/2 md:sticky md:top-4 md:self-start md:h-fit">
+          <div className="flex flex-col md:flex-row items-start gap-3 sm:gap-4 md:gap-6 lg:gap-8">
+            {/* LEFT: Image Gallery - sticky on all screens (offset for fixed header) */}
+            <div className="w-full md:w-1/2 sticky top-32 lg:top-32 self-start">
               <ImageGallery 
                 images={sortedGalleryImages} 
                 productName={product.name || product.title}

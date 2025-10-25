@@ -16,12 +16,12 @@ const categoryData = [
   {
     id: 2,
     name: "BEDSIDE RUNNERS",
-    image: "https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    image: "/images/bedside.png",
     link: "/bedside-runners"
   },
   {
     id: 3,
-    name: "MATS COLLECTION",
+    name: "UNIQUE COLLECTION",
     image: "https://images.unsplash.com/photo-1671576414507-d229f3211069?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8ODR8fHJ1ZyUyMG1hdHMlMjBjb2xsZWN0aW9uc3xlbnwwfHwwfHx8MA%3D%3D",
     link: "/mats-collection"
   },
@@ -34,7 +34,7 @@ const categoryData = [
   {
     id: 5,
     name: "AREA RUGS",
-    image: "https://images.unsplash.com/photo-1600166898405-da9535204843?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDEzfHx8ZW58MHx8fHx8",
+    image: "/images/area.png",
     link: "/area-rugs"
   }
 ];

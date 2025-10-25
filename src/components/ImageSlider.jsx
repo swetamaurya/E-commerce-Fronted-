@@ -8,7 +8,7 @@ const ImageSlider = () => {
   const slides = [
     {
       id: 1,
-      image: "https://images.unsplash.com/photo-1646592491854-6caaaf4d8ee7?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDE0fHx8ZW58MHx8fHx8",
+      image: "/images/bedside.png",
       title: "Bedside Runners Mats",
       subtitle: "Discover our exclusive collection",
       description: "Transform your home with our beautifully crafted rugs and mats",
@@ -28,7 +28,7 @@ const ImageSlider = () => {
     },
     {
       id: 3,
-      image: "https://images.unsplash.com/photo-1726463450351-4b603da0f507?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NTV8fGFyZWElMjBydWd8ZW58MHx8MHx8fDA%3D",
+      image: "/images/area.png",
       title: "Area Rugs Collection",
       subtitle: "Elevate your space",
       description: "Beautiful area rugs to enhance any room in your home",
@@ -49,7 +49,7 @@ const ImageSlider = () => {
     {
       id: 5,
       image: "https://images.unsplash.com/photo-1740168254713-1e8695f89ffe?w=1000&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8cnVnJTIwbWF0cyUyMGNvbGxlY3Rpb25zfGVufDB8fDB8fHww",
-      title: "Mats Collection",
+      title: "Unique Collection",
       subtitle: "Luxury for your home",
       description: "Soft and absorbent mats collections",
       buttonText: "Shop Mats Collection",
