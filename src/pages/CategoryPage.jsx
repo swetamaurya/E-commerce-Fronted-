@@ -171,8 +171,30 @@ export default function CategoryPage({ title, slug }) {
       })
       .filter((p) => {
         if (filters.color.length === 0) return true;
-        const productColors = Array.isArray(p.colors) ? p.colors : [p.color].filter(Boolean);
-        return filters.color.some(filterColor => productColors.includes(filterColor));
+        
+        // Extract colors from multiple possible fields
+        const colorSources = [
+          p.colors,
+          p.color,
+          p.variants?.map(v => v.color).filter(Boolean),
+          p.colour // alternative spelling
+        ].filter(Boolean);
+        
+        const productColors = [];
+        colorSources.forEach(colorSource => {
+          if (Array.isArray(colorSource)) {
+            productColors.push(...colorSource.map(c => c?.trim()).filter(Boolean));
+          } else if (colorSource && colorSource.trim()) {
+            productColors.push(colorSource.trim());
+          }
+        });
+        
+        return filters.color.some(filterColor => 
+          productColors.some(productColor => 
+            productColor.toLowerCase().includes(filterColor.toLowerCase()) ||
+            filterColor.toLowerCase().includes(productColor.toLowerCase())
+          )
+        );
       })
       .filter((p) => priceMatch(Number(p.price ?? 0)));
   }, [items, filters]);

@@ -18,10 +18,11 @@ export default function FilterBar({ filters, setFilters, products = [], total = 
     const predefinedTypes = [
       { value: "In Door Mats", label: "In Door Mats" },
       { value: "Out Door Mats", label: "Out Door Mats" },
+      { value: "Aasan Mats", label: "Aasan Mats" },
+      { value: "Animal Rugs", label: "Animal Rugs" },
       { value: "Cotton Yoga Mats", label: "Cotton Yoga Mats" },
       { value: "Bath Mats", label: "Bath Mats" },
       { value: "Bedside Runners", label: "Bedside Runners" },
-      { value: "Aasan Mat", label: "Aasan Mat" },
       { value: "Area Rugs", label: "Area Rugs" },
       { value: "Mats Collection", label: "Mats Collection" },
     ];
@@ -95,41 +96,59 @@ export default function FilterBar({ filters, setFilters, products = [], total = 
       return acc;
     }, []), "size");
     
-    // Handle colors - can be array or single value
+    // Handle colors - extract from actual product data dynamically
     const actualColors = toList(products.reduce((acc, product) => {
-      const colors = product.colors || [];
-      if (Array.isArray(colors)) {
-        colors.forEach(color => {
-          if (color && color.trim()) {
-            acc.push({ color: color.trim() });
-          }
-        });
-      } else if (colors && colors.trim()) {
-        acc.push({ color: colors.trim() });
-      }
+      // Check multiple possible color fields
+      const colorSources = [
+        product.colors,
+        product.color,
+        product.variants?.map(v => v.color).filter(Boolean),
+        product.colour // alternative spelling
+      ].filter(Boolean);
+      
+      colorSources.forEach(colorSource => {
+        if (Array.isArray(colorSource)) {
+          colorSource.forEach(color => {
+            if (color && color.trim()) {
+              acc.push({ color: color.trim() });
+            }
+          });
+        } else if (colorSource && colorSource.trim()) {
+          acc.push({ color: colorSource.trim() });
+        }
+      });
+      
       return acc;
     }, []), "color");
 
-    // Combine predefined options with actual data
+    // Get unique colors from actual data and create options
+    const colors = actualColors.map(colorData => ({
+      value: colorData.value,
+      label: colorData.value,
+      count: colorData.count
+    })).sort((a, b) => a.label.localeCompare(b.label));
+
+    // Debug logging
+    console.log('FilterBar - Products:', products.length);
+    console.log('FilterBar - Actual Colors:', actualColors);
+    console.log('FilterBar - Colors:', colors);
+
+    // Combine predefined options with actual data for types
     const types = predefinedTypes.map(type => {
       const actual = actualTypes.find(t => t.value === type.value);
       return { ...type, count: actual?.count || 0 };
-    });
+    }).filter(type => type.count > 0); // Only show types that have products
 
+    // Combine predefined options with actual data for sizes  
     const sizes = predefinedSizes.map(size => {
       const actual = actualSizes.find(s => s.value === size.value);
       return { ...size, count: actual?.count || 0 };
-    });
-
-    const colors = predefinedColors.map(color => {
-      const actual = actualColors.find(c => c.value === color.value);
-      return { ...color, count: actual?.count || 0 };
-    });
+    }).filter(size => size.count > 0); // Only show sizes that have products
 
     return {
       types,
       sizes,
-      colors,
+      colors: colors.length > 0 ? colors : [{ value: "No colors found", label: "No colors found", count: 0 }],
       prices: [
         { value: "ALL", label: "All prices" },
         { value: "0-200", label: "₹0 - ₹200" },
