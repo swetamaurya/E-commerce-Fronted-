@@ -387,7 +387,7 @@ export default function ProductCard({
     const categoryMap = {
       "Cotton Yoga Mats": "cotton-yoga-mats",
       "Bedside Runners": "bedside-runners", 
-      "UniqueCollection": "mats-collection",
+      "Mats Collection": "mats-collection",
       "Bath Mats": "bath-mats",
       "Area Rugs": "area-rugs",
       "In Door Mats": "mats-collection",

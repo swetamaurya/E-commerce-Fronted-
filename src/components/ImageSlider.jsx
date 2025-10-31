@@ -16,16 +16,16 @@ const ImageSlider = () => {
       buttonLink: "/cotton-yoga-mats",
       overlay: "rgba(0, 0, 0, 0.4)"
     },
-    {
-      id: 2,
-      image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2020&q=80",
-      title: "Cotton Yoga Mats",
-      subtitle: "Perfect for your practice",
-      description: "Premium quality yoga mats designed for comfort and durability",
-      buttonText: "Explore Collection",
-      buttonLink: "/cotton-yoga-mats",
-      overlay: "rgba(0, 0, 0, 0.3)"
-    },
+    // {
+    //   id: 2,
+    //   image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2020&q=80",
+    //   title: "Cotton Yoga Mats",
+    //   subtitle: "Perfect for your practice",
+    //   description: "Premium quality yoga mats designed for comfort and durability",
+    //   buttonText: "Explore Collection",
+    //   buttonLink: "/cotton-yoga-mats",
+    //   overlay: "rgba(0, 0, 0, 0.3)"
+    // },
     {
       id: 3,
       image: "/images/area.png",
@@ -36,20 +36,20 @@ const ImageSlider = () => {
       buttonLink: "/area-rugs",
       overlay: "rgba(0, 0, 0, 0.35)"
     },
-    {
-      id: 4,
-      image: "https://images.unsplash.com/photo-1587527901949-ab0341697c1e?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDE5fHx8ZW58MHx8fHx8",
-      title: "Bath Mats Collection",
-      subtitle: "Luxury for your bathroom",
-      description: "Soft and absorbent bath mats and bedside runners",
-      buttonText: "Shop Bath Mats",
-      buttonLink: "/bath-mats",
-      overlay: "rgba(0, 0, 0, 0.4)"
-    },
+    // {
+    //   id: 4,
+    //   image: "https://images.unsplash.com/photo-1587527901949-ab0341697c1e?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDE5fHx8ZW58MHx8fHx8",
+    //   title: "Bath Mats Collection",
+    //   subtitle: "Luxury for your bathroom",
+    //   description: "Soft and absorbent bath mats and bedside runners",
+    //   buttonText: "Shop Bath Mats",
+    //   buttonLink: "/bath-mats",
+    //   overlay: "rgba(0, 0, 0, 0.4)"
+    // },
     {
       id: 5,
       image: "https://images.unsplash.com/photo-1740168254713-1e8695f89ffe?w=1000&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8cnVnJTIwbWF0cyUyMGNvbGxlY3Rpb25zfGVufDB8fDB8fHww",
-      title: "Unique Collection",
+      title: "Mats Collection",
       subtitle: "Luxury for your home",
       description: "Soft and absorbent mats collections",
       buttonText: "Shop Mats Collection",

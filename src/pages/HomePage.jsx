@@ -9,9 +9,9 @@ import { API_URL } from '../config';
 const categoryData = [
   {
     id: 1,
-    name: "COTTON YOGA MATS",
-    image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-    link: "/cotton-yoga-mats"
+    name: "AREA RUGS ",
+    image: "/images/area.png",
+    link: "/area-rugs"
   },
   {
     id: 2,
@@ -21,22 +21,22 @@ const categoryData = [
   },
   {
     id: 3,
-    name: "UNIQUE COLLECTION",
+    name: "MATS COLLECTION",
     image: "https://images.unsplash.com/photo-1671576414507-d229f3211069?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8ODR8fHJ1ZyUyMG1hdHMlMjBjb2xsZWN0aW9uc3xlbnwwfHwwfHx8MA%3D%3D",
     link: "/mats-collection"
   },
   {
     id: 4,
-    name: "BATH MATS",
+    name: "BATH MATS COMING SOON",
     image: "https://images.unsplash.com/photo-1741282306930-a145155ba880?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDE0fHx8ZW58MHx8fHx8",
-    link: "/bath-mats"
+    // link: "/bath-mats"
   },
-  {
+ {
     id: 5,
-    name: "AREA RUGS",
-    image: "/images/area.png",
-    link: "/area-rugs"
-  }
+    name: "COTTON YOGA MATS COMING SOON",
+    image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+    // link: "/cotton-yoga-mats"
+  },
 ];
 
 
@@ -461,7 +461,7 @@ export default function HomePage() {
           <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">Ready to Transform Your Home?</h2>
           <p className="text-lg sm:text-xl mb-6 sm:mb-8">Discover our exclusive collection of handmade rugs and mats</p>
           <Link 
-            to="/cotton-yoga-mats" 
+            to="/all-products" 
             className="bg-white text-gray-900 px-6 sm:px-8 py-2.5 sm:py-3 rounded-md font-semibold hover:bg-gray-100 transition-colors text-sm sm:text-base"
           >
             Explore Collection

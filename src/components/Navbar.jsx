@@ -9,9 +9,9 @@ import { getGuestWishlist } from "../utils/guestStorage";
 const categories = [
   { label: "AREA RUGS",        path: "/area-rugs", description: "Beautiful area rugs for home decoration" },
   { label: "BEDSIDE RUNNERS",  path: "/bedside-runners", description: "Elegant bedside runners for bedroom decor" },
-  { label: "UNIQUE COLLECTION",  path: "/mats-collection", description: "Complete collection of home and yoga mats" },
-  { label: "BATH MATS",        path: "/bath-mats", description: "Luxurious bath mats for bathroom comfort" },
-  { label: "COTTON YOGA MATS", path: "/cotton-yoga-mats", description: "Premium cotton yoga mats for comfortable practice" },
+  { label: "MATS COLLECTION",  path: "/mats-collection", description: "Complete collection of home and yoga mats" },
+  // { label: "BATH MATS",        path: "/bath-mats", description: "Luxurious bath mats for bathroom comfort" },
+  // { label: "COTTON YOGA MATS", path: "/cotton-yoga-mats", description: "Premium cotton yoga mats for comfortable practice" },
 ];
 
 export default function Navbar() {

@@ -24,31 +24,31 @@ export default function CategoryPage({ title, slug }) {
   const seoData = {
     'cotton-yoga-mats': {
       title: 'Cotton Yoga Mats - Premium Handmade Yoga Mats | Royal Thread',
-      description: 'Discover premium cotton yoga mats for comfortable practice. Handcrafted with love, perfect for yoga, meditation, and wellness. Shop now for the best quality.',
+      // description: 'Discover premium cotton yoga mats for comfortable practice. Handcrafted with love, perfect for yoga, meditation, and wellness. Shop now for the best quality.',
       keywords: 'cotton yoga mats, handmade yoga mats, premium yoga mats, meditation mats, wellness products',
       image: '/images/cotton-yoga-mats.jpg'
     },
     'bedside-runners': {
       title: 'Bedside Runners - Elegant Bedroom Decor | Royal Thread',
-      description: 'Beautiful bedside runners to enhance your bedroom decor. Handcrafted with premium materials for elegance and comfort.',
+      // description: 'Beautiful bedside runners to enhance your bedroom decor. Handcrafted with premium materials for elegance and comfort.',
       keywords: 'bedside runners, bedroom decor, home textiles, handmade rugs, bedroom accessories',
       image: '/images/bedside-runners.jpg'
     },
     'mats-collection': {
       title: 'Mats Collection - Complete Home & Yoga Mats | Royal Thread',
-      description: 'Complete collection of home and yoga mats. From meditation to decoration, find the perfect mat for every space.',
+      // description: 'Complete collection of home and yoga mats. From meditation to decoration, find the perfect mat for every space.',
       keywords: 'mats collection, home mats, yoga mats, meditation mats, decorative mats',
       image: '/images/mats-collection.jpg'
     },
     'bath-mats': {
       title: 'Bath Mats - Luxurious Bathroom Comfort | Royal Thread',
-      description: 'Luxurious bath mats for ultimate bathroom comfort. Soft, absorbent, and beautifully designed for your bathroom.',
+      // description: 'Luxurious bath mats for ultimate bathroom comfort. Soft, absorbent, and beautifully designed for your bathroom.',
       keywords: 'bath mats, bathroom accessories, luxury bath mats, soft bath mats, bathroom comfort',
       image: '/images/bath-mats.jpg'
     },
     'area-rugs': {
       title: 'Area Rugs - Beautiful Home Decoration | Royal Thread',
-      description: 'Beautiful area rugs to transform your home decoration. Handcrafted designs that add warmth and style to any room.',
+      // description: 'Beautiful area rugs to transform your home decoration. Handcrafted designs that add warmth and style to any room.',
       keywords: 'area rugs, home decoration, handmade rugs, decorative rugs, home textiles',
       image: '/images/area-rugs.jpg'
     }

@@ -220,7 +220,7 @@ export default function AllProductsPage() {
         <p className="text-gray-600 text-sm sm:text-base md:text-lg max-w-3xl mx-auto px-2 leading-relaxed">
           {searchQuery 
             ? `Found ${visibleProducts.length} products matching your search`
-            : 'Discover our complete collection of premium handcrafted products'
+            : ''
           }
         </p>
         {searchQuery && (

@@ -4,9 +4,9 @@ import Logo from "./Logo";
 const categories = [
   { label: "AREA RUGS", path: "/area-rugs" },
   { label: "BEDSIDE RUNNERS", path: "/bedside-runners" },
-  { label: "UNIQUE COLLECTION", path: "/mats-collection" },
-  { label: "BATH MATS", path: "/bath-mats" },
-  { label: "COTTON YOGA MATS", path: "/cotton-yoga-mats" },
+  { label: "MATS COLLECTION", path: "/mats-collection" },
+  // { label: "BATH MATS", path: "/bath-mats" },
+  // { label: "COTTON YOGA MATS", path: "/cotton-yoga-mats" },
 ];
 
 const quickLinks = [
@@ -74,11 +74,11 @@ export default function Footer() {
             </div>
 
             {/* Marketplace Links */}
-            <div className="mt-4 sm:mt-6">
-              <h5 className="text-sm font-semibold text-gray-900 mb-2">Find us on</h5>
-              <div className="flex flex-wrap items-center gap-2.5">
+            {/* <div className="mt-4 sm:mt-6"> */}
+              {/* <h5 className="text-sm font-semibold text-gray-900 mb-2">Find us on</h5> */}
+              {/* <div className="flex flex-wrap items-center gap-2.5">
                 {/* Meesho */}
-                <a
+                {/* <a
                   href="https://www.meesho.com/royalthread2025?_ms=3.0.1"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -90,9 +90,9 @@ export default function Footer() {
                     <circle cx="12" cy="12" r="11" fill="#FF0066"/>
                     <path d="M7.5 15V9.5a1.5 1.5 0 0 1 3 0V15h-1.5V9.75c0-.414-.336-.75-.75-.75s-.75.336-.75.75V15H7.5Zm6 0V9.5a1.5 1.5 0 0 1 3 0V15H15V9.75c0-.414-.336-.75-.75-.75s-.75.336-.75.75V15H13.5Z" fill="white"/>
                   </svg>
-                </a>
+                </a> */}
                 {/* Flipkart */}
-                <a
+                {/* <a
                   href="https://www.flipkart.com/"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -104,9 +104,9 @@ export default function Footer() {
                     <rect x="3" y="3" width="18" height="18" rx="4" fill="#2874F0"/>
                     <path d="M9 7h6l-1 3h-4l-1 3h4l-1 3H8.5c-.8 0-1.3-.9-.9-1.6L9 7Z" fill="#FFD700"/>
                   </svg>
-                </a>
+                </a> */}
                 {/* Amazon */}
-                <a
+                {/* <a
                   href="https://www.amazon.in/s?me=A1WMXLHVWC8UK1"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -118,9 +118,9 @@ export default function Footer() {
                     <path d="M6 7.5C6 6.1 7.3 5 9 5c1.4 0 2.4.6 2.9 1.6l-1.5.9C10.2 7 9.7 6.6 9 6.6c-.8 0-1.4.5-1.4 1 0 .6.5.9 1.3 1.1l.8.2c1.8.5 2.7 1.3 2.7 2.8 0 1.9-1.6 3-3.7 3-1.9 0-3.3-.8-3.9-2.1l1.6-.8c.3.8 1.1 1.3 2.3 1.3 1 0 1.7-.5 1.7-1.2 0-.6-.4-1-.9-1.1l-1.1-.3C6.9 10 6 9.2 6 7.9V7.5Z" fill="#000"/>
                     <path d="M4 18c4 1.8 8.1 1.8 12 0" stroke="#FF9900" strokeWidth="1.5" strokeLinecap="round"/>
                   </svg>
-                </a>
+                </a> */}
                 {/* Shopsy */}
-                <a
+                {/* <a
                   href="https://www.shopsy.in/"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -132,9 +132,9 @@ export default function Footer() {
                     <path d="M6 7h12l-1.2 10.2A2 2 0 0 1 14.8 19H9.2a2 2 0 0 1-2-1.8L6 7Z" fill="#6C5CE7"/>
                     <path d="M9 7c.3-1.7 1.1-3 2.5-3S13.2 5.3 13.5 7" stroke="#fff" strokeWidth="1.2" strokeLinecap="round"/>
                   </svg>
-                </a>
-              </div>
-            </div>
+                </a> */}
+              {/* </div> */} 
+            {/* </div> */}
           </div>
 
           {/* Quick Links */}
@@ -220,76 +220,57 @@ export default function Footer() {
 
       {/* Bottom Section */}
       <div className="border-t border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
-          {/* Payment Methods */}
-          <div className="mb-4 sm:mb-6">
-            <h4 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-center text-gray-900">We Accept</h4>
-            <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-5">
-              {/* UPI */}
-              <a href="https://www.npci.org.in/what-we-do/upi/product-overview" target="_blank" rel="noopener noreferrer" aria-label="UPI" className="p-2 rounded-md border border-gray-200 hover:bg-gray-50 transition">
-                <svg viewBox="0 0 24 24" className="w-7 h-7 fill-gray-800" aria-hidden="true">
-                  <path d="M3 12a9 9 0 1 1 18 0 9 9 0 0 1-18 0Zm5-2.5h2v5H8v-5Zm6 0h2v5h-2v-5Zm-3 .5h2v4h-2v-4Z"/>
-                </svg>
-              </a>
-              {/* PhonePe */}
-              <a href="https://www.phonepe.com/" target="_blank" rel="noopener noreferrer" aria-label="PhonePe" className="p-2 rounded-md border border-gray-200 hover:bg-gray-50 transition">
-                <svg viewBox="0 0 24 24" className="w-7 h-7" aria-hidden="true">
-                  <circle cx="12" cy="12" r="10" fill="#5b2dab"/>
-                  <path d="M8 8.5h4.5a2.5 2.5 0 1 1 0 5H11v2H9.5v-2H8v-1.5h1.5v-2H8v-1.5Zm3 1.5v2h1.5a1 1 0 1 0 0-2H11Z" fill="#fff"/>
-                </svg>
-              </a>
-              {/* Google Pay */}
-              <a href="https://pay.google.com/" target="_blank" rel="noopener noreferrer" aria-label="Google Pay" className="p-2 rounded-md border border-gray-200 hover:bg-gray-50 transition">
-                <svg viewBox="0 0 24 24" className="w-7 h-7" aria-hidden="true">
-                  <circle cx="12" cy="12" r="10" fill="#1a73e8"/>
-                  <path d="M8 12a4 4 0 1 1 4 4H8v-4Z" fill="#fff"/>
-                </svg>
-              </a>
-              {/* Paytm */}
-              <a href="https://paytm.com/" target="_blank" rel="noopener noreferrer" aria-label="Paytm" className="p-2 rounded-md border border-gray-200 hover:bg-gray-50 transition">
-                <svg viewBox="0 0 24 24" className="w-7 h-7" aria-hidden="true">
-                  <rect x="3" y="4" width="18" height="16" rx="3" fill="#00baf2"/>
-                  <rect x="6" y="8" width="12" height="2" fill="#fff"/>
-                  <rect x="6" y="12" width="9" height="2" fill="#fff"/>
-                </svg>
-              </a>
-              {/* Visa */}
-              <a href="https://www.visa.co.in/" target="_blank" rel="noopener noreferrer" aria-label="Visa" className="p-2 rounded-md border border-gray-200 hover:bg-gray-50 transition">
-                <svg viewBox="0 0 24 24" className="w-7 h-7" aria-hidden="true">
-                  <rect x="3" y="5" width="18" height="14" rx="2" fill="#1a1f71"/>
-                  <path d="M7 13h2l.5-2H7.5L7 13Zm3 0h1.8l.4-2H10.4L10 13Zm3.3 0h1.7l.3-2h-1.7l-.3 2Z" fill="#fff"/>
-                </svg>
-              </a>
-              {/* Mastercard */}
-              <a href="https://www.mastercard.co.in/" target="_blank" rel="noopener noreferrer" aria-label="Mastercard" className="p-2 rounded-md border border-gray-200 hover:bg-gray-50 transition">
-                <svg viewBox="0 0 24 24" className="w-7 h-7" aria-hidden="true">
-                  <circle cx="10" cy="12" r="5" fill="#eb001b"/>
-                  <circle cx="14" cy="12" r="5" fill="#f79e1b"/>
-                </svg>
-              </a>
-            </div>
-          </div>
-
-          {/* Copyright */}
-          <div className="text-center text-gray-600 text-sm">
-            <p className="mb-2">
-              © {new Date().getFullYear()} Royal Thread. All rights reserved.
-            </p>
-
-            <p>
-              Created by{" "}
-              <a
-                href="https://wa.me/918756043373"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:text-blue-800 underline-offset-4 hover:underline"
-              >
-                Sweta Maurya
-              </a>
-            </p>
-          </div>
-        </div>
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+    {/* Payment Methods */}
+    <div className="mb-4 sm:mb-6">
+      <h4 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-center text-gray-900">We Accept</h4>
+      <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-5">
+        {/* UPI */}
+        <a href="https://www.npci.org.in/what-we-do/upi/product-overview" target="_blank" rel="noopener noreferrer" aria-label="UPI" className="p-2 rounded-md border border-gray-200 hover:bg-gray-50 transition">
+          <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true" className="w-8 h-8"><rect fill="#fff" width="36" height="36" rx="18"/><text x="18" y="24" textAnchor="middle" fontSize="14" fill="#333" fontWeight="bold">UPI</text></svg>
+        </a>
+        {/* PhonePe */}
+        <a href="https://www.phonepe.com/" target="_blank" rel="noopener noreferrer" aria-label="PhonePe" className="p-2 rounded-md border border-gray-200 hover:bg-gray-50 transition">
+          <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true" className="w-8 h-8"><circle cx="18" cy="18" r="16" fill="#5b2dab"/><text x="18" y="24" textAnchor="middle" fontSize="14" fill="#fff" fontWeight="bold">P</text></svg>
+        </a>
+        {/* Google Pay */}
+        <a href="https://pay.google.com/" target="_blank" rel="noopener noreferrer" aria-label="Google Pay" className="p-2 rounded-md border border-gray-200 hover:bg-gray-50 transition">
+          <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true" className="w-8 h-8"><rect fill="#fff" width="36" height="36" rx="18"/><text x="18" y="24" textAnchor="middle" fontSize="14" fill="#1a73e8" fontWeight="bold">GPay</text></svg>
+        </a>
+        {/* Paytm */}
+        <a href="https://paytm.com/" target="_blank" rel="noopener noreferrer" aria-label="Paytm" className="p-2 rounded-md border border-gray-200 hover:bg-gray-50 transition">
+          <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true" className="w-8 h-8"><rect fill="#00baf2" width="36" height="36" rx="18"/><text x="18" y="24" textAnchor="middle" fontSize="14" fill="#fff" fontWeight="bold">Paytm</text></svg>
+        </a>
+        {/* Visa */}
+        <a href="https://www.visa.co.in/" target="_blank" rel="noopener noreferrer" aria-label="Visa" className="p-2 rounded-md border border-gray-200 hover:bg-gray-50 transition">
+          <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true" className="w-8 h-8"><rect fill="#1a1f71" width="36" height="36" rx="8"/><text x="18" y="24" textAnchor="middle" fontSize="14" fill="#fff" fontWeight="bold">Visa</text></svg>
+        </a>
+        {/* Mastercard */}
+        <a href="https://www.mastercard.co.in/" target="_blank" rel="noopener noreferrer" aria-label="Mastercard" className="p-2 rounded-md border border-gray-200 hover:bg-gray-50 transition">
+          <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true" className="w-8 h-8"><circle cx="14" cy="18" r="8" fill="#eb001b"/><circle cx="22" cy="18" r="8" fill="#f79e1b"/><text x="18" y="30" textAnchor="middle" fontSize="12" fill="#333" fontWeight="bold">Mastercard</text></svg>
+        </a>
       </div>
+    </div>
+    {/* Copyright */}
+    <div className="text-center text-gray-600 text-sm">
+      <p className="mb-2">
+        © {new Date().getFullYear()} Royal Thread. All rights reserved.
+      </p>
+      <p>
+        Created by{" "}
+        <a
+          href="https://wa.me/918756043373"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 hover:text-blue-800 underline-offset-4 hover:underline"
+        >
+          Sweta Maurya
+        </a>
+      </p>
+    </div>
+  </div>
+</div>
+
 
     </footer>
   );

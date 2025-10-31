@@ -8,6 +8,7 @@ const Logo = ({ className = "", showText = true, size = "medium", variant = "def
     xlarge: "w-20 h-20"
   };
 
+  // Main text size classes (for "Royal Thread")
   const textSizeClasses = {
     small: "text-xs sm:text-sm",
     medium: "text-sm sm:text-base", 
@@ -15,16 +16,17 @@ const Logo = ({ className = "", showText = true, size = "medium", variant = "def
     xlarge: "text-lg sm:text-xl"
   };
 
+  // Tagline size classes (for "Carpet Rugs & Home Decor") - always smaller than above
   const subtextSizeClasses = {
     small: "text-xs",
-    medium: "text-xs sm:text-sm", 
-    large: "text-sm sm:text-base",
-    xlarge: "text-base sm:text-lg"
+    medium: "text-xs",
+    large: "text-sm",
+    xlarge: "text-base"
   };
+  
 
   return (
     <div className={`flex items-center ${className}`}>
-      {/* Logo Image */}
       <div className={`flex items-center ${className.includes('justify-start') ? 'justify-start' : 'justify-center'}`}>
         <img
           src="/logo9.png"
