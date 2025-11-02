@@ -37,9 +37,9 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="bg-gradient-to-b from-gray-50 to-white py-12 sm:py-16 md:py-20">
+      <section className="bg-gradient-to-b from-gray-50 to-white py-8 sm:py-12 md:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4 sm:mb-6">
             Contact Us
           </h1>
           <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
@@ -65,7 +65,7 @@ export default function ContactPage() {
               <div className="flex items-start space-x-4">
                 <div className="flex-shrink-0">
                   <div className="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center">
-                    <svg className="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-6 h-6 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                     </svg>
                   </div>
@@ -79,7 +79,7 @@ export default function ContactPage() {
               <div className="flex items-start space-x-4">
                 <div className="flex-shrink-0">
                   <div className="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center">
-                    <svg className="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-6 h-6 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
                   </div>
@@ -93,7 +93,7 @@ export default function ContactPage() {
               <div className="flex items-start space-x-4">
                 <div className="flex-shrink-0">
                   <div className="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center">
-                    <svg className="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-6 h-6 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
@@ -135,7 +135,7 @@ export default function ContactPage() {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-600 mb-2">
                     Full Name *
                   </label>
                   <input
@@ -149,7 +149,7 @@ export default function ContactPage() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-600 mb-2">
                     Email Address *
                   </label>
                   <input
@@ -166,7 +166,7 @@ export default function ContactPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="phone" className="block text-sm font-medium text-gray-600 mb-2">
                     Phone Number
                   </label>
                   <input
@@ -179,7 +179,7 @@ export default function ContactPage() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="subject" className="block text-sm font-medium text-gray-600 mb-2">
                     Subject *
                   </label>
                   <select
@@ -202,7 +202,7 @@ export default function ContactPage() {
               </div>
 
               <div>
-                <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="message" className="block text-sm font-medium text-gray-600 mb-2">
                   Message *
                 </label>
                 <textarea
@@ -219,7 +219,7 @@ export default function ContactPage() {
 
               <button
                 type="submit"
-                className="w-full bg-teal-600 text-white py-3 px-4 rounded-md hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 transition-colors font-medium"
+                className="w-full bg-gray-900 text-white py-3 px-4 rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 transition-colors font-medium"
               >
                 Send Message
               </button>

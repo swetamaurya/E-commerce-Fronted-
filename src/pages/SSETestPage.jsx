@@ -84,7 +84,7 @@ export default function SSETestPage() {
                 <div key={index} className={`p-2 rounded text-sm ${
                   msg.type === 'error' ? 'bg-red-100 text-red-800' :
                   msg.type === 'info' ? 'bg-blue-100 text-blue-800' :
-                  'bg-white text-gray-800'
+                  'bg-white text-gray-900'
                 }`}>
                   <div className="font-mono text-xs text-gray-500 mb-1">
                     {msg.timestamp.toLocaleTimeString()}

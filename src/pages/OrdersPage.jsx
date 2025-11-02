@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { orderApi, orderSSE } from "../services/api";
 import { toast } from "react-toastify";
 
 export default function OrdersPage() {
+  const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [dataFetched, setDataFetched] = useState(false);
@@ -173,9 +174,9 @@ export default function OrdersPage() {
       case 'Cancelled':
         return 'bg-red-100 text-red-800';
       case 'Returned':
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-100 text-gray-900';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-100 text-gray-900';
     }
   };
 
@@ -208,7 +209,7 @@ export default function OrdersPage() {
 
   if (loading) {
     return (
-      <div className="bg-white flex items-center justify-center py-20">
+      <div className="bg-white flex items-center justify-center py-10">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-teal-500"></div>
           <p className="mt-4 text-gray-500">Loading your orders...</p>
@@ -224,7 +225,7 @@ export default function OrdersPage() {
           <div className="flex items-center justify-between mb-6">
             <Link 
               to="/" 
-              className="inline-flex items-center text-teal-600 hover:text-teal-700 font-medium"
+              className="inline-flex items-center text-gray-900 hover:text-teal-700 font-medium"
             >
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -233,13 +234,13 @@ export default function OrdersPage() {
             </Link>
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2 text-center">Your Orders</h1>
-          <div className="flex flex-col items-center justify-center py-20">
+          <div className="flex flex-col items-center justify-center py-10">
             <svg className="w-16 h-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
             <p className="text-gray-500 mb-2">Please login to view your orders</p>
             <p className="text-gray-500 mb-6">Your orders will appear here</p>
-            <Link to="/cotton-yoga-mats" className="text-sm font-semibold text-teal-600 underline">
+            <Link to="/cotton-yoga-mats" className="text-sm font-semibold text-gray-900 underline">
               CONTINUE SHOPPING
             </Link>
           </div>
@@ -255,7 +256,7 @@ export default function OrdersPage() {
           <div className="flex items-center justify-between mb-6">
             <Link 
               to="/" 
-              className="inline-flex items-center text-teal-600 hover:text-teal-700 font-medium"
+              className="inline-flex items-center text-gray-900 hover:text-teal-700 font-medium"
             >
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -264,7 +265,7 @@ export default function OrdersPage() {
             </Link>
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2 text-center">Your Orders</h1>
-          <div className="flex flex-col items-center justify-center py-20">
+          <div className="flex flex-col items-center justify-center py-10">
             <svg className="w-16 h-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
@@ -272,7 +273,7 @@ export default function OrdersPage() {
             <p className="text-base text-gray-600 mb-6">Start shopping to see your orders here</p>
             <Link 
               to="/cotton-yoga-mats" 
-              className="inline-flex items-center px-6 py-3 bg-teal-600 text-white font-semibold rounded-lg hover:bg-teal-700 transition-colors shadow-sm hover:shadow-md"
+              className="inline-flex items-center px-6 py-3 bg-gray-900 text-white font-semibold rounded-lg hover:bg-gray-800 transition-colors shadow-sm hover:shadow-md"
             >
               Start Shopping
               <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -287,70 +288,80 @@ export default function OrdersPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 md:py-16">
         {/* Header */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <Link 
-              to="/" 
-              className="inline-flex items-center text-teal-600 hover:text-teal-700 font-medium"
-            >
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              Back to Home
-            </Link>
+        <div className="mb-12">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+            <div>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">Your Orders</h1>
+              <p className="text-gray-600 text-sm sm:text-base mt-2">Track your order status and history</p>
+            </div>
             {isConnected && (
-              <div className="flex items-center">
-                <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
-                <span className="text-sm text-green-600 font-medium">Live updates enabled</span>
+              <div className="flex items-center gap-2 px-4 py-2 bg-green-50 rounded-lg border border-green-200">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span className="text-sm text-green-700 font-medium">Live updates</span>
               </div>
             )}
           </div>
-          <div className="text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Your Orders</h1>
-            <p className="text-sm sm:text-base text-gray-600">Track your order status and history</p>
-          </div>
         </div>
-        
-        <div className="space-y-4">
+
+        {/* Orders List */}
+        <div className="space-y-5">
           {orders.map((order) => (
-            <div key={order._id || order.id} className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
-              <div className="p-4 sm:p-6">
-                {/* Order Header */}
-                <div className="mb-4">
-                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
-                    <div className="flex-1">
-                      <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-1">
-                        Order #{order.orderNumber || order._id?.slice(-8) || 'N/A'}
-                      </h3>
-                      <p className="text-sm text-gray-500">
-                        Placed on {new Date(order.createdAt || order.orderDate).toLocaleDateString()}
-                      </p>
-                    </div>
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-                      <span className={`px-3 py-1 rounded-full text-sm font-medium w-fit ${getStatusColor(order.status)}`}>
-                        {getStatusText(order.status)}
+            <div key={order._id || order.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 group">
+              {/* Order Card Header */}
+              <div className="p-6 sm:p-8 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-teal-50/30">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                  <div className="flex-1">
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                      Order #{order.orderNumber || order._id?.slice(-8) || 'N/A'}
+                    </h3>
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm text-gray-600">
+                      <span className="flex items-center gap-1">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10m5 0a2 2 0 012 2v10a2 2 0 01-2 2H7a2 2 0 01-2-2V13a2 2 0 012-2h10a2 2 0 012 2v10z" />
+                        </svg>
+                        {new Date(order.createdAt || order.orderDate).toLocaleDateString('en-IN', {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric'
+                        })}
                       </span>
-                      <span className="text-xl sm:text-2xl font-bold text-gray-900">
-                        ₹{order.totalAmount || order.total}
-                      </span>
+                      {order.estimatedDelivery && (
+                        <span className="flex items-center gap-1">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          Est. {new Date(order.estimatedDelivery).toLocaleDateString('en-IN')}
+                        </span>
+                      )}
                     </div>
                   </div>
+                  <div className="flex flex-col gap-3 sm:items-end">
+                    <span className={`px-4 py-2 rounded-full text-sm font-bold w-fit ${getStatusColor(order.status)}`}>
+                      {getStatusText(order.status)}
+                    </span>
+                    <span className="text-2xl sm:text-3xl font-bold text-gray-900">
+                      ₹{(order.totalAmount || order.total).toLocaleString('en-IN')}
+                    </span>
+                  </div>
                 </div>
+              </div>
 
-                {/* Order Items */}
-                <div className="mb-4">
+              {/* Order Items */}
+              <div className="p-6 sm:p-8">
+                <h4 className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-4">Items ({order.items?.length || 0})</h4>
+                <div className="space-y-3">
                   {order.items?.map((item, index) => (
-                    <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                    <div key={index} className="flex gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                       {/* Product Image */}
-                      <div className="flex-shrink-0 w-16 h-16 border border-gray-200 rounded-md overflow-hidden">
+                      <div className="flex-shrink-0 w-20 h-20 bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
                         {item.image ? (
-                          <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
+                          <img src={item.image} alt={item.title} className="w-full h-full object-contain" />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-gray-400 bg-gray-100">
-                            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          <div className="w-full h-full flex items-center justify-center text-gray-400 bg-gradient-to-br from-gray-100 to-gray-50">
+                            <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={0.8} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
                           </div>
                         )}
@@ -358,32 +369,61 @@ export default function OrdersPage() {
 
                       {/* Product Details */}
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm text-gray-600">
-                          Quantity: {item.quantity} × ₹{item.price}
-                        </p>
-                        <p className="text-base font-bold text-gray-900">
-                          ₹{item.quantity * item.price}
-                        </p>
+                        <h5 className="font-semibold text-gray-900 line-clamp-2 mb-1">{item.title}</h5>
+                        <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
+                          <span>{item.quantity} × ₹{item.price.toLocaleString('en-IN')}</span>
+                          <span className="font-bold text-gray-900">₹{(item.quantity * item.price).toLocaleString('en-IN')}</span>
+                        </div>
+
+                        {/* Rate Product Button */}
+                        {order.status === 'Delivered' && (
+                          <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-gray-200">
+                            {/* <button
+                              onClick={() => navigate(`/ratings/${item.productId || item.id}?from=orders`)}
+                              className="inline-flex items-center gap-1 px-3 py-1.5 text-xs sm:text-sm bg-yellow-50 text-yellow-700 hover:bg-yellow-100 rounded-lg transition-colors border border-yellow-200 font-medium"
+                            >
+                              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                              </svg>
+                              Rate Product
+                            </button> */}
+                          </div>
+                        )}
+
+                        {/* Not Delivered Yet Message */}
+                        {order.status !== 'Delivered' && (
+                          <p className="text-xs text-gray-500 mt-2 pt-2 border-t border-gray-200">
+                            ℹ️ Rating available after delivery
+                          </p>
+                        )}
                       </div>
                     </div>
                   ))}
                 </div>
+              </div>
 
-                {/* Order Summary and Actions */}
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-                  <div className="text-sm text-gray-600">
-                    <p>Total Items: {order.items?.length || 0}</p>
-                    {order.trackingNumber && (
-                      <p className="truncate">Tracking: {order.trackingNumber}</p>
-                    )}
-                  </div>
-                  <Link
-                    to={`/order-details/${order._id || order.id}`}
-                    className="w-full sm:w-auto px-6 py-2.5 bg-teal-600 text-white text-sm font-medium rounded-md hover:bg-teal-700 transition-colors text-center"
-                  >
-                    View Details
-                  </Link>
+              {/* Order Footer */}
+              <div className="px-6 sm:px-8 py-4 sm:py-6 bg-gray-50 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div className="text-sm text-gray-600 space-y-1">
+                  {order.trackingNumber && (
+                    <p className="flex items-center gap-2">
+                      <span className="font-semibold">Tracking:</span>
+                      <code className="bg-white px-3 py-1 rounded border border-gray-200 font-mono text-xs">{order.trackingNumber}</code>
+                    </p>
+                  )}
+                  {order.notes && (
+                    <p className="flex items-center gap-2">
+                      <span className="font-semibold">Note:</span>
+                      <span>{order.notes}</span>
+                    </p>
+                  )}
                 </div>
+                <Link
+                  to={`/order-details/${order._id || order.id}`}
+                  className="px-6 py-2.5 bg-gray-900 text-white font-semibold rounded-lg hover:bg-gray-800 hover:shadow-md transition-all text-center text-sm sm:text-base whitespace-nowrap"
+                >
+                  View Details
+                </Link>
               </div>
             </div>
           ))}

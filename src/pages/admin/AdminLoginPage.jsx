@@ -68,7 +68,7 @@ export default function AdminLoginPage() {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Email Field */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-600 mb-2">
                 Email Address
               </label>
               <div className="relative">
@@ -88,7 +88,7 @@ export default function AdminLoginPage() {
 
             {/* Password Field */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-600 mb-2">
                 Password
               </label>
               <div className="relative">

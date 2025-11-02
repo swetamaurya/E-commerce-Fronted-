@@ -51,87 +51,61 @@ export default function FilterBar({ filters, setFilters, products = [], total = 
       { value: "32×48 inc", label: "32×48 inc" },
     ];
 
-    // Predefined colors
-    const predefinedColors = [
-      { value: "Red", label: "Red" },
-      { value: "Blue", label: "Blue" },
-      { value: "Green", label: "Green" },
-      { value: "Yellow", label: "Yellow" },
-      { value: "Orange", label: "Orange" },
-      { value: "Purple", label: "Purple" },
-      { value: "Pink", label: "Pink" },
-      { value: "Brown", label: "Brown" },
-      { value: "Black", label: "Black" },
-      { value: "White", label: "White" },
-      { value: "Gray", label: "Gray" },
-      { value: "Beige", label: "Beige" },
-      { value: "Cream", label: "Cream" },
-      { value: "Navy", label: "Navy" },
-      { value: "Maroon", label: "Maroon" },
-      { value: "Teal", label: "Teal" },
-      { value: "Turquoise", label: "Turquoise" },
-      { value: "Gold", label: "Gold" },
-      { value: "Silver", label: "Silver" },
-      { value: "Multi Color", label: "Multi Color" },
-      { value: "Brown multicolour", label: "Brown Multicolour" },
-      { value: "Blue, Multi _color pattern", label: "Blue Multi Color Pattern" },
-      { value: "Brown multi colors pattern", label: "Brown Multi Colors Pattern" },
-    ];
+    // // Predefined colors
+    // const predefinedColors = [
+    //   { value: "Red", label: "Red" },
+    //   { value: "Blue", label: "Blue" },
+    //   { value: "Green", label: "Green" },
+    //   { value: "Yellow", label: "Yellow" },
+    //   { value: "Orange", label: "Orange" },
+    //   { value: "Purple", label: "Purple" },
+    //   { value: "Pink", label: "Pink" },
+    //   { value: "Brown", label: "Brown" },
+    //   { value: "Black", label: "Black" },
+    //   { value: "White", label: "White" },
+    //   { value: "Gray", label: "Gray" },
+    //   { value: "Beige", label: "Beige" },
+    //   { value: "Cream", label: "Cream" },
+    //   { value: "Navy", label: "Navy" },
+    //   { value: "Maroon", label: "Maroon" },
+    //   { value: "Teal", label: "Teal" },
+    //   { value: "Turquoise", label: "Turquoise" },
+    //   { value: "Gold", label: "Gold" },
+    //   { value: "Silver", label: "Silver" },
+    //   { value: "Multi Color", label: "Multi Color" },
+    //   { value: "Brown multicolour", label: "Brown Multicolour" },
+    //   { value: "Blue, Multi _color pattern", label: "Blue Multi Color Pattern" },
+    //   { value: "Brown multi colors pattern", label: "Brown Multi Colors Pattern" },
+    // ];
 
     // Get actual product data for counts
     const actualTypes = toList(countBy(products, "category"));
-    
+
     // Handle sizes - can be array or single value
-    const actualSizes = toList(products.reduce((acc, product) => {
-      const sizes = product.sizes || [];
-      if (Array.isArray(sizes)) {
-        sizes.forEach(size => {
-          if (size && size.trim()) {
-            acc.push({ size: size.trim() });
-          }
-        });
-      } else if (sizes && sizes.trim()) {
-        acc.push({ size: sizes.trim() });
+    const sizesArray = products.flatMap((product) => {
+      const sizes = [];
+      // Direct check for sizes array
+      if (Array.isArray(product.sizes)) {
+        sizes.push(...product.sizes);
       }
-      return acc;
-    }, []), "size");
-    
+      return sizes;
+    });
+
+    const sizesCounts = countBy(sizesArray.map(s => ({ size: s })), "size");
+    const actualSizes = toList(sizesCounts);
+
     // Handle colors - extract from actual product data dynamically
-    const actualColors = toList(products.reduce((acc, product) => {
-      // Check multiple possible color fields
-      const colorSources = [
-        product.colors,
-        product.color,
-        product.variants?.map(v => v.color).filter(Boolean),
-        product.colour // alternative spelling
-      ].filter(Boolean);
-      
-      colorSources.forEach(colorSource => {
-        if (Array.isArray(colorSource)) {
-          colorSource.forEach(color => {
-            if (color && color.trim()) {
-              acc.push({ color: color.trim() });
-            }
-          });
-        } else if (colorSource && colorSource.trim()) {
-          acc.push({ color: colorSource.trim() });
-        }
-      });
-      
-      return acc;
-    }, []), "color");
+    const colorsArray = products.flatMap((product) => {
+      const colors = [];
+      // Direct check for colors array
+      if (Array.isArray(product.colors)) {
+        colors.push(...product.colors);
+      }
+      return colors;
+    });
 
-    // Get unique colors from actual data and create options
-    const colors = actualColors.map(colorData => ({
-      value: colorData.value,
-      label: colorData.value,
-      count: colorData.count
-    })).sort((a, b) => a.label.localeCompare(b.label));
-
-    // Debug logging
-    console.log('FilterBar - Products:', products.length);
-    console.log('FilterBar - Actual Colors:', actualColors);
-    console.log('FilterBar - Colors:', colors);
+    const colorsCounts = countBy(colorsArray.map(c => ({ color: c })), "color");
+    const actualColors = toList(colorsCounts);
 
     // Combine predefined options with actual data for types
     const types = predefinedTypes.map(type => {
@@ -139,16 +113,23 @@ export default function FilterBar({ filters, setFilters, products = [], total = 
       return { ...type, count: actual?.count || 0 };
     }).filter(type => type.count > 0); // Only show types that have products
 
-    // Combine predefined options with actual data for sizes  
-    const sizes = predefinedSizes.map(size => {
-      const actual = actualSizes.find(s => s.value === size.value);
-      return { ...size, count: actual?.count || 0 };
-    }).filter(size => size.count > 0); // Only show sizes that have products
+    // Use actual sizes and colors from products (don't try to match with predefined)
+    const sizes = actualSizes.map(size => ({
+      value: size.value,
+      label: size.value,
+      count: size.count
+    }));
+
+    const colors = actualColors.map(color => ({
+      value: color.value,
+      label: color.value,
+      count: color.count
+    }));
 
     return {
       types,
       sizes,
-      colors: colors.length > 0 ? colors : [{ value: "No colors found", label: "No colors found", count: 0 }],
+      colors,
       prices: [
         { value: "ALL", label: "All prices" },
         { value: "0-200", label: "₹0 - ₹200" },
@@ -215,8 +196,8 @@ export default function FilterBar({ filters, setFilters, products = [], total = 
     <div ref={wrapRef} className="w-full bg-gray-50 border-b border-gray-200">
       <div className="max-w-7xl mx-auto">
         {/* Clean Filter Bar */}
-        <div className="px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+        <div className="px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 md:gap-4">
             {/* Filter Controls */}
             <FilterGroup
               label="Product Type"
@@ -252,10 +233,12 @@ export default function FilterBar({ filters, setFilters, products = [], total = 
               onOpen={() => setOpen(open === "price" ? null : "price")}
             >
               <RadioList title="Price Range" options={facets.prices} value={filters.price} onChange={(v) => setSingle("price", v)} />
+
+
             </FilterGroup>
 
-            {/* Sort Control */}
-            <div className="ml-auto">
+            {/* Sort Control - Desktop Only */}
+            <div className="hidden md:block md:ml-auto">
               <FilterGroup
                 label="Sort by"
                 summary={facets.sorts.find((s) => s.value === filters.sort)?.label ?? "Popularity"}
@@ -312,17 +295,17 @@ function FilterGroup({ label, summary, isOpen, onOpen, noChevron = false, align 
     <div className="relative">
       <button
         onClick={onOpen}
-        className={`inline-flex items-center gap-2 px-3 py-2 rounded-md transition-all text-sm ${
-          isOpen 
-            ? "text-gray-900 bg-white border border-gray-300 shadow-sm" 
-            : "text-gray-700 bg-gray-100 hover:text-gray-900 hover:bg-white hover:border-gray-200 border border-transparent"
+        className={`inline-flex items-center gap-1.5 px-3 py-2 rounded transition-all text-xs sm:text-sm ${
+          isOpen
+            ? "text-gray-900 bg-white border border-gray-300 shadow-sm"
+            : "text-gray-600 bg-gray-50 hover:text-gray-900 hover:bg-white hover:border-gray-200 border border-gray-200"
         }`}
       >
-        <span className="font-medium text-sm">{label}</span>
-        <span className="text-gray-500 text-sm">:</span>
-        <span className="text-gray-600 text-sm">{summary}</span>
+        <span className="font-medium text-xs sm:text-sm">{label}</span>
+        <span className="text-gray-400 text-xs">:</span>
+        <span className="text-gray-600 text-xs sm:text-sm">{summary}</span>
         {!noChevron && (
-          <svg className={`w-3 h-3 text-gray-500 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className={`w-3 h-3 text-gray-400 transition-transform flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
         )}
@@ -332,11 +315,11 @@ function FilterGroup({ label, summary, isOpen, onOpen, noChevron = false, align 
         <div
           className={[
             "absolute z-50 mt-2 rounded-lg border border-gray-200 bg-white shadow-lg",
-            "w-[min(95vw,350px)]",
+            "w-[min(90vw,280px)] sm:w-[min(95vw,320px)] md:w-[min(95vw,350px)]",
             align === "right" ? "right-0" : "left-0",
           ].join(" ")}
         >
-          <div className="p-4">{children}</div>
+          <div className="p-3 sm:p-4">{children}</div>
         </div>
       )}
     </div>
@@ -365,21 +348,21 @@ function FilterChip({ label, onRemove }) {
 function CheckboxList({ title, options, selected, onToggle }) {
   return (
     <div>
-      <div className="mb-3 text-sm font-semibold text-gray-900">{title}</div>
+      <div className="mb-3 text-xs sm:text-sm font-semibold text-gray-900">{title}</div>
       <div className="max-h-[40vh] overflow-auto pr-1 custom-scroll">
         <ul className="space-y-1">
           {options.map(({ value, label, count }) => (
             <li key={value}>
-              <label className="flex items-center gap-3 py-2 hover:bg-gray-50 cursor-pointer">
+              <label className="flex items-center gap-2 sm:gap-3 py-2 hover:bg-gray-50 cursor-pointer">
                 <input
                   type="checkbox"
-                  className="h-4 w-4 rounded border-gray-300 text-gray-600 focus:ring-gray-500"
+                  className="h-4 w-4 rounded border-gray-300 text-gray-600 focus:ring-gray-500 flex-shrink-0"
                   checked={selected.includes(value)}
                   onChange={() => onToggle(value)}
                 />
-                <span className="flex-1 text-sm text-gray-900">{label || value}</span>
+                <span className="flex-1 text-xs sm:text-sm text-gray-900 break-words">{label || value}</span>
                 {count !== undefined && (
-                  <span className="text-sm text-gray-500">{count}</span>
+                  <span className="text-xs sm:text-sm text-gray-500 flex-shrink-0">{count}</span>
                 )}
               </label>
             </li>
@@ -394,21 +377,21 @@ function CheckboxList({ title, options, selected, onToggle }) {
 function RadioList({ title, options, value, onChange }) {
   return (
     <div>
-      <div className="mb-3 text-sm font-semibold text-gray-900">{title}</div>
+      <div className="mb-3 text-xs sm:text-sm font-semibold text-gray-900">{title}</div>
       <div className="max-h-[40vh] overflow-auto pr-1 custom-scroll">
         <ul className="space-y-1">
           {options.map((opt) => (
             <li key={opt.value}>
-              <label className="flex items-center gap-3 py-2 hover:bg-gray-50 cursor-pointer">
+              <label className="flex items-center gap-2 sm:gap-3 py-2 hover:bg-gray-50 cursor-pointer">
                 <input
                   type="radio"
                   name="price"
                   value={opt.value}
                   checked={value === opt.value}
                   onChange={(e) => onChange(e.target.value)}
-                  className="h-4 w-4 text-gray-600 focus:ring-gray-500"
+                  className="h-4 w-4 text-gray-600 focus:ring-gray-500 flex-shrink-0"
                 />
-                <span className="flex-1 text-sm text-gray-900">{opt.label ?? opt.value}</span>
+                <span className="flex-1 text-xs sm:text-sm text-gray-900 break-words">{opt.label ?? opt.value}</span>
               </label>
             </li>
           ))}
@@ -429,13 +412,13 @@ function MenuList({ options, value, onChange }) {
             <li key={opt.value}>
               <button
                 onClick={() => onChange(opt.value)}
-                className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${
-                  active 
-                    ? "bg-gray-100 text-gray-900" 
+                className={`w-full text-left px-3 py-2 rounded-md text-xs sm:text-sm transition-colors ${
+                  active
+                    ? "bg-gray-100 text-gray-900"
                     : "hover:bg-gray-50 text-gray-700 hover:text-gray-900"
                 }`}
               >
-                <span className="text-sm">{opt.label}</span>
+                <span className="text-xs sm:text-sm break-words">{opt.label}</span>
               </button>
             </li>
           );

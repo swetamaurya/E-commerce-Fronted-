@@ -183,7 +183,7 @@ export default function Navbar() {
               <div className="flex items-center gap-1.5 sm:gap-2">
                 {user ? (
                   <div className="flex items-center gap-1 sm:gap-2">
-                    <span className="text-xs sm:text-sm text-gray-700 font-medium">Hi, {user.name.split(' ')[0]}</span>
+                    {/* <span className="text-xs sm:text-sm text-gray-700 font-medium"> {user.name.split(' ')[0]}</span> */}
                     
                     {/* Mobile User Menu Dropdown */}
                     <div className="relative user-menu-container">
@@ -494,6 +494,7 @@ export default function Navbar() {
               {categories.map(({ label, path, description }) => (
                 <li key={path} className="relative">
                   <NavLink
+
                     to={path}
                     className={({ isActive }) =>
                       `block px-6 py-4 ${isActive ? "text-black" : "text-gray-700"} transition-colors`

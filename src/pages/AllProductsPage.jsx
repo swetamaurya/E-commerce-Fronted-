@@ -232,7 +232,7 @@ export default function AllProductsPage() {
               url.searchParams.delete('search');
               window.history.replaceState({}, '', url);
             }}
-            className="mt-3 text-sm text-teal-600 hover:text-teal-700 underline"
+            className="mt-3 text-sm text-gray-900 hover:text-teal-700 underline"
           >
             Clear search
           </button>
@@ -257,7 +257,7 @@ export default function AllProductsPage() {
           {hasActiveFilters && (
             <button
               onClick={clearAllFilters}
-              className="text-sm text-teal-600 hover:text-teal-700 underline"
+              className="text-sm text-gray-900 hover:text-teal-700 underline"
             >
               Clear all filters
             </button>
@@ -270,7 +270,7 @@ export default function AllProductsPage() {
           <div className="flex border border-gray-300 rounded-lg overflow-hidden">
             <button
               onClick={() => setViewMode('grid')}
-              className={`p-2 ${viewMode === 'grid' ? 'bg-teal-500 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}
+              className={`p-2 ${viewMode === 'grid' ? 'bg-gray-900 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}
               aria-label="Grid view"
             >
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -279,7 +279,7 @@ export default function AllProductsPage() {
             </button>
             <button
               onClick={() => setViewMode('list')}
-              className={`p-2 ${viewMode === 'list' ? 'bg-teal-500 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}
+              className={`p-2 ${viewMode === 'list' ? 'bg-gray-900 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}
               aria-label="List view"
             >
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -292,13 +292,13 @@ export default function AllProductsPage() {
 
       {/* Loading State */}
       {loading ? (
-        <div className="py-20 text-center">
+        <div className="py-10 text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-teal-500"></div>
           <p className="mt-4 text-sm text-gray-500">Loading products...</p>
         </div>
       ) : visibleProducts.length === 0 ? (
         /* No Results State */
-        <div className="py-20 text-center">
+        <div className="py-10 text-center">
           <svg className="mx-auto h-16 w-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.47-.881-6.08-2.33"/>
           </svg>
@@ -312,7 +312,7 @@ export default function AllProductsPage() {
           {hasActiveFilters && (
             <button
               onClick={clearAllFilters}
-              className="mt-4 px-4 py-2 bg-teal-500 text-white rounded-md hover:bg-teal-600 transition-colors text-sm"
+              className="mt-4 px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-900 transition-colors text-sm"
             >
               Clear all filters
             </button>
@@ -326,9 +326,10 @@ export default function AllProductsPage() {
             : 'space-y-4'
         }`}>
           {visibleProducts.map((p) => (
-            <ProductCard 
-              key={p.id ?? `${p.name}-${p._id ?? Math.random()}`} 
+            <ProductCard
+              key={p.id ?? `${p.name}-${p._id ?? Math.random()}`}
               product={p}
+              category={p.category}
               viewMode={viewMode}
               wishlistStatus={wishlistStatus[p.id || p._id] || false}
               onWishlistChange={(productId, isWishlisted) => {

@@ -105,7 +105,7 @@ const AdminLogin = () => {
           <form className="space-y-4" onSubmit={handleSubmit}>
             {/* Email Field */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-600 mb-1">
                 Email Address
               </label>
               <div className="relative">
@@ -128,7 +128,7 @@ const AdminLogin = () => {
 
             {/* Password Field */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-600 mb-1">
                 Password
               </label>
               <div className="relative">

@@ -204,15 +204,33 @@ export default function Footer() {
                 </div>
               </div>
               
-              <div className="flex items-start gap-2">
-                <svg className="w-4 h-4 sm:w-5 sm:h-5 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd"/>
-                </svg>
-                <div>
-                  <p className="font-medium text-sm">Address</p>
-                  <p className="text-sm">Chhoti Bashi, Pakka Pul,<br/>Mirzapur, Uttar Pradesh – 231001</p>
-                </div>
-              </div>
+              
+             <a 
+  href="https://share.google/2ZFrSQFo2BzAn2dlc" 
+  target="_blank" 
+  rel="noopener noreferrer"
+  className="flex items-start gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+>
+  <svg 
+    className="w-4 h-4 sm:w-5 sm:h-5 mt-0.5 flex-shrink-0" 
+    fill="currentColor" 
+    viewBox="0 0 20 20"
+  >
+    <path 
+      fillRule="evenodd" 
+      d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" 
+      clipRule="evenodd"
+    />
+  </svg>
+
+  <div>
+    <p className="font-medium text-sm">Address</p>
+    <p className="text-sm">
+      Chhoti Bashi, Pakka Pul,<br/>Mirzapur, Uttar Pradesh – 231001
+    </p>
+  </div>
+</a>
+
             </div>
           </div>
         </div>

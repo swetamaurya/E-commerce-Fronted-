@@ -618,7 +618,7 @@ const AdminProducts = () => {
                     {product.stock}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="inline-flex px-2 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded">
+                    <span className="inline-flex px-2 py-1 text-xs font-medium text-gray-600 bg-gray-100 rounded">
                       {product.sku || 'N/A'}
                     </span>
                   </td>
@@ -772,7 +772,7 @@ const AdminProducts = () => {
         <div className="flex flex-col space-y-3 sm:hidden">
           {/* Mobile Info */}
           <div className="text-center">
-            <p className="text-xs text-gray-700">
+            <p className="text-xs text-gray-600">
               Showing <span className="font-medium">{((currentPage - 1) * 5) + 1}</span> to{' '}
               <span className="font-medium">
                 {Math.min(currentPage * 5, totalProducts)}
@@ -786,7 +786,7 @@ const AdminProducts = () => {
             <button
               onClick={() => setCurrentPage(currentPage - 1)}
               disabled={!pagination.hasPrevPage}
-              className="flex items-center px-4 py-2 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100"
+              className="flex items-center px-4 py-2 text-xs font-medium text-gray-600 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100"
             >
               <FaChevronLeft className="w-3 h-3 mr-1" />
               Previous
@@ -804,7 +804,7 @@ const AdminProducts = () => {
             <button
               onClick={() => setCurrentPage(currentPage + 1)}
               disabled={!pagination.hasNextPage}
-              className="flex items-center px-4 py-2 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100"
+              className="flex items-center px-4 py-2 text-xs font-medium text-gray-600 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100"
             >
               Next
               <FaChevronRight className="w-3 h-3 ml-1" />
@@ -823,7 +823,7 @@ const AdminProducts = () => {
                     className={`px-3 py-1 text-xs font-medium rounded ${
                       pageNum === currentPage
                         ? 'bg-blue-600 text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                     }`}
                   >
                     {pageNum}
@@ -835,7 +835,7 @@ const AdminProducts = () => {
         </div>
         <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
           <div>
-            <p className="text-sm text-gray-700">
+            <p className="text-sm text-gray-600">
               Showing <span className="font-medium">{((currentPage - 1) * 5) + 1}</span> to{' '}
               <span className="font-medium">
                 {Math.min(currentPage * 5, totalProducts)}
@@ -910,7 +910,7 @@ const AdminProducts = () => {
               {/* Basic Information */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Product Name *</label>
+                  <label className="block text-sm font-medium text-gray-600">Product Name *</label>
                   <input
                     type="text"
                     value={newProduct.name}
@@ -920,7 +920,7 @@ const AdminProducts = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Category *</label>
+                  <label className="block text-sm font-medium text-gray-600">Category *</label>
                   <select
                     value={newProduct.category}
                     onChange={(e) => setNewProduct({...newProduct, category: e.target.value})}
@@ -933,7 +933,7 @@ const AdminProducts = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Brand</label>
+                  <label className="block text-sm font-medium text-gray-600">Brand</label>
                   <input
                     type="text"
                     value={newProduct.brand}
@@ -942,7 +942,7 @@ const AdminProducts = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Material *</label>
+                  <label className="block text-sm font-medium text-gray-600">Material *</label>
                   <input
                     type="text"
                     value={newProduct.meterial}
@@ -954,7 +954,7 @@ const AdminProducts = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">Description *</label>
+                <label className="block text-sm font-medium text-gray-600">Description *</label>
                 <textarea
                   value={newProduct.description}
                   onChange={(e) => setNewProduct({...newProduct, description: e.target.value})}
@@ -967,7 +967,7 @@ const AdminProducts = () => {
               {/* Pricing and Inventory */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Price *</label>
+                  <label className="block text-sm font-medium text-gray-600">Price *</label>
                   <input
                     type="number"
                     step="0.01"
@@ -978,7 +978,7 @@ const AdminProducts = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">MRP</label>
+                  <label className="block text-sm font-medium text-gray-600">MRP</label>
                   <input
                     type="number"
                     step="0.01"
@@ -988,7 +988,7 @@ const AdminProducts = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Stock *</label>
+                  <label className="block text-sm font-medium text-gray-600">Stock *</label>
                   <input
                     type="number"
                     value={newProduct.stock}
@@ -1000,7 +1000,7 @@ const AdminProducts = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">Special Feature</label>
+                <label className="block text-sm font-medium text-gray-600">Special Feature</label>
                 <input
                   type="text"
                   value={newProduct.specialFeature}
@@ -1012,7 +1012,7 @@ const AdminProducts = () => {
 
               {/* Images */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-600">
                   Product Images {newProduct.images.length > 0 && `(${newProduct.images.length} uploaded)`}
                 </label>
                 <div className="mt-2 space-y-2">
@@ -1063,7 +1063,7 @@ const AdminProducts = () => {
                           className={`px-2 py-1 text-xs rounded ${
                             image.isPrimary === true
                               ? 'bg-blue-500 text-white' 
-                              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                              : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
                           }`}
                         >
                           {image.isPrimary === true ? 'Primary' : 'Set Primary'}
@@ -1132,7 +1132,7 @@ const AdminProducts = () => {
 
               {/* Colors */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-600">
                   Available Colors ({newProduct.colors?.length || 0})
                 </label>
                 <div className="mt-2 space-y-2">
@@ -1194,7 +1194,7 @@ const AdminProducts = () => {
 
               {/* Sizes */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-600">
                   Available Sizes ({newProduct.sizes?.length || 0})
                 </label>
                 <div className="mt-2 space-y-2">
@@ -1263,7 +1263,7 @@ const AdminProducts = () => {
                     onChange={(e) => setNewProduct({...newProduct, isActive: e.target.checked})}
                     className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                   />
-                  <span className="ml-2 text-sm text-gray-700">Active</span>
+                  <span className="ml-2 text-sm text-gray-600">Active</span>
                 </label>
                 <label className="flex items-center">
                   <input
@@ -1272,7 +1272,7 @@ const AdminProducts = () => {
                     onChange={(e) => setNewProduct({...newProduct, isFeatured: e.target.checked})}
                     className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                   />
-                  <span className="ml-2 text-sm text-gray-700">Featured</span>
+                  <span className="ml-2 text-sm text-gray-600">Featured</span>
                 </label>
               </div>
 
@@ -1285,7 +1285,7 @@ const AdminProducts = () => {
                     setColorInputValue('');
                     setSizeInputValue('');
                   }}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+                  className="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200"
                 >
                   Cancel
                 </button>
@@ -1320,7 +1320,7 @@ const AdminProducts = () => {
               {/* Basic Information */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Product Name *</label>
+                  <label className="block text-sm font-medium text-gray-600">Product Name *</label>
                   <input
                     type="text"
                     value={editingProduct.name || ''}
@@ -1330,7 +1330,7 @@ const AdminProducts = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Category *</label>
+                  <label className="block text-sm font-medium text-gray-600">Category *</label>
                   <select
                     value={editingProduct.category || 'Other'}
                     onChange={(e) => setEditingProduct({...editingProduct, category: e.target.value})}
@@ -1343,7 +1343,7 @@ const AdminProducts = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Brand</label>
+                  <label className="block text-sm font-medium text-gray-600">Brand</label>
                   <input
                     type="text"
                     value={editingProduct.brand || ''}
@@ -1352,7 +1352,7 @@ const AdminProducts = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Material *</label>
+                  <label className="block text-sm font-medium text-gray-600">Material *</label>
                   <input
                     type="text"
                     value={editingProduct.meterial || ''}
@@ -1364,7 +1364,7 @@ const AdminProducts = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">Description *</label>
+                <label className="block text-sm font-medium text-gray-600">Description *</label>
                 <textarea
                   value={editingProduct.description || ''}
                   onChange={(e) => setEditingProduct({...editingProduct, description: e.target.value})}
@@ -1377,7 +1377,7 @@ const AdminProducts = () => {
               {/* Pricing and Inventory */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Price *</label>
+                  <label className="block text-sm font-medium text-gray-600">Price *</label>
                   <input
                     type="number"
                     step="0.01"
@@ -1388,7 +1388,7 @@ const AdminProducts = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">MRP</label>
+                  <label className="block text-sm font-medium text-gray-600">MRP</label>
                   <input
                     type="number"
                     step="0.01"
@@ -1398,7 +1398,7 @@ const AdminProducts = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Stock *</label>
+                  <label className="block text-sm font-medium text-gray-600">Stock *</label>
                   <input
                     type="number"
                     value={editingProduct.stock || ''}
@@ -1410,7 +1410,7 @@ const AdminProducts = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">Special Feature</label>
+                <label className="block text-sm font-medium text-gray-600">Special Feature</label>
                 <input
                   type="text"
                   value={editingProduct.specialFeature || ''}
@@ -1422,7 +1422,7 @@ const AdminProducts = () => {
 
               {/* Images */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-600">
                   Product Images {(editingProduct.images || []).length > 0 && `(${(editingProduct.images || []).length} uploaded)`}
                 </label>
                 <div className="mt-2 space-y-2">
@@ -1481,7 +1481,7 @@ const AdminProducts = () => {
                           className={`px-2 py-1 text-xs rounded ${
                             image.isPrimary === true
                               ? 'bg-blue-500 text-white' 
-                              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                              : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
                           }`}
                         >
                           {image.isPrimary === true ? 'Primary' : 'Set Primary'}
@@ -1550,7 +1550,7 @@ const AdminProducts = () => {
 
               {/* Colors */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">Available Colors</label>
+                <label className="block text-sm font-medium text-gray-600">Available Colors</label>
                 <div className="mt-2 space-y-2">
                   {(editingProduct.colors || []).map((color, index) => (
                     <div key={index} className="flex items-center space-x-2">
@@ -1611,7 +1611,7 @@ const AdminProducts = () => {
 
               {/* Sizes */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">Available Sizes</label>
+                <label className="block text-sm font-medium text-gray-600">Available Sizes</label>
                 <div className="mt-2 space-y-2">
                   {(editingProduct.sizes || []).map((size, index) => (
                     <div key={index} className="flex items-center space-x-2">
@@ -1679,7 +1679,7 @@ const AdminProducts = () => {
                     onChange={(e) => setEditingProduct({...editingProduct, isActive: e.target.checked})}
                     className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                   />
-                  <span className="ml-2 text-sm text-gray-700">Active</span>
+                  <span className="ml-2 text-sm text-gray-600">Active</span>
                 </label>
                 <label className="flex items-center">
                   <input
@@ -1688,7 +1688,7 @@ const AdminProducts = () => {
                     onChange={(e) => setEditingProduct({...editingProduct, isFeatured: e.target.checked})}
                     className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                   />
-                  <span className="ml-2 text-sm text-gray-700">Featured</span>
+                  <span className="ml-2 text-sm text-gray-600">Featured</span>
                 </label>
               </div>
 
@@ -1701,7 +1701,7 @@ const AdminProducts = () => {
                     if (editColorInputRef.current) editColorInputRef.current.value = '';
                     if (editSizeInputRef.current) editSizeInputRef.current.value = '';
                   }}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+                  className="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200"
                 >
                   Cancel
                 </button>
@@ -1739,7 +1739,7 @@ const AdminProducts = () => {
             <div className="flex justify-end space-x-3">
               <button
                 onClick={cancelDeleteProduct}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+                className="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200"
               >
                 Cancel
               </button>

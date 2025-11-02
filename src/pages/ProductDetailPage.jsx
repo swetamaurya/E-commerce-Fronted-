@@ -45,6 +45,9 @@ export default function ProductDetailPage() {
   // info table expand
   const [showFullInfo, setShowFullInfo] = useState(false);
 
+  // product description expand
+  const [showFullDescription, setShowFullDescription] = useState(false);
+
   // category from URL
   const category = location.pathname.split("/")[1];
 
@@ -342,47 +345,65 @@ export default function ProductDetailPage() {
 
       <div className="bg-white min-h-screen">
           <div className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8 bg-white">
-          {/* Breadcrumb */}
-          <nav className="flex items-center mb-4 sm:mb-6 text-sm">
-            <button
-              onClick={() => navigate(`/${category}`)}
-              className="text-gray-500 hover:text-gray-700 transition-colors text-sm"
-            >
-              {category.replace("-", " ").replace(/\b\w/g, (l) => l.toUpperCase())}
-            </button>
-            <span className="px-2 text-gray-400 text-sm">/</span>
-            <span className="text-gray-900 font-medium text-sm">{product.name || product.title}</span>
-          </nav>
-
-          <div className="flex flex-col md:flex-row items-start gap-3 sm:gap-4 md:gap-6 lg:gap-8">
-            {/* LEFT: Image Gallery - sticky on all screens (offset for fixed header) */}
-            <div className="w-full md:w-1/2 sticky top-32 lg:top-32 self-start">
-              <ImageGallery 
-                images={sortedGalleryImages} 
-                productName={product.name || product.title}
-                onWishlistToggle={toggleWishlist}
-                isWishlisted={isWishlisted}
-              />
+          <div className="flex flex-col md:flex-row gap-3 sm:gap-4 md:gap-6 lg:gap-8">
+            {/* LEFT: Image Gallery */}
+            <div className="w-full md:w-1/2 md:h-fit">
+              <div className="sticky top-20 md:top-24">
+                <ImageGallery
+                  images={sortedGalleryImages}
+                  productName={product.name || product.title}
+                  onWishlistToggle={toggleWishlist}
+                  isWishlisted={isWishlisted}
+                />
+              </div>
             </div>
 
             {/* RIGHT: Product Details - Scrollable */}
-            <div className="md:w-1/2 space-y-3 sm:space-y-4 md:space-y-5">
+            <div className="w-full md:w-1/2 space-y-2 sm:space-y-3 md:space-y-4">
               {/* Product Title */}
-              <div>
-                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 leading-tight mb-2">
+              <div className="space-y-2 mb-4">
+                <h3 className="text-sm sm:text-base font-semibold text-gray-900">
                   {product.name || product.title}
-                </h1>
-                <div className="flex flex-col sm:flex-row sm:items-center gap-2 text-sm text-gray-600">
-                  <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium w-fit">
+                </h3>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3 text-sm text-gray-600">
+                  <span className="bg-green-100 text-green-800 px-4 py-2 rounded-full text-xs font-medium w-fit tracking-wide">
                     {product.category || "Premium Quality"}
                   </span>
                 </div>
               </div>
 
+              {/* Rating Display - Flipkart Style */}
+              {(() => {
+                const rating = product.rating ? parseFloat(product.rating) : null;
+                const ratingCount = product.rating ? parseInt(product.rating) : 0;
+                const reviewsCount = product.reviewsCount ? parseInt(product.reviewsCount) : 0;
+
+                // Only show if rating is a valid number
+                if (rating && !isNaN(rating)) {
+                  return (
+                    <div className="flex items-center gap-3 mb-4 pb-4 border-b border-gray-200">
+                      <div className="flex items-center gap-2 bg-green-600 text-white px-3 py-1.5 rounded-full">
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                        </svg>
+                        <span className="font-bold text-sm">{rating.toFixed(1)}</span>
+                      </div>
+                      <span
+                        // onClick={() => navigate(`/ratings/${productId}?from=product`)}
+                        className="text-blue-600 text-blue-700 text-sm font-medium cursor-pointer"
+                      >
+                        {ratingCount} ratings and {reviewsCount} reviews
+                      </span>
+                    </div>
+                  );
+                }
+                return null;
+              })()}
+
               {/* Price Section */}
-              <div className="space-y-2">
-                <div className="flex flex-wrap items-baseline gap-2 sm:gap-3">
-                  <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">₹{product.price}</div>
+              <div className="space-y-2 mb-3">
+                <div className="flex flex-wrap items-baseline gap-3 sm:gap-4">
+                  <div className="text-xl sm:text-3xl font-light text-gray-900" style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}>₹{product.price}</div>
                   {product.mrp && product.mrp > product.price && (
                     <>
                       <div className="text-lg sm:text-xl text-gray-500 line-through">₹{product.mrp}</div>
@@ -401,32 +422,31 @@ export default function ProductDetailPage() {
               </div>
 
               {/* Promo Banner */}
-              <div className="bg-gradient-to-r from-teal-50 to-blue-50 border border-teal-200 rounded-lg p-2 sm:p-3">
+              {/* <div className="bg-gradient-to-r from-teal-50 to-blue-50 border border-teal-200 rounded-lg p-2 sm:p-3">
                 <div className="flex items-center gap-2">
-                  <div className="w-5 h-5 sm:w-6 sm:h-6 bg-teal-600 rounded-full flex items-center justify-center">
+                  <div className="w-5 h-5 sm:w-6 sm:h-6 bg-gray-900 rounded-full flex items-center justify-center">
                     <span className="text-white font-bold text-sm">₹</span>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-700">
+                    <p className="text-sm text-gray-600">
                       Get this as low as <span className="font-bold text-teal-700">₹{Math.max(0, product.price - 79)}</span>
                     </p>
                     <p className="text-xs text-gray-600">With additional offers</p>
                   </div>
                 </div>
-              </div>
+              </div> */}
 
               {/* Features Strip */}
-              <div className="grid grid-cols-2 gap-1 sm:gap-2">
-                <div className="text-center p-2 border border-gray-200 rounded-lg bg-gray-50">
-                  <div className="text-sm font-semibold text-gray-900 mb-1">Easy Returns</div>
-                  <div className="text-xs text-gray-600">3 days return</div>
+              <div className="grid grid-cols-2 gap-2 sm:gap-3 my-2">
+                <div className="text-center p-2 sm:p-3 border border-gray-300 rounded-lg bg-white hover:shadow-sm transition-shadow">
+                  <div className="text-sm sm:text-base font-semibold text-gray-900">Easy Returns</div>
+                  <div className="text-xs sm:text-sm text-gray-600">3 days return</div>
                 </div>
-                <div className="text-center p-2 border border-gray-200 rounded-lg bg-gray-50">
-                  <div className="text-sm font-semibold text-gray-900 mb-1">Free Delivery</div>
-                  <div className="text-xs text-gray-600">3-7 days</div>
+                <div className="text-center p-2 sm:p-3 border border-gray-300 rounded-lg bg-white hover:shadow-sm transition-shadow">
+                  <div className="text-sm sm:text-base font-semibold text-gray-900">Free Delivery</div>
+                  <div className="text-xs sm:text-sm text-gray-600">3-7 days</div>
                 </div>
               </div>
-
 
               {/* Size and Quantity Selection */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -469,20 +489,20 @@ export default function ProductDetailPage() {
                 )} */}
 
                 {/* Quantity */}
-                <div>
-                  <label className="block text-sm font-semibold text-gray-900 mb-1">Quantity</label>
-                  <div className="flex items-center border border-gray-300 rounded-lg w-full">
+                <div className="mb-2">
+                  <label className="block text-base font-medium text-gray-900 mb-1">Quantity</label>
+                  <div className="flex items-center border border-gray-400 rounded-lg w-full bg-white">
                     <button
                       onClick={() => handleQuantityChange(quantity - 1)}
-                      className="px-3 py-2 text-gray-700 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-sm"
+                      className="px-4 py-3 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-lg font-light"
                       disabled={quantity <= 1}
                     >
-                      –
+                      −
                     </button>
-                    <div className="flex-1 text-center py-2 font-semibold text-sm">{quantity}</div>
+                    <div className="flex-1 text-center py-3 font-light text-lg text-gray-900">{quantity}</div>
                     <button
                       onClick={() => handleQuantityChange(quantity + 1)}
-                      className="px-3 py-2 text-gray-700 hover:bg-gray-100 transition-colors text-sm"
+                      className="px-4 py-3 text-gray-600 hover:bg-gray-50 transition-colors text-lg font-light"
                     >
                       +
                     </button>
@@ -491,24 +511,32 @@ export default function ProductDetailPage() {
               </div>
 
               {/* CTA Buttons */}
-              <div className="space-y-2">
-                <div className="flex gap-2">
+              <div className="space-y-1 my-2">
+                <div className="flex gap-3">
                   <button
                     onClick={handleAddToCart}
                     disabled={isAddingToCart}
-                    className="flex-1 bg-orange-500 text-white py-2.5 rounded-lg font-semibold text-sm hover:bg-orange-600 disabled:bg-gray-400 disabled:text-gray-200 transition-all duration-200"
+                    className="flex-1 bg-orange-500 text-white py-3 rounded-lg font-semibold text-base hover:bg-orange-600 disabled:bg-gray-400 disabled:text-gray-200 transition-all duration-200"
                   >
                     {isAddingToCart ? "Adding to cart..." : "ADD TO CART"}
                   </button>
-                  <button 
+                  <button
                     onClick={handleBuyNow}
                     disabled={isBuyingNow}
-                    className="flex-1 bg-orange-500 text-white py-2.5 rounded-lg font-semibold text-sm hover:bg-orange-600 disabled:bg-gray-400 disabled:text-gray-200 transition-all duration-200"
+                    className="flex-1 bg-orange-500 text-white py-3 rounded-lg font-semibold text-base hover:bg-orange-600 disabled:bg-gray-400 disabled:text-gray-200 transition-all duration-200"
                   >
                     {isBuyingNow ? "Processing..." : "BUY NOW"}
                   </button>
                 </div>
-                
+
+                {/* View Reviews Button */}
+                {/* <button
+                  onClick={() => navigate(`/ratings/${productId}?from=product`)}
+                  className="w-full bg-blue-50 text-blue-700 py-2 rounded-lg font-semibold text-sm hover:bg-blue-100 transition-colors border border-blue-200"
+                >
+                  📊 View All Reviews
+                </button> */}
+
                 {/* Additional Info */}
                 <div className="text-center text-sm text-gray-600">
                   <p>✓ Free shipping on orders above ₹999</p>
@@ -517,25 +545,25 @@ export default function ProductDetailPage() {
               </div>
 
               {/* Product Information */}
-              <div className="bg-gray-50 rounded-lg border border-gray-200">
-                <div className="px-6 py-4 border-b border-gray-200">
-                  <h3 className="text-lg font-bold text-gray-900">Product Information</h3>
+              <div className="bg-white rounded-lg border border-gray-300 my-3">
+                <div className="px-5 py-3 border-b border-gray-300 bg-white">
+                  <h3 className="text-sm sm:text-base font-semibold text-gray-900"  >Product Information</h3>
                 </div>
                 <div className="p-0">
                   <table className="w-full">
                     <tbody>
                       {(showFullInfo ? specs : specs.slice(0, 5)).map(([k, v]) => (
                         <tr key={k} className="border-b border-gray-200 last:border-b-0">
-                          <td className="w-40 px-6 py-4 text-gray-600 font-medium">{k}</td>
-                          <td className="px-6 py-4 text-gray-900">{v}</td>
+                          <td className="w-40 px-5 py-3 text-gray-600 font-medium text-sm">{k}</td>
+                          <td className="px-5 py-3 text-gray-900 text-sm">{v}</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
-                <div className="px-6 py-4 text-center border-t border-gray-200">
+                <div className="px-5 py-3 text-center border-t border-gray-300 bg-white">
                   <button
-                    className="text-sm font-semibold text-gray-700 hover:text-gray-900 underline underline-offset-2 transition-colors"
+                    className="text-sm font-semibold text-gray-900 hover:text-teal-700 underline underline-offset-2 transition-colors"
                     onClick={() => setShowFullInfo((s) => !s)}
                   >
                     {showFullInfo ? "READ LESS" : "READ MORE"}
@@ -544,15 +572,21 @@ export default function ProductDetailPage() {
               </div>
 
               {/* Product Description */}
-              <div className="space-y-3">
-                <h3 className="text-lg font-bold text-gray-900">Product Description</h3>
+              <div className="space-y-2 my-3">
+                <h3 className="text-sm sm:text-base font-semibold text-gray-900"  >Product Description</h3>
                 <div className="prose prose-gray max-w-none">
-                  <p className="text-gray-700 leading-relaxed text-base">
+                  <p className={`text-gray-600 leading-relaxed text-base transition-all duration-300 ${showFullDescription ? '' : 'line-clamp-3'}`}>
                     {product.description || `This premium ${product.category?.toLowerCase() || "product"} is handcrafted
                     with the finest materials, featuring a beautiful ${displayColor?.toLowerCase() || "elegant"} design. Perfect for daily use,
                     combining traditional craftsmanship with modern aesthetics.`}
                   </p>
                 </div>
+                <button
+                  onClick={() => setShowFullDescription(!showFullDescription)}
+                  className="text-sm font-semibold text-gray-900 hover:text-teal-700 underline underline-offset-2 transition-colors"
+                >
+                  {showFullDescription ? "READ LESS" : "READ MORE"}
+                </button>
               </div>
             </div>
           </div>
@@ -573,8 +607,8 @@ export default function ProductDetailPage() {
               </button>
             </div>
             <div className="p-6">
-              <p className="text-gray-700 mb-2">Please login to add items to your cart or wishlist.</p>
-              <p className="text-gray-700 mb-4">Would you like to login now?</p>
+              <p className="text-gray-600 mb-2">Please login to add items to your cart or wishlist.</p>
+              <p className="text-gray-600 mb-4">Would you like to login now?</p>
             </div>
             <div className="flex justify-end gap-3 p-6 border-t">
               <button 

@@ -331,7 +331,7 @@ export default function AddressPage() {
                   <button
                     type="button"
                     onClick={cancelDelete}
-                    className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
+                    className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-600 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
                   >
                     Cancel
                   </button>
@@ -366,7 +366,7 @@ export default function AddressPage() {
                 }
               }
             }}
-            className="inline-flex items-center text-teal-600 hover:text-teal-700 transition-colors"
+            className="inline-flex items-center text-gray-900 hover:text-teal-700 transition-colors"
           >
             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -389,7 +389,7 @@ export default function AddressPage() {
                       clearForm();
                       setShowNewAddressForm(true);
                     }}
-                    className="px-3 py-1.5 bg-teal-600 text-white text-sm rounded-md hover:bg-teal-700 transition-colors"
+                    className="px-3 py-1.5 bg-gray-900 text-white text-sm rounded-md hover:bg-gray-800 transition-colors"
                   >
                     Add New Address
                   </button>
@@ -400,7 +400,7 @@ export default function AddressPage() {
                 <div className="flex justify-between items-start mb-3">
                   <div className="flex flex-wrap items-center gap-2">
                     <h3 className="font-medium text-sm sm:text-base">{defaultAddress.fullName}</h3>
-                    <span className="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full capitalize">
+                    <span className="px-2 py-1 bg-gray-100 text-gray-900 text-xs rounded-full capitalize">
                       {defaultAddress.addressType}
                     </span>
                   </div>
@@ -411,7 +411,7 @@ export default function AddressPage() {
                       <button
                         type="button"
                         onClick={() => useSavedAddress(defaultAddress)}
-                        className="px-4 py-2 bg-teal-600 text-white text-sm rounded-md hover:bg-teal-700 transition-colors"
+                        className="px-4 py-2 bg-gray-900 text-white text-sm rounded-md hover:bg-gray-800 transition-colors"
                       >
                         Use This Address
                       </button>
@@ -464,13 +464,13 @@ export default function AddressPage() {
               
               {savedAddresses.length > 1 && (
                 <div className="mt-3 space-y-2">
-                  {/* <h3 className="font-medium text-gray-700 text-sm sm:text-base">Other Addresses</h3> */}
+                  {/* <h3 className="font-medium text-gray-600 text-sm sm:text-base">Other Addresses</h3> */}
                   {savedAddresses.filter(addr => addr._id !== defaultAddress._id).map((address) => (
                     <div key={address._id} className="border border-gray-200 rounded-lg p-3 sm:p-4 hover:bg-gray-50">
                       <div className="flex justify-between items-start mb-3">
                         <div className="flex flex-wrap items-center gap-2">
                           <h4 className="font-medium text-sm sm:text-base">{address.fullName}</h4>
-                          <span className="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full capitalize">
+                          <span className="px-2 py-1 bg-gray-100 text-gray-900 text-xs rounded-full capitalize">
                             {address.addressType}
                           </span>
                         </div>
@@ -480,7 +480,7 @@ export default function AddressPage() {
                             <button
                               type="button"
                               onClick={() => useSavedAddress(address)}
-                              className="px-4 py-2 bg-teal-600 text-white text-sm rounded-md hover:bg-teal-700 transition-colors"
+                              className="px-4 py-2 bg-gray-900 text-white text-sm rounded-md hover:bg-gray-800 transition-colors"
                             >
                               Use This Address
                             </button>
@@ -550,7 +550,7 @@ export default function AddressPage() {
             <form onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div className="col-span-1 sm:col-span-2">
-                  <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
+                  <label htmlFor="fullName" className="block text-sm font-medium text-gray-600 mb-1">Full Name *</label>
                   <input
                     type="text"
                     id="fullName"
@@ -563,7 +563,7 @@ export default function AddressPage() {
                 </div>
                 
                 <div className="col-span-1 sm:col-span-2">
-                  <label htmlFor="addressLine1" className="block text-sm font-medium text-gray-700 mb-1">Address Line 1 *</label>
+                  <label htmlFor="addressLine1" className="block text-sm font-medium text-gray-600 mb-1">Address Line 1 *</label>
                   <input
                     type="text"
                     id="addressLine1"
@@ -576,7 +576,7 @@ export default function AddressPage() {
                 </div>
                 
                 <div className="col-span-1 sm:col-span-2">
-                  <label htmlFor="addressLine2" className="block text-sm font-medium text-gray-700 mb-1">Address Line 2</label>
+                  <label htmlFor="addressLine2" className="block text-sm font-medium text-gray-600 mb-1">Address Line 2</label>
                   <input
                     type="text"
                     id="addressLine2"
@@ -588,7 +588,7 @@ export default function AddressPage() {
                 </div>
                 
                 <div>
-                  <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-1">City *</label>
+                  <label htmlFor="city" className="block text-sm font-medium text-gray-600 mb-1">City *</label>
                   <input
                     type="text"
                     id="city"
@@ -601,7 +601,7 @@ export default function AddressPage() {
                 </div>
                 
                 <div>
-                  <label htmlFor="state" className="block text-sm font-medium text-gray-700 mb-1">State *</label>
+                  <label htmlFor="state" className="block text-sm font-medium text-gray-600 mb-1">State *</label>
                   <input
                     type="text"
                     id="state"
@@ -614,7 +614,7 @@ export default function AddressPage() {
                 </div>
                 
                 <div>
-                  <label htmlFor="pincode" className="block text-sm font-medium text-gray-700 mb-1">Pincode *</label>
+                  <label htmlFor="pincode" className="block text-sm font-medium text-gray-600 mb-1">Pincode *</label>
                   <input
                     type="text"
                     id="pincode"
@@ -627,7 +627,7 @@ export default function AddressPage() {
                 </div>
                 
                 <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
+                  <label htmlFor="phone" className="block text-sm font-medium text-gray-600 mb-1">Phone Number *</label>
                   <input
                     type="tel"
                     id="phone"
@@ -640,7 +640,7 @@ export default function AddressPage() {
                 </div>
                 
                 <div>
-                  <label htmlFor="addressType" className="block text-sm font-medium text-gray-700 mb-1">Address Type</label>
+                  <label htmlFor="addressType" className="block text-sm font-medium text-gray-600 mb-1">Address Type</label>
                   <select
                     id="addressType"
                     name="addressType"
@@ -660,13 +660,13 @@ export default function AddressPage() {
                     <button
                       type="button"
                       onClick={() => navigate('/cart')}
-                      className="w-full sm:w-auto text-teal-600 py-3 px-4 sm:px-6 rounded-md font-medium hover:text-teal-700 transition-colors border border-teal-600 hover:bg-teal-50 text-sm sm:text-base"
+                      className="w-full sm:w-auto text-gray-900 py-3 px-4 sm:px-6 rounded-md font-medium hover:text-teal-700 transition-colors border border-teal-600 hover:bg-teal-50 text-sm sm:text-base"
                     >
                       ← Back to Cart
                     </button>
                     <button
                       type="submit"
-                      className="w-full sm:w-auto bg-teal-600 text-white py-3 px-4 sm:px-6 rounded-md font-medium hover:bg-teal-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+                      className="w-full sm:w-auto bg-gray-900 text-white py-3 px-4 sm:px-6 rounded-md font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
                       disabled={loading}
                     >
                       {loading ? 'Processing...' : 'Continue to Payment'}
@@ -678,7 +678,7 @@ export default function AddressPage() {
                   <div className="mt-4 sm:mt-6 flex justify-center">
                     <button
                       type="submit"
-                      className="w-full sm:w-auto bg-teal-600 text-white py-2.5 px-4 sm:px-6 rounded-md font-medium hover:bg-teal-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+                      className="w-full sm:w-auto bg-gray-900 text-white py-2.5 px-4 sm:px-6 rounded-md font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
                       disabled={loading}
                     >
                       {loading ? (editingAddress ? 'Updating...' : 'Saving...') : (editingAddress ? 'Update Address' : 'Save Address')}
@@ -698,14 +698,14 @@ export default function AddressPage() {
                 <button
                   type="button"
                   onClick={() => navigate('/cart')}
-                  className="w-full sm:w-auto text-teal-600 py-2.5 px-4 sm:px-6 rounded-md font-medium hover:text-teal-700 transition-colors border border-teal-600 hover:bg-teal-50 text-sm sm:text-base"
+                  className="w-full sm:w-auto text-gray-900 py-2.5 px-4 sm:px-6 rounded-md font-medium hover:text-teal-700 transition-colors border border-teal-600 hover:bg-teal-50 text-sm sm:text-base"
                 >
                   ← Back to Cart
                 </button>
                 <button
                   type="button"
                   onClick={handleSubmit}
-                  className="w-full sm:w-auto bg-teal-600 text-white py-2.5 px-4 sm:px-6 rounded-md font-medium hover:bg-teal-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+                  className="w-full sm:w-auto bg-gray-900 text-white py-2.5 px-4 sm:px-6 rounded-md font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
                   disabled={loading}
                 >
                   {loading ? 'Processing...' : 'Next'}

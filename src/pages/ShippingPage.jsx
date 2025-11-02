@@ -8,9 +8,9 @@ export default function ShippingPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="bg-gradient-to-b from-gray-50 to-white py-12 sm:py-16 md:py-20">
+      <section className="bg-gradient-to-b from-gray-50 to-white py-8 sm:py-12 md:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4 sm:mb-6">
             Shipping Information
           </h1>
           <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
@@ -84,7 +84,7 @@ export default function ShippingPage() {
               <div className="flex items-start space-x-4">
                 <div className="flex-shrink-0">
                   <div className="w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center">
-                    <span className="text-teal-600 font-semibold text-sm">1</span>
+                    <span className="text-gray-900 font-semibold text-sm">1</span>
                   </div>
                 </div>
                 <div>
@@ -96,7 +96,7 @@ export default function ShippingPage() {
               <div className="flex items-start space-x-4">
                 <div className="flex-shrink-0">
                   <div className="w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center">
-                    <span className="text-teal-600 font-semibold text-sm">2</span>
+                    <span className="text-gray-900 font-semibold text-sm">2</span>
                   </div>
                 </div>
                 <div>
@@ -108,7 +108,7 @@ export default function ShippingPage() {
               <div className="flex items-start space-x-4">
                 <div className="flex-shrink-0">
                   <div className="w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center">
-                    <span className="text-teal-600 font-semibold text-sm">3</span>
+                    <span className="text-gray-900 font-semibold text-sm">3</span>
                   </div>
                 </div>
                 <div>
@@ -120,7 +120,7 @@ export default function ShippingPage() {
               <div className="flex items-start space-x-4">
                 <div className="flex-shrink-0">
                   <div className="w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center">
-                    <span className="text-teal-600 font-semibold text-sm">4</span>
+                    <span className="text-gray-900 font-semibold text-sm">4</span>
                   </div>
                 </div>
                 <div>

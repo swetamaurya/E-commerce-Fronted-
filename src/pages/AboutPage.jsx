@@ -8,9 +8,9 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="bg-gradient-to-b from-gray-50 to-white py-12 sm:py-16 md:py-20">
+      <section className="bg-gradient-to-b from-gray-50 to-white py-8 sm:py-12 md:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4 sm:mb-6">
             About Royal Thread
           </h1>
           <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
@@ -63,14 +63,14 @@ export default function AboutPage() {
         </div>
 
         {/* Values Section */}
-        <section className="mt-16 sm:mt-20">
+        <section className="mt-12 sm:mt-16">
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-8 sm:mb-12">
             Our Values
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
             <div className="text-center p-6 bg-white rounded-lg shadow-sm">
               <div className="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-8 h-8 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
@@ -82,7 +82,7 @@ export default function AboutPage() {
 
             <div className="text-center p-6 bg-white rounded-lg shadow-sm">
               <div className="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-8 h-8 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>
               </div>
@@ -94,7 +94,7 @@ export default function AboutPage() {
 
             <div className="text-center p-6 bg-white rounded-lg shadow-sm">
               <div className="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-8 h-8 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0-9v9" />
                 </svg>
               </div>
@@ -107,7 +107,7 @@ export default function AboutPage() {
         </section>
 
         {/* Contact CTA */}
-        <section className="mt-16 sm:mt-20 text-center bg-white rounded-lg shadow-sm p-8 sm:p-12">
+        <section className="mt-12 sm:mt-16 text-center bg-white rounded-lg shadow-sm p-8 sm:p-12">
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
             Get in Touch
           </h2>
@@ -118,7 +118,7 @@ export default function AboutPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
               href="tel:+918887565329"
-              className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-teal-600 hover:bg-teal-700 transition-colors"
+              className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-gray-900 hover:bg-gray-800 transition-colors"
             >
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
@@ -127,7 +127,7 @@ export default function AboutPage() {
             </a>
             <a
               href="mailto:royalthread2025@gmail.com"
-              className="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+              className="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-600 bg-white hover:bg-gray-50 transition-colors"
             >
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />

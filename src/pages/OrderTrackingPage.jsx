@@ -170,7 +170,7 @@ export default function OrderTrackingPage() {
   const getStatusColor = (status) => {
     switch (status) {
       case 'Order Received':
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-100 text-gray-900';
       case 'Processing':
         return 'bg-yellow-100 text-yellow-800';
       
@@ -185,7 +185,7 @@ export default function OrderTrackingPage() {
       case 'Delivered':
         return 'bg-green-100 text-green-800';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-100 text-gray-900';
     }
   };
 
@@ -207,7 +207,7 @@ export default function OrderTrackingPage() {
         <div className="mb-4">
           <button 
             onClick={handleGoBack}
-            className="flex items-center text-gray-600 hover:text-teal-600 transition-colors"
+            className="flex items-center text-gray-600 hover:text-gray-900 transition-colors"
           >
             <FaArrowLeft className="mr-2" color="transparent" /> Back
           </button>
@@ -250,7 +250,7 @@ export default function OrderTrackingPage() {
                         <div key={status} className="flex flex-col items-center">
                           <div
                             className={`w-6 h-6 rounded-full z-10 flex items-center justify-center ${
-                              isCompleted ? 'bg-teal-600' : 'bg-gray-300'
+                              isCompleted ? 'bg-gray-900' : 'bg-gray-300'
                             } ${isCurrent ? 'ring-2 ring-teal-300 ring-offset-2' : ''}`}
                           >
                             {isCompleted && (
@@ -424,7 +424,7 @@ export default function OrderTrackingPage() {
                 
                 <Link
                   to="/"
-                  className="bg-teal-600 text-white py-2 px-6 rounded-md font-medium hover:bg-teal-700 transition-colors"
+                  className="bg-gray-900 text-white py-2 px-6 rounded-md font-medium hover:bg-gray-800 transition-colors"
                 >
                   Start Shopping
                 </Link>
@@ -537,13 +537,13 @@ export default function OrderTrackingPage() {
             <div className="flex flex-col space-y-3 sm:flex-row sm:space-y-0 sm:space-x-4 justify-center">
               <Link
                 to="/"
-                className="bg-teal-600 text-white py-2 px-6 rounded-md font-medium hover:bg-teal-700 transition-colors"
+                className="bg-gray-900 text-white py-2 px-6 rounded-md font-medium hover:bg-gray-800 transition-colors"
               >
                 Go to Homepage
               </Link>
               <Link
                 to="/login"
-                className="border border-teal-600 text-teal-600 py-2 px-6 rounded-md font-medium hover:bg-teal-50 transition-colors"
+                className="border border-teal-600 text-gray-900 py-2 px-6 rounded-md font-medium hover:bg-teal-50 transition-colors"
               >
                 Login to View All Orders
               </Link>

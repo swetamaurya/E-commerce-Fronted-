@@ -13,7 +13,7 @@ const UpiPaymentUI = ({ upiId, onClose, onSuccess }) => {
         <p className="mb-4 text-center">Please complete your payment using UPI ID: <strong>{upiId}</strong></p>
         
         <div className="bg-gray-100 p-4 rounded-md mb-4">
-          <p className="text-center text-gray-700">Scan QR code or use your UPI app</p>
+          <p className="text-center text-gray-600">Scan QR code or use your UPI app</p>
           <div className="h-48 w-48 bg-gray-300 mx-auto my-4 flex items-center justify-center">
             {/* QR Code Image */}
             <img 
@@ -33,7 +33,7 @@ const UpiPaymentUI = ({ upiId, onClose, onSuccess }) => {
           </button>
           <button 
             onClick={onSuccess}
-            className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700"
+            className="px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-800"
           >
             Payment Complete
           </button>
@@ -68,7 +68,7 @@ const CardPaymentUI = ({ cardDetails, onClose, onSuccess }) => {
           </button>
           <button 
             onClick={onSuccess}
-            className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700"
+            className="px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-800"
           >
             Pay Now
           </button>
@@ -395,7 +395,7 @@ export default function PaymentPage() {
             <p className="text-gray-600 mb-4">Unable to load your cart items. Please try again.</p>
             <button
               onClick={() => window.location.reload()}
-              className="bg-teal-600 text-white py-2 px-4 rounded-md font-medium hover:bg-teal-700 transition-colors"
+              className="bg-gray-900 text-white py-2 px-4 rounded-md font-medium hover:bg-gray-800 transition-colors"
             >
               Retry
             </button>
@@ -408,19 +408,19 @@ export default function PaymentPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h2 className="text-2xl font-bold text-gray-800 mb-2">Order Placed Successfully!</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Order Placed Successfully!</h2>
               <p className="text-gray-600 mb-6">Your order ID is: <span className="font-semibold">{orderId}</span></p>
               
               <div className="bg-gray-50 p-4 rounded-lg mb-6">
-                <h3 className="font-medium text-gray-800 mb-2">Estimated Delivery</h3>
+                <h3 className="font-medium text-gray-900 mb-2">Estimated Delivery</h3>
                 <p className="text-gray-600">{new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
               </div>
               
               <div className="flex flex-col space-y-3 sm:flex-row sm:space-y-0 sm:space-x-4 justify-center">
-                <Link to="/" className="bg-teal-600 text-white py-2 px-6 rounded-md font-medium hover:bg-teal-700 transition-colors">
+                <Link to="/" className="bg-gray-900 text-white py-2 px-6 rounded-md font-medium hover:bg-gray-800 transition-colors">
                   Continue Shopping
                 </Link>
-                <Link to="/orders" className="border border-teal-600 text-teal-600 py-2 px-6 rounded-md font-medium hover:bg-teal-50 transition-colors">
+                <Link to="/orders" className="border border-teal-600 text-gray-900 py-2 px-6 rounded-md font-medium hover:bg-teal-50 transition-colors">
                   View Orders
                 </Link>
               </div>
@@ -468,9 +468,9 @@ export default function PaymentPage() {
                         value="cod"
                         checked={paymentMethod === 'cod'}
                         onChange={() => setPaymentMethod('cod')}
-                        className="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300"
+                        className="h-4 w-4 text-gray-900 focus:ring-teal-500 border-gray-300"
                       />
-                      <label htmlFor="cod" className="ml-3 block text-sm font-medium text-gray-700">
+                      <label htmlFor="cod" className="ml-3 block text-sm font-medium text-gray-600">
                         Cash on Delivery
                         <p className="text-xs text-gray-500 mt-1">Pay at delivery time</p>
                       </label>
@@ -486,9 +486,9 @@ export default function PaymentPage() {
                           value="razorpay"
                           checked={paymentMethod === 'razorpay'}
                           onChange={() => setPaymentMethod('razorpay')}
-                          className="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300"
+                          className="h-4 w-4 text-gray-900 focus:ring-teal-500 border-gray-300"
                         />
-                        <label htmlFor="razorpay" className="ml-3 block text-sm font-medium text-gray-700">
+                        <label htmlFor="razorpay" className="ml-3 block text-sm font-medium text-gray-600">
                           <div className="flex items-center">
                             <span>Pay with Razorpay</span>
                             <div className="ml-2 flex items-center space-x-1">
@@ -537,7 +537,7 @@ export default function PaymentPage() {
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="col-span-2">
-                        <label htmlFor="cardNumber" className="block text-sm font-medium text-gray-700 mb-1">Card Number</label>
+                        <label htmlFor="cardNumber" className="block text-sm font-medium text-gray-600 mb-1">Card Number</label>
                         <input
                           type="text"
                           id="cardNumber"
@@ -557,7 +557,7 @@ export default function PaymentPage() {
                       </div>
                       
                       <div>
-                        <label htmlFor="expiry" className="block text-sm font-medium text-gray-700 mb-1">Expiry Date</label>
+                        <label htmlFor="expiry" className="block text-sm font-medium text-gray-600 mb-1">Expiry Date</label>
                         <input
                           type="text"
                           id="expiry"
@@ -579,7 +579,7 @@ export default function PaymentPage() {
                       </div>
                       
                       <div>
-                        <label htmlFor="cvv" className="block text-sm font-medium text-gray-700 mb-1">CVV</label>
+                        <label htmlFor="cvv" className="block text-sm font-medium text-gray-600 mb-1">CVV</label>
                         <input
                           type="password"
                           id="cvv"
@@ -604,7 +604,7 @@ export default function PaymentPage() {
                     <h3 className="text-md font-medium mb-4">UPI Details</h3>
                     
                     <div>
-                      <label htmlFor="upiId" className="block text-sm font-medium text-gray-700 mb-1">UPI ID</label>
+                      <label htmlFor="upiId" className="block text-sm font-medium text-gray-600 mb-1">UPI ID</label>
                       <input
                         type="text"
                         id="upiId"
@@ -650,12 +650,12 @@ export default function PaymentPage() {
               </div>
               
               <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row justify-between gap-3">
-                <Link to="/address" className="text-teal-600 py-2.5 px-4 sm:px-6 rounded-md font-medium hover:text-teal-700 transition-colors text-center sm:text-left">
+                <Link to="/address" className="text-gray-900 py-2.5 px-4 sm:px-6 rounded-md font-medium hover:text-teal-700 transition-colors text-center sm:text-left">
                   Back to Address
                 </Link>
                 <button
                   type="submit"
-                  className="bg-teal-600 text-white py-2.5 px-4 sm:px-6 rounded-md font-medium hover:bg-teal-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
+                  className="bg-gray-900 text-white py-2.5 px-4 sm:px-6 rounded-md font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
                   disabled={loading || processingOrder}
                 >
                   {loading || processingOrder ? 'Processing...' : (paymentMethod === 'cod' ? 'Place Order (COD)' : 'Pay with Razorpay')}

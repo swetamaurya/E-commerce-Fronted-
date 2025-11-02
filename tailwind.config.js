@@ -9,6 +9,17 @@ export default {
       screens: {
         'xs': '475px',
       },
+      fontFamily: {
+        'sans': ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+      },
+      letterSpacing: {
+        'tighter': '-0.01em',
+        'tight': '0em',
+        'normal': '0.005em',
+        'wide': '0.01em',
+        'wider': '0.02em',
+        'widest': '0.05em',
+      },
     },
   },
   plugins: [],

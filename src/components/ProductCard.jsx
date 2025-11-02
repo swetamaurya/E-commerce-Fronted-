@@ -11,9 +11,9 @@ import {
   getGuestWishlist
 } from "../utils/guestStorage";
 
-export default function ProductCard({ 
-  product, 
-  viewMode = "grid", 
+export default function ProductCard({
+  product,
+  viewMode = "grid",
   category: forcedCategory,
   wishlistStatus = false,
   onWishlistChange
@@ -23,6 +23,10 @@ export default function ProductCard({
   const [isWishlisted, setIsWishlisted] = useState(wishlistStatus);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [isTogglingWishlist, setIsTogglingWishlist] = useState(false);
+  const [showRatingModal, setShowRatingModal] = useState(false);
+  const [userRating, setUserRating] = useState(0);
+  const [userReview, setUserReview] = useState("");
+  const [submittingRating, setSubmittingRating] = useState(false);
 
   // Normalize images and find primary image
   const images = useMemo(() => {
@@ -383,23 +387,60 @@ export default function ProductCard({
   // Convert category name to URL-friendly format
   const categoryToUrl = (categoryName) => {
     if (!categoryName) return "cotton-yoga-mats";
-    
+
     const categoryMap = {
+      // Main categories (URLs)
       "Cotton Yoga Mats": "cotton-yoga-mats",
-      "Bedside Runners": "bedside-runners", 
+      "Bedside Runners": "bedside-runners",
       "Mats Collection": "mats-collection",
       "Bath Mats": "bath-mats",
       "Area Rugs": "area-rugs",
+
+      // Sub-categories that map to main categories
       "In Door Mats": "mats-collection",
-      "Out Door Mats": "mats-collection"
+      "Out Door Mats": "mats-collection",
+      "Aasan Mats": "mats-collection",
+      "Animal Rugs": "area-rugs",
+
+      // Already-converted slugs (pass-through)
+      "cotton-yoga-mats": "cotton-yoga-mats",
+      "bedside-runners": "bedside-runners",
+      "mats-collection": "mats-collection",
+      "bath-mats": "bath-mats",
+      "area-rugs": "area-rugs"
     };
-    
-    return categoryMap[categoryName] || categoryName.toLowerCase().replace(/\s+/g, '-');
+
+    // First check the map for full names
+    if (categoryMap[categoryName]) {
+      return categoryMap[categoryName];
+    }
+
+    // If it's already a slug (contains hyphens and lowercase), return as-is
+    if (typeof categoryName === 'string' && categoryName.includes('-') && categoryName === categoryName.toLowerCase()) {
+      return categoryName;
+    }
+
+    // Otherwise convert to slug format
+    return categoryName.toString().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
   };
 
   const handleProductClick = () => {
     const catFromPath = window.location.pathname.split("/")[1] || "cotton-yoga-mats";
-    const category = forcedCategory || categoryToUrl(product?.category) || catFromPath;
+    // IMPORTANT: Always convert through categoryToUrl to handle all formats
+    const category = categoryToUrl(forcedCategory) || categoryToUrl(product?.category) || catFromPath;
+
+    console.log('🔗 ProductCard Click Debug:', {
+      forcedCategory,
+      productCategory: product?.category,
+      categoryToUrlResult: categoryToUrl(product?.category),
+      forcedCategoryConverted: categoryToUrl(forcedCategory),
+      catFromPath,
+      finalCategory: category,
+      productId: product.id || product._id,
+      productName: product.name || product.title,
+      navigateTo: `/${category}/${product.id || product._id}`
+    });
+
     // Scroll to top before navigation
     window.scrollTo({ top: 0, behavior: "instant" });
     navigate(`/${category}/${product.id || product._id}`);
@@ -698,15 +739,37 @@ export default function ProductCard({
             </svg>
           </div>
         )}
+
+        {/* Rating Badge - Bottom Left */}
+        {(() => {
+          const rating = product.rating ? parseFloat(product.rating) : null;
+          const count = product.reviewsCount ? parseInt(product.reviewsCount) : 0;
+          
+
+          // Only show if rating is a valid number
+          if (rating && !isNaN(rating)) {
+            return (
+              <div className="absolute bottom-2 left-2 sm:bottom-3 sm:left-3 bg-white rounded-full px-2 sm:px-2.5 py-1 flex items-center gap-1 shadow-md">
+                <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-yellow-400" viewBox="0 0 24 24">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+                <span className="text-xs sm:text-sm font-bold text-gray-900">{rating.toFixed(1)}</span>
+                <span className="text-xs text-gray-600">({count})</span>
+              </div>
+            );
+          }
+          return null;
+        })()}
+
         {/* Hover overlay */}
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300"></div>
       </div>
 
       {/* Product Details */}
-      <div className="p-2 sm:p-4 flex flex-col flex-1">
+      <div className="p-1.5 sm:p-2 md:p-3 flex flex-col flex-1">
 
         {/* Product Title */}
-        <h3 className="font-semibold text-[11px] sm:text-sm text-gray-700 leading-tight mb-1.5 sm:mb-3 line-clamp-2 group-hover:text-gray-900 transition-colors">
+        <h3 className="font-semibold text-xs sm:text-sm md:text-base text-gray-700 leading-snug mb-0.5 sm:mb-1 md:mb-2 line-clamp-2 group-hover:text-gray-900 transition-colors">
           {product.title || product.name}
         </h3>
 
@@ -714,33 +777,27 @@ export default function ProductCard({
 
         {/* Size & Color */}
         {(displaySize || displayColor) && (
-          <div className="flex flex-wrap items-center gap-2 mb-2">
+          <div className="flex flex-wrap items-center gap-1 sm:gap-2 mb-1 sm:mb-1.5">
             {displaySize && (
-              <span className="inline-flex items-center px-2 py-0.5 rounded-full border border-gray-300 text-gray-700 text-[10px] sm:text-xs font-medium">
+              <span className="inline-flex items-center px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full border border-gray-300 text-gray-700 text-[9px] sm:text-xs font-medium bg-white hover:bg-gray-50 transition-colors">
                 {displaySize}
               </span>
             )}
             {displayColor && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gray-100 text-gray-700 text-[10px] sm:text-xs font-medium max-w-full">
-                {(() => {
-                  const sw = getColorSwatch(displayColor);
-                  return sw ? (
-                    <span className="inline-block w-2.5 h-2.5 rounded-full border border-gray-300" style={{ background: sw }}></span>
-                  ) : null;
-                })()}
-                <span className="truncate">{getShortColor(displayColor)}</span>
+              <span className="inline-flex items-center px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full border border-gray-300 text-gray-700 text-[9px] sm:text-xs font-medium bg-white hover:bg-gray-50 transition-colors">
+                {getShortColor(displayColor)}
               </span>
             )}
           </div>
         )}
 
         {/* Pricing Section */}
-        <div className="flex items-baseline gap-1.5 sm:gap-3 mb-2 sm:mb-4 flex-1">
-          <div className="font-black text-sm sm:text-xl text-gray-900">₹{product.price}</div>
+        <div className="flex items-baseline gap-1 sm:gap-2 mb-1 sm:mb-2 flex-1">
+          <div className="font-black text-xs sm:text-lg md:text-xl text-gray-900">₹{product.price}</div>
           {product.mrp && product.mrp > product.price && (
             <>
-              <div className="line-through text-gray-500 text-[10px] sm:text-sm">₹{product.mrp}</div>
-              <div className="text-red-600 font-bold text-[10px] sm:text-sm">
+              <div className="line-through text-gray-500 text-[8px] sm:text-xs">₹{product.mrp}</div>
+              <div className="text-red-600 font-bold text-[8px] sm:text-xs">
                 {Math.round(((product.mrp - product.price) / product.mrp) * 100)}% OFF
               </div>
             </>
@@ -751,11 +808,123 @@ export default function ProductCard({
         <button
           onClick={handleAddToCart}
           disabled={isAddingToCart}
-          className="w-full py-2 sm:py-3 bg-gray-900 text-white text-xs sm:text-sm font-semibold rounded-lg hover:bg-gray-800 transition-all duration-300 group-hover:shadow-lg transform group-hover:scale-[1.02] disabled:bg-gray-600 disabled:cursor-not-allowed mt-auto"
+          className="w-full py-1 sm:py-1.5 md:py-2 bg-gray-900 text-white text-[10px] sm:text-xs md:text-sm font-semibold rounded-lg hover:bg-gray-800 transition-all duration-300 group-hover:shadow-lg transform group-hover:scale-[1.02] disabled:bg-gray-600 disabled:cursor-not-allowed mt-auto"
         >
           {isAddingToCart ? "ADDING..." : "ADD TO CART"}
         </button>
       </div>
+
+      {/* Rating Modal */}
+      {showRatingModal && (
+        <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-t-2xl md:rounded-2xl w-full md:w-96 p-4 md:p-6 max-h-[90vh] overflow-y-auto">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg md:text-xl font-bold text-gray-900">Rate Product</h2>
+              <button
+                onClick={() => setShowRatingModal(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Product Info */}
+            <div className="flex gap-3 mb-4 p-3 bg-gray-50 rounded-lg">
+              <img
+                src={primaryImg}
+                alt={product.title}
+                className="w-12 h-12 object-cover rounded"
+              />
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-gray-900 line-clamp-2">{product.title}</p>
+                <p className="text-xs text-gray-600">₹{product.price}</p>
+              </div>
+            </div>
+
+            {/* Star Rating */}
+            <div className="mb-4">
+              <label className="block text-sm font-semibold text-gray-900 mb-2">Your Rating</label>
+              <div className="flex gap-2">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    onClick={() => setUserRating(star)}
+                    className="text-4xl transition-colors"
+                  >
+                    <svg
+                      className={`w-10 h-10 ${
+                        star <= userRating
+                          ? "fill-yellow-400 text-yellow-400"
+                          : "text-gray-300 hover:text-yellow-300"
+                      }`}
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        fill="currentColor"
+                        d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                      />
+                    </svg>
+                  </button>
+                ))}
+              </div>
+              {userRating > 0 && (
+                <p className="text-xs text-gray-600 mt-2">You rated: {userRating} star{userRating !== 1 ? "s" : ""}</p>
+              )}
+            </div>
+
+            {/* Review Text */}
+            <div className="mb-4">
+              <label className="block text-sm font-semibold text-gray-900 mb-2">Write a Review (Optional)</label>
+              <textarea
+                value={userReview}
+                onChange={(e) => setUserReview(e.target.value)}
+                placeholder="Share your experience with this product..."
+                className="w-full h-24 p-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                maxLength={500}
+              />
+              <p className="text-xs text-gray-500 mt-1">{userReview.length}/500</p>
+            </div>
+
+            {/* Actions */}
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowRatingModal(false)}
+                className="flex-1 px-4 py-2 border border-gray-300 text-gray-900 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={async () => {
+                  if (userRating === 0) {
+                    toast.error("Please select a rating");
+                    return;
+                  }
+                  setSubmittingRating(true);
+                  try {
+                    // TODO: Send rating to API
+                    // await cartApi.submitRating(product.id, { rating: userRating, review: userReview });
+                    toast.success(`Rated ${userRating} stars! Thank you for your feedback.`);
+                    setUserRating(0);
+                    setUserReview("");
+                    setShowRatingModal(false);
+                  } catch (error) {
+                    toast.error("Failed to submit rating");
+                  } finally {
+                    setSubmittingRating(false);
+                  }
+                }}
+                disabled={userRating === 0 || submittingRating}
+                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+              >
+                {submittingRating ? "Submitting..." : "Submit Rating"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </article>
   );
 }

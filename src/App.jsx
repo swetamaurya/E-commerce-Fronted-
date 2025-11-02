@@ -18,6 +18,7 @@ import PaymentPage from "./pages/PaymentPage.jsx";
 import OrderTrackingPage from "./pages/OrderTrackingPage.jsx";
 import OrdersPage from "./pages/OrdersPage.jsx";
 import OrderDetailsPage from "./pages/OrderDetailsPage.jsx";
+import RatingsPage from "./pages/RatingsPage.jsx";
 import AdminPage from "./pages/AdminPage.jsx";
 import AdminLayout from "./components/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -72,6 +73,7 @@ export default function App() {
         <Route path="/payment" element={<PaymentPage />} />
         <Route path="/orders" element={<OrdersPage />} />
         <Route path="/order-details/:orderId" element={<OrderDetailsPage />} />
+        <Route path="/ratings/:productId" element={<RatingsPage />} />
         <Route path="/order-tracking" element={<OrderTrackingPage />} />
         <Route path="/order-tracking/:orderId" element={<OrderTrackingPage />} />
         <Route path="/about" element={<AboutPage />} />

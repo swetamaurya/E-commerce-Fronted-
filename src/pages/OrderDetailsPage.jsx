@@ -59,9 +59,9 @@ export default function OrderDetailsPage() {
       case 'Cancelled':
         return 'bg-red-100 text-red-800';
       case 'Returned':
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-100 text-gray-900';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-100 text-gray-900';
     }
   };
 
@@ -146,7 +146,7 @@ export default function OrderDetailsPage() {
 
   if (loading) {
     return (
-      <div className="bg-white flex items-center justify-center py-20">
+      <div className="bg-white flex items-center justify-center py-10">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-teal-500"></div>
           <p className="mt-4 text-gray-500">Loading order details...</p>
@@ -164,7 +164,7 @@ export default function OrderDetailsPage() {
             <p className="text-gray-600 mb-6">The order you're looking for doesn't exist.</p>
             <Link 
               to="/orders" 
-              className="inline-flex items-center px-6 py-3 bg-teal-600 text-white font-semibold rounded-lg hover:bg-teal-700 transition-colors"
+              className="inline-flex items-center px-6 py-3 bg-gray-900 text-white font-semibold rounded-lg hover:bg-gray-800 transition-colors"
             >
               Back to Orders
             </Link>
@@ -183,7 +183,7 @@ export default function OrderDetailsPage() {
         <div className="mb-8">
           <Link 
             to="/orders" 
-            className="inline-flex items-center text-teal-600 hover:text-teal-700 mb-4"
+            className="inline-flex items-center text-gray-900 hover:text-teal-700 mb-4"
           >
             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -203,7 +203,7 @@ export default function OrderDetailsPage() {
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
               <button 
                 onClick={handleDownloadInvoice}
-                className="inline-flex items-center px-4 py-2 border border-gray-300 text-gray-700 rounded-md font-medium hover:bg-gray-50 transition-colors"
+                className="inline-flex items-center px-4 py-2 border border-gray-300 text-gray-600 rounded-md font-medium hover:bg-gray-50 transition-colors"
               >
                 <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -241,7 +241,7 @@ export default function OrderDetailsPage() {
                     {/* Step Circle */}
                     <div className="flex-shrink-0">
                       <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium ${
-                        step.completed ? 'bg-teal-500' : 'bg-gray-300'
+                        step.completed ? 'bg-gray-900' : 'bg-gray-300'
                       }`}>
                         {step.completed ? (
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -258,12 +258,12 @@ export default function OrderDetailsPage() {
                       <div className="flex items-center justify-between">
                         <div>
                           <p className={`text-sm font-medium ${
-                            step.completed ? 'text-teal-600' : 'text-gray-600'
+                            step.completed ? 'text-gray-900' : 'text-gray-600'
                           }`}>
                             {step.id}
                           </p>
                           {step.completed && (
-                            <p className="text-xs text-teal-600">Completed</p>
+                            <p className="text-xs text-gray-900">Completed</p>
                           )}
                         </div>
                         {step.completed && (
