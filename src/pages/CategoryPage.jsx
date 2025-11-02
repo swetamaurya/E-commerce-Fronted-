@@ -457,10 +457,10 @@ export default function CategoryPage({ title, slug }) {
           ></div>
 
           {/* Drawer */}
-          <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-lg max-h-[90vh] overflow-y-auto">
+          <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-lg max-h-[85vh] overflow-y-auto flex flex-col">
             {/* Header */}
-            <div className="sticky top-0 flex items-center justify-between p-4 border-b border-gray-200 bg-white rounded-t-2xl">
-              <h2 className="text-lg font-bold text-gray-900">Filters & Sort</h2>
+            <div className="sticky top-0 z-10 flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-white rounded-t-2xl">
+              <h2 className="text-base sm:text-lg font-bold text-gray-900">Filters & Sort</h2>
               <button
                 onClick={() => setShowMobileFilterDrawer(false)}
                 className="p-1 hover:bg-gray-100 rounded-full"
@@ -472,11 +472,11 @@ export default function CategoryPage({ title, slug }) {
             </div>
 
             {/* Filter Content */}
-            <div className="p-4 space-y-4">
+            <div className="flex-1 overflow-y-auto p-4 space-y-3 md:space-y-4">
               {/* Sort by Section */}
               <div className="pb-4 border-b border-gray-200">
-                <h3 className="text-sm font-semibold text-gray-900 mb-3">Sort by</h3>
-                <div className="space-y-2">
+                <h3 className="text-sm font-semibold text-gray-900 mb-2">Sort by</h3>
+                <div className="space-y-1.5">
                   {[
                     { value: 'pop', label: 'Popularity' },
                     { value: 'plh', label: 'Price: Low to High' },
@@ -492,7 +492,7 @@ export default function CategoryPage({ title, slug }) {
                         onChange={(e) => setFilters({ ...filters, sort: e.target.value })}
                         className="w-4 h-4"
                       />
-                      <span className="text-sm text-gray-700">{option.label}</span>
+                      <span className="text-xs sm:text-sm text-gray-700">{option.label}</span>
                     </label>
                   ))}
                 </div>
@@ -512,13 +512,13 @@ export default function CategoryPage({ title, slug }) {
             <div className="sticky bottom-0 flex gap-3 p-4 border-t border-gray-200 bg-white">
               <button
                 onClick={() => clearAllFilters()}
-                className="flex-1 px-4 py-3 text-sm font-semibold text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                className="flex-1 px-4 py-2.5 text-sm font-medium text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
               >
                 Clear All
               </button>
               <button
                 onClick={() => setShowMobileFilterDrawer(false)}
-                className="flex-1 px-4 py-3 text-sm font-semibold text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors"
+                className="flex-1 px-4 py-2.5 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors"
               >
                 Apply Filters
               </button>

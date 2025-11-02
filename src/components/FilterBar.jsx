@@ -315,7 +315,7 @@ function FilterGroup({ label, summary, isOpen, onOpen, noChevron = false, align 
         <div
           className={[
             "absolute z-50 mt-2 rounded-lg border border-gray-200 bg-white shadow-lg",
-            "w-[min(90vw,280px)] sm:w-[min(95vw,320px)] md:w-[min(95vw,350px)]",
+            "w-[min(90vw,280px)] sm:w-[min(95vw,320px)] md:w-[min(95vw,350px)] max-h-[70vh] sm:max-h-[60vh] overflow-y-auto",
             align === "right" ? "right-0" : "left-0",
           ].join(" ")}
         >
@@ -349,7 +349,7 @@ function CheckboxList({ title, options, selected, onToggle }) {
   return (
     <div>
       <div className="mb-3 text-xs sm:text-sm font-semibold text-gray-900">{title}</div>
-      <div className="max-h-[40vh] overflow-auto pr-1 custom-scroll">
+      <div className="max-h-[50vh] sm:max-h-[40vh] overflow-y-auto overflow-x-hidden pr-1 custom-scroll">
         <ul className="space-y-1">
           {options.map(({ value, label, count }) => (
             <li key={value}>
@@ -378,7 +378,7 @@ function RadioList({ title, options, value, onChange }) {
   return (
     <div>
       <div className="mb-3 text-xs sm:text-sm font-semibold text-gray-900">{title}</div>
-      <div className="max-h-[40vh] overflow-auto pr-1 custom-scroll">
+      <div className="max-h-[50vh] sm:max-h-[40vh] overflow-y-auto overflow-x-hidden pr-1 custom-scroll">
         <ul className="space-y-1">
           {options.map((opt) => (
             <li key={opt.value}>

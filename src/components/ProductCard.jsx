@@ -749,13 +749,15 @@ export default function ProductCard({
           // Only show if rating is a valid number
           if (rating && !isNaN(rating)) {
             return (
-              <div className="absolute bottom-2 left-2 sm:bottom-3 sm:left-3 bg-white rounded-full px-2 sm:px-2.5 py-1 flex items-center gap-1 shadow-md">
-                <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-yellow-400" viewBox="0 0 24 24">
-                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                </svg>
-                <span className="text-xs sm:text-sm font-bold text-gray-900">{rating.toFixed(1)}</span>
-                <span className="text-xs text-gray-600">({count})</span>
-              </div>
+       <div className="absolute bottom-2 left-2 flex items-center gap-1.2 bg-white/70 backdrop-blur-sm border border-gray-200 rounded-md px-2 py-0.5 shadow-sm">
+  <span className="text-sm font-semibold text-gray-900">{rating.toFixed(1)}</span>
+  <svg className="w-4 h-4 text-green-600 fill-current" viewBox="0 0 24 24">
+    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+  </svg>
+  <span className="text-xs text-gray-600 font-medium"> | {count}</span>
+</div>
+
+
             );
           }
           return null;
