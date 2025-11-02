@@ -375,7 +375,7 @@ export default function ProductDetailPage() {
               {/* Rating Display - Flipkart Style */}
               {(() => {
                 const rating = product.rating ? parseFloat(product.rating) : null;
-                const ratingCount = product.rating ? parseInt(product.rating) : 0;
+                // const ratingCount = product.rating ? parseInt(product.rating) : 0;
                 const reviewsCount = product.reviewsCount ? parseInt(product.reviewsCount) : 0;
 
                 // Only show if rating is a valid number
@@ -392,7 +392,9 @@ export default function ProductDetailPage() {
                         // onClick={() => navigate(`/ratings/${productId}?from=product`)}
                         className="text-blue-600 text-blue-700 text-sm font-medium cursor-pointer"
                       >
-                        {ratingCount} ratings and {reviewsCount} reviews
+                        {/* {ratingCount} ratings and {reviewsCount} reviews */}
+                                                {reviewsCount} reviews
+
                       </span>
                     </div>
                   );
