@@ -43,12 +43,7 @@ export default function AddressPage() {
     if (!addressesLoaded) {
       loadSavedAddresses();
     }
-
-    // If from cart, add cart page to history so back button goes to cart
-    if (isFromCart) {
-      window.history.pushState({ page: 'cart' }, '', '/cart');
-    }
-  }, [navigate, addressesLoaded, isFromCart]);
+  }, [navigate, addressesLoaded]);
 
   const loadSavedAddresses = async () => {
     try {
