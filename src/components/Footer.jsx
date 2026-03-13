@@ -22,14 +22,14 @@ export default function Footer() {
   const goTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   return (
-    <footer className="bg-white text-gray-900 border-t border-gray-200">
+    <footer className="bg-gray-50 text-gray-900 border-t border-gray-200">
       {/* Main Footer Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-10">
           {/* Company Info */}
           <div className="sm:col-span-2 lg:col-span-1">
             <div className="mb-4 sm:mb-6">
-              <Logo size="xlarge" className="justify-start" showText={true} />
+              <Logo size="large" className="justify-start" showText={true} />
             </div>
             <p className="text-gray-600 leading-relaxed mb-4 sm:mb-6 text-sm">
               Welcome to Royal Thread, a MSE based out of India. We aim to deliver
@@ -43,7 +43,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Facebook"
-                className="hover:opacity-80 transition-opacity"
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:shadow-sm transition-all"
               >
                 <svg viewBox="0 0 24 24" className="w-5 h-5 sm:w-6 sm:h-6 fill-gray-600">
                   <path d="M22 12.07C22 6.48 17.52 2 11.93 2S2 6.48 2 12.07c0 5 3.66 9.15 8.44 9.93v-7.03H7.9v-2.9h2.54V9.41c0-2.5 1.49-3.88 3.77-3.88 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.62.77-1.62 1.56v1.87h2.76l-.44 2.9h-2.32V22c4.78-.78 8.44-4.93 8.44-9.93Z" />
@@ -54,7 +54,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
-                className="hover:opacity-80 transition-opacity"
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:shadow-sm transition-all"
               >
                 <svg viewBox="0 0 24 24" className="w-5 h-5 sm:w-6 sm:h-6 fill-gray-600">
                   <path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7Zm5 3.5a5.5 5.5 0 1 1 0 11.001A5.5 5.5 0 0 1 12 7.5Zm0 2a3.5 3.5 0 1 0 0 7.001 3.5 3.5 0 0 0 0-7.001ZM18 6.2a1 1 0 1 1 0 2.001 1 1 0 0 1 0-2.001Z" />
@@ -65,7 +65,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="WhatsApp"
-                className="hover:opacity-80 transition-opacity"
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:shadow-sm transition-all"
               >
                 <svg viewBox="0 0 24 24" className="w-5 h-5 sm:w-6 sm:h-6 fill-gray-600">
                   <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488" />
@@ -139,7 +139,7 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-gray-900">Quick Links</h4>
+            <h4 className="footer-title mb-3 sm:mb-4 text-gray-900">Quick Links</h4>
             <ul className="space-y-1.5 sm:space-y-2">
               {quickLinks.map((link) => (
                 <li key={link.label}>
@@ -160,7 +160,7 @@ export default function Footer() {
 
           {/* Categories */}
           <div>
-            <h4 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-gray-900">Categories</h4>
+            <h4 className="footer-title mb-3 sm:mb-4 text-gray-900">Categories</h4>
             <ul className="space-y-1.5 sm:space-y-2">
               {categories.map((category) => (
                 <li key={category.label}>
@@ -181,7 +181,7 @@ export default function Footer() {
 
           {/* Contact Info */}
           <div>
-            <h4 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-gray-900">Contact Us</h4>
+            <h4 className="footer-title mb-3 sm:mb-4 text-gray-900">Contact Us</h4>
             <div className="space-y-2.5 sm:space-y-3 text-gray-600">
               <div className="flex items-start gap-2">
                 <svg className="w-4 h-4 sm:w-5 sm:h-5 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -229,13 +229,25 @@ export default function Footer() {
                 </div>
               </a>
 
+              {/* Map Preview */}
+              <div className="mt-2 rounded-lg overflow-hidden border border-gray-200 shadow-sm bg-white">
+                <div className="w-full aspect-[4/3] sm:aspect-[16/10] bg-gray-100">
+                  <iframe
+                    title="Royal Thread Location"
+                    className="w-full h-full"
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    src="https://www.google.com/maps?q=Chhoti%20Bashi%2C%20Pakka%20Pul%2C%20Mirzapur%2C%20Uttar%20Pradesh%20231001&output=embed"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       {/* Bottom Section */}
-      <div className="border-t border-gray-200">
+      <div className="border-t border-gray-200 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
           {/* Payment Methods */}
           <div className="mb-4 sm:mb-6">

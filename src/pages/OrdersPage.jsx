@@ -156,27 +156,27 @@ export default function OrdersPage() {
   const getStatusColor = (status) => {
     switch (status) {
       case 'Pending':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-amber-50 text-amber-700';
       case 'Order Received':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-blue-50 text-blue-700';
       case 'Processing':
-        return 'bg-purple-100 text-purple-800';
+        return 'bg-amber-50 text-amber-700';
       case 'Packed':
-        return 'bg-indigo-100 text-indigo-800';
+        return 'bg-amber-50 text-amber-700';
       case 'Shipped':
-        return 'bg-purple-100 text-purple-800';
+        return 'bg-amber-50 text-amber-700';
       case 'In Transit':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-amber-50 text-amber-700';
       case 'Out for Delivery':
-        return 'bg-orange-100 text-orange-800';
+        return 'bg-amber-50 text-amber-700';
       case 'Delivered':
-        return 'bg-green-100 text-green-800';
+        return 'bg-emerald-50 text-emerald-700';
       case 'Cancelled':
-        return 'bg-red-100 text-red-800';
+        return 'bg-rose-50 text-rose-700';
       case 'Returned':
-        return 'bg-gray-100 text-gray-900';
+        return 'bg-gray-100 text-gray-700';
       default:
-        return 'bg-gray-100 text-gray-900';
+        return 'bg-gray-100 text-gray-700';
     }
   };
 
@@ -233,7 +233,7 @@ export default function OrdersPage() {
               Back to Home
             </Link>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2 text-center">Your Orders</h1>
+          <h1 className="page-title text-gray-900 mb-2 text-center">Your Orders</h1>
           <div className="flex flex-col items-center justify-center py-10">
             <svg className="w-16 h-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -269,7 +269,7 @@ export default function OrdersPage() {
             <svg className="w-16 h-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">No orders yet</h2>
+            <h2 className="section-title text-gray-900 mb-2">No orders yet</h2>
             <p className="text-base text-gray-600 mb-6">Start shopping to see your orders here</p>
             <Link 
               to="/cotton-yoga-mats" 
@@ -293,7 +293,7 @@ export default function OrdersPage() {
         <div className="mb-12">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
             <div>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">Your Orders</h1>
+              <h1 className="page-title text-gray-900">Your Orders</h1>
               <p className="text-gray-600 text-sm sm:text-base mt-2">Track your order status and history</p>
             </div>
             {isConnected && (

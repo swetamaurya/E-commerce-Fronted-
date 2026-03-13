@@ -304,11 +304,11 @@ export default function CategoryPage({ title, slug }) {
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6 sm:pb-8 md:pb-10">
         {/* Page Header */}
-        <div className="text-center mt-4 sm:mt-6 md:mt-8 mb-4 sm:mb-6 md:mb-8">
-          <h1 className="font-extrabold tracking-[.08em] text-xl sm:text-2xl md:text-3xl lg:text-4xl text-gray-900 mb-2 sm:mb-3">
+        <div className="text-center mt-2 sm:mt-3 md:mt-4 mb-3 sm:mb-4 md:mb-5">
+          <h1 className="page-title text-gray-900 mb-2">
             {title}
           </h1>
-          <p className="text-gray-600 text-sm sm:text-base md:text-lg max-w-3xl mx-auto px-2 leading-relaxed">
+          <p className="page-subtitle text-gray-600 max-w-3xl mx-auto px-2 leading-relaxed">
             {currentSeo.description}
           </p>
         </div>
@@ -505,6 +505,7 @@ export default function CategoryPage({ title, slug }) {
                 products={items}
                 facetOptions={facetOptions}
                 total={visibleProducts.length}
+                mode="drawer"
               />
             </div>
 

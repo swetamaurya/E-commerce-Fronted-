@@ -343,12 +343,13 @@ export default function ProductDetailPage() {
         canonical={`https://royalthread.co.in/${category}/${product.id || product._id}`}
       />
 
-      <div className="bg-white min-h-screen">
-          <div className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8 bg-white">
+      <div className="bg-gray-50 min-h-screen">
+          <div className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-4 md:py-6">
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-3 sm:p-4 md:p-5">
           <div className="flex flex-col md:flex-row gap-3 sm:gap-4 md:gap-6 lg:gap-8">
             {/* LEFT: Image Gallery */}
             <div className="w-full md:w-1/2 md:h-fit">
-              <div className="sticky top-20 md:top-24">
+              <div className="sticky top-20 sm:top-24 self-start">
                 <ImageGallery
                   images={sortedGalleryImages}
                   productName={product.name || product.title}
@@ -359,14 +360,14 @@ export default function ProductDetailPage() {
             </div>
 
             {/* RIGHT: Product Details - Scrollable */}
-            <div className="w-full md:w-1/2 space-y-2 sm:space-y-3 md:space-y-4">
+            <div className="w-full md:w-1/2 space-y-3 sm:space-y-4 md:space-y-5 md:max-h-[calc(100vh-140px)] md:overflow-y-auto md:pr-3 custom-scroll">
               {/* Product Title */}
-              <div className="space-y-2 mb-4">
-                <h3 className="text-sm sm:text-base font-semibold text-gray-900">
+              <div className="space-y-2 pb-3 border-b border-gray-100">
+                <h3 className="text-sm sm:text-base md:text-lg font-semibold text-gray-900 leading-snug">
                   {product.name || product.title}
                 </h3>
-                <div className="flex flex-col sm:flex-row sm:items-center gap-3 text-sm text-gray-600">
-                  <span className="bg-green-100 text-green-800 px-4 py-2 rounded-full text-xs font-medium w-fit tracking-wide">
+                <div className="flex flex-wrap items-center gap-2 text-sm text-gray-600">
+                  <span className="bg-green-50 text-green-700 px-3 py-1 rounded-full text-xs font-semibold tracking-wide border border-green-100">
                     {product.category || "Premium Quality"}
                   </span>
                 </div>
@@ -381,16 +382,16 @@ export default function ProductDetailPage() {
                 // Only show if rating is a valid number
                 if (rating && !isNaN(rating)) {
                   return (
-                    <div className="flex items-center gap-3 mb-4 pb-4 border-b border-gray-200">
-                      <div className="flex items-center gap-2 bg-green-600 text-white px-3 py-1.5 rounded-full">
+                    <div className="flex items-center gap-3 pb-3 border-b border-gray-100">
+                      <div className="flex items-center gap-1.5 bg-green-600 text-white px-2.5 py-1 rounded-full">
                         <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                         </svg>
-                        <span className="font-bold text-sm">{rating.toFixed(1)}</span>
+                        <span className="font-semibold text-xs">{rating.toFixed(1)}</span>
                       </div>
                       <span
                         // onClick={() => navigate(`/ratings/${productId}?from=product`)}
-                        className="text-blue-600 text-blue-700 text-sm font-medium cursor-pointer"
+                        className="text-blue-600 text-sm font-medium cursor-pointer hover:underline"
                       >
                         {/* {ratingCount} ratings and {reviewsCount} reviews */}
                                                 {reviewsCount} reviews
@@ -403,13 +404,13 @@ export default function ProductDetailPage() {
               })()}
 
               {/* Price Section */}
-              <div className="space-y-2 mb-3">
+              <div className="space-y-2 pb-3 border-b border-gray-100">
                 <div className="flex flex-wrap items-baseline gap-3 sm:gap-4">
-                  <div className="text-xl sm:text-3xl font-light text-gray-900" style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}>₹{product.price}</div>
+                  <div className="text-2xl sm:text-3xl font-semibold text-gray-900">₹{product.price}</div>
                   {product.mrp && product.mrp > product.price && (
                     <>
-                      <div className="text-lg sm:text-xl text-gray-500 line-through">₹{product.mrp}</div>
-                      <div className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-semibold">
+                      <div className="text-base sm:text-lg text-gray-500 line-through">₹{product.mrp}</div>
+                      <div className="bg-red-50 text-red-700 px-2.5 py-1 rounded-full text-xs font-semibold border border-red-100">
                         {Math.round(((product.mrp - product.price) / product.mrp) * 100)}% OFF
                       </div>
                     </>
@@ -439,14 +440,14 @@ export default function ProductDetailPage() {
               </div> */}
 
               {/* Features Strip */}
-              <div className="grid grid-cols-2 gap-2 sm:gap-3 my-2">
-                <div className="text-center p-2 sm:p-3 border border-gray-300 rounded-lg bg-white hover:shadow-sm transition-shadow">
+              <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                <div className="text-center p-2 sm:p-3 border border-gray-200 rounded-lg bg-gray-50 hover:bg-white transition-colors">
                   <div className="text-sm sm:text-base font-semibold text-gray-900">Easy Returns</div>
-                  <div className="text-xs sm:text-sm text-gray-600">3 days return</div>
+                  <div className="text-xs sm:text-sm text-gray-500">3 days return</div>
                 </div>
-                <div className="text-center p-2 sm:p-3 border border-gray-300 rounded-lg bg-white hover:shadow-sm transition-shadow">
+                <div className="text-center p-2 sm:p-3 border border-gray-200 rounded-lg bg-gray-50 hover:bg-white transition-colors">
                   <div className="text-sm sm:text-base font-semibold text-gray-900">Free Delivery</div>
-                  <div className="text-xs sm:text-sm text-gray-600">3-7 days</div>
+                  <div className="text-xs sm:text-sm text-gray-500">3-7 days</div>
                 </div>
               </div>
 
@@ -491,20 +492,20 @@ export default function ProductDetailPage() {
                 )} */}
 
                 {/* Quantity */}
-                <div className="mb-2">
-                  <label className="block text-base font-medium text-gray-900 mb-1">Quantity</label>
-                  <div className="flex items-center border border-gray-400 rounded-lg w-full bg-white">
+                <div className="mb-1">
+                  <label className="block text-sm font-semibold text-gray-900 mb-1">Quantity</label>
+                  <div className="flex items-center border border-gray-300 rounded-lg w-full bg-white">
                     <button
                       onClick={() => handleQuantityChange(quantity - 1)}
-                      className="px-4 py-3 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-lg font-light"
+                      className="px-4 py-2 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-lg font-light"
                       disabled={quantity <= 1}
                     >
                       −
                     </button>
-                    <div className="flex-1 text-center py-3 font-light text-lg text-gray-900">{quantity}</div>
+                    <div className="flex-1 text-center py-2 font-medium text-gray-900">{quantity}</div>
                     <button
                       onClick={() => handleQuantityChange(quantity + 1)}
-                      className="px-4 py-3 text-gray-600 hover:bg-gray-50 transition-colors text-lg font-light"
+                      className="px-4 py-2 text-gray-600 hover:bg-gray-50 transition-colors text-lg font-light"
                     >
                       +
                     </button>
@@ -513,19 +514,19 @@ export default function ProductDetailPage() {
               </div>
 
               {/* CTA Buttons */}
-              <div className="space-y-1 my-2">
+              <div className="space-y-2">
                 <div className="flex gap-3">
                   <button
                     onClick={handleAddToCart}
                     disabled={isAddingToCart}
-                    className="flex-1 bg-orange-500 text-white py-3 rounded-lg font-semibold text-base hover:bg-orange-600 disabled:bg-gray-400 disabled:text-gray-200 transition-all duration-200"
+                    className="flex-1 bg-orange-500 text-white py-2.5 rounded-md font-semibold text-sm sm:text-base hover:bg-orange-600 disabled:bg-gray-400 disabled:text-gray-200 transition-all duration-200 shadow-sm"
                   >
                     {isAddingToCart ? "Adding to cart..." : "ADD TO CART"}
                   </button>
                   <button
                     onClick={handleBuyNow}
                     disabled={isBuyingNow}
-                    className="flex-1 bg-orange-500 text-white py-3 rounded-lg font-semibold text-base hover:bg-orange-600 disabled:bg-gray-400 disabled:text-gray-200 transition-all duration-200"
+                    className="flex-1 bg-orange-500 text-white py-2.5 rounded-md font-semibold text-sm sm:text-base hover:bg-orange-600 disabled:bg-gray-400 disabled:text-gray-200 transition-all duration-200 shadow-sm"
                   >
                     {isBuyingNow ? "Processing..." : "BUY NOW"}
                   </button>
@@ -540,15 +541,15 @@ export default function ProductDetailPage() {
                 </button> */}
 
                 {/* Additional Info */}
-                <div className="text-center text-sm text-gray-600">
+                <div className="text-center text-xs sm:text-sm text-gray-500">
                   <p>✓ Free shipping on orders above ₹999</p>
                   <p>✓ 3-4 day return policy</p>
                 </div>
               </div>
 
               {/* Product Information */}
-              <div className="bg-white rounded-lg border border-gray-300 my-3">
-                <div className="px-5 py-3 border-b border-gray-300 bg-white">
+              <div className="bg-white rounded-lg border border-gray-200">
+                <div className="px-4 sm:px-5 py-3 border-b border-gray-200 bg-gray-50 rounded-t-lg">
                   <h3 className="text-sm sm:text-base font-semibold text-gray-900"  >Product Information</h3>
                 </div>
                 <div className="p-0">
@@ -556,14 +557,14 @@ export default function ProductDetailPage() {
                     <tbody>
                       {(showFullInfo ? specs : specs.slice(0, 5)).map(([k, v]) => (
                         <tr key={k} className="border-b border-gray-200 last:border-b-0">
-                          <td className="w-40 px-5 py-3 text-gray-600 font-medium text-sm">{k}</td>
-                          <td className="px-5 py-3 text-gray-900 text-sm">{v}</td>
+                          <td className="w-36 px-4 sm:px-5 py-2.5 text-gray-500 font-medium text-xs sm:text-sm">{k}</td>
+                          <td className="px-4 sm:px-5 py-2.5 text-gray-900 text-xs sm:text-sm">{v}</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
-                <div className="px-5 py-3 text-center border-t border-gray-300 bg-white">
+                <div className="px-4 sm:px-5 py-3 text-center border-t border-gray-200 bg-white rounded-b-lg">
                   <button
                     className="text-sm font-semibold text-gray-900 hover:text-teal-700 underline underline-offset-2 transition-colors"
                     onClick={() => setShowFullInfo((s) => !s)}
@@ -574,7 +575,7 @@ export default function ProductDetailPage() {
               </div>
 
               {/* Product Description */}
-              <div className="space-y-2 my-3">
+              <div className="space-y-2">
                 <h3 className="text-sm sm:text-base font-semibold text-gray-900"  >Product Description</h3>
                 <div className="prose prose-gray max-w-none">
                   <p className={`text-gray-600 leading-relaxed text-base transition-all duration-300 ${showFullDescription ? '' : 'line-clamp-3'}`}>
@@ -591,6 +592,7 @@ export default function ProductDetailPage() {
                 </button>
               </div>
             </div>
+          </div>
           </div>
         </div>
       </div>

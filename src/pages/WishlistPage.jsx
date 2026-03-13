@@ -211,32 +211,32 @@ export default function WishlistPage() {
   // Empty wishlist
   if (!wishlist || !wishlist.items || wishlist.items.length === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-pink-50">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-teal-50/40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20">
           <div className="text-center mb-12">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3 tracking-tight">Your Wishlist</h1>
-            <p className="text-gray-600 text-lg">Items you've saved for later</p>
+            <h1 className="page-title text-gray-900 mb-3">Your Wishlist</h1>
+            <p className="page-subtitle text-gray-600">Items you've saved for later</p>
           </div>
 
           <div className="flex flex-col items-center justify-center py-12 sm:py-16">
             <div className="relative mb-8">
-              <div className="absolute inset-0 bg-gradient-to-br from-pink-200/30 to-red-200/30 rounded-full blur-3xl"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-teal-100/40 to-amber-100/30 rounded-full blur-3xl"></div>
               <div className="relative">
-                <svg className="w-24 h-24 sm:w-32 sm:h-32 text-red-500 animate-pulse" fill="currentColor" viewBox="0 0 24 24">
+                <svg className="w-24 h-24 sm:w-32 sm:h-32 text-rose-400 animate-pulse" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                 </svg>
               </div>
             </div>
 
             <div className="max-w-md text-center">
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">Your wishlist is empty</h2>
+              <h2 className="section-title text-gray-900 mb-3">Your wishlist is empty</h2>
               <p className="text-gray-600 text-base sm:text-lg mb-8">
                 Start adding items you love to your wishlist. You can add items from any product page and view them here anytime!
               </p>
 
               <Link
                 to="/cotton-yoga-mats"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r gray-900 text-white font-bold text-lg rounded-xl hover:shadow-lg hover:from-teal-700 hover:to-teal-800 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-gray-900 text-white font-bold text-lg rounded-xl hover:bg-gray-800 hover:shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
@@ -248,23 +248,23 @@ export default function WishlistPage() {
             <div className="mt-12 grid sm:grid-cols-3 gap-6 w-full max-w-2xl">
               <div className="text-center p-6 rounded-xl bg-white border border-gray-100">
                 <div className="inline-block p-3 rounded-lg bg-teal-100 mb-3">
-                  <svg className="w-6 h-6 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-6 h-6 text-teal-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h6a2 2 0 012 2v12a2 2 0 01-2 2H7a2 2 0 01-2-2V5z" />
                   </svg>
                 </div>
                 <p className="text-sm font-semibold text-gray-900">Save for Later</p>
               </div>
               <div className="text-center p-6 rounded-xl bg-white border border-gray-100">
-                <div className="inline-block p-3 rounded-lg bg-pink-100 mb-3">
-                  <svg className="w-6 h-6 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="inline-block p-3 rounded-lg bg-rose-100 mb-3">
+                  <svg className="w-6 h-6 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                   </svg>
                 </div>
                 <p className="text-sm font-semibold text-gray-900">Track Favorites</p>
               </div>
               <div className="text-center p-6 rounded-xl bg-white border border-gray-100">
-                <div className="inline-block p-3 rounded-lg bg-blue-100 mb-3">
-                  <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="inline-block p-3 rounded-lg bg-amber-100 mb-3">
+                  <svg className="w-6 h-6 text-amber-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
@@ -283,13 +283,13 @@ export default function WishlistPage() {
         {/* Header */}
         <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
           <div>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">Your Wishlist</h1>
+            <h1 className="page-title text-gray-900">Your Wishlist</h1>
             <p className="text-gray-600 text-sm sm:text-base mt-2">{wishlist.items.length} item{wishlist.items.length !== 1 ? 's' : ''} saved</p>
           </div>
           <button
             onClick={handleClearWishlist}
             disabled={processing}
-            className="self-start sm:self-auto px-6 py-3 text-red-600 hover:text-red-700 border-2 border-red-200 hover:bg-red-50 rounded-lg font-semibold transition-all disabled:text-red-300 disabled:cursor-not-allowed disabled:border-red-100"
+            className="self-start sm:self-auto px-6 py-3 text-rose-600 hover:text-rose-700 border-2 border-rose-200 hover:bg-rose-50 rounded-lg font-semibold transition-all disabled:text-rose-300 disabled:cursor-not-allowed disabled:border-rose-100"
           >
             Clear Wishlist
           </button>
@@ -316,7 +316,7 @@ export default function WishlistPage() {
                 )}
                 {/* Heart Badge */}
                 <div className="absolute top-2 right-2 bg-white rounded-full p-1 shadow-md">
-                  <svg className="w-4 h-4 sm:w-5 sm:h-5 text-red-500" fill="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5 text-rose-500" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                   </svg>
                 </div>
@@ -362,7 +362,7 @@ export default function WishlistPage() {
                   <button
                     onClick={() => handleRemoveItem(item.product)}
                     disabled={processing}
-                    className="w-full py-1.5 text-[10px] sm:text-xs text-red-600 hover:text-red-700 hover:bg-red-50 rounded transition-all disabled:cursor-not-allowed font-semibold border border-red-200 hover:border-red-300"
+                    className="w-full py-1.5 text-[10px] sm:text-xs text-rose-600 hover:text-rose-700 hover:bg-rose-50 rounded transition-all disabled:cursor-not-allowed font-semibold border border-rose-200 hover:border-rose-300"
                   >
                     Remove
                   </button>

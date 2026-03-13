@@ -1,9 +1,12 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { getImageUrl } from "../utils/imageUtils";
 
 export default function ImageGallery({ images = [], productName = "Product", onWishlistToggle, isWishlisted = false }) {
   const [selectedImage, setSelectedImage] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
+  const [lensPos, setLensPos] = useState({ x: 50, y: 50 });
+  const imageWrapRef = useRef(null);
 
   // Debug: Log received images (commented out for production)
 
@@ -53,14 +56,26 @@ export default function ImageGallery({ images = [], productName = "Product", onW
     setSelectedImage(index);
   };
 
+  const handleMouseMove = (e) => {
+    if (!imageWrapRef.current) return;
+    const rect = imageWrapRef.current.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    setLensPos({
+      x: Math.max(0, Math.min(100, x)),
+      y: Math.max(0, Math.min(100, y))
+    });
+  };
+
   return (
     <div className="w-full">
       {/* Professional Image Gallery Layout */}
       <div className="flex flex-col justify-center">
         {/* Main Image */}
-        <div className="relative h-48 sm:h-56 md:h-64 lg:h-72 xl:h-80 flex items-center justify-center mb-2 bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+        <div className="relative h-52 sm:h-64 md:h-72 lg:h-80 xl:h-96 flex items-center justify-center mb-3 bg-gray-50 rounded-xl border border-gray-200 shadow-sm transition-colors duration-200 group hover:bg-white overflow-hidden">
           <div 
-            className="h-full inline-flex items-center justify-center overflow-hidden relative cursor-pointer max-w-full"
+            ref={imageWrapRef}
+            className="h-full w-full inline-flex items-center justify-center overflow-hidden relative cursor-pointer max-w-full rounded-xl"
             onClick={() => {
               console.log('Image container clicked, currentImage.url:', currentImage.url);
               if (currentImage.url) {
@@ -68,12 +83,29 @@ export default function ImageGallery({ images = [], productName = "Product", onW
                 setIsZoomed(true);
               }
             }}
+            onMouseEnter={() => setIsHovering(true)}
+            onMouseLeave={() => setIsHovering(false)}
+            onMouseMove={handleMouseMove}
           >
+            {/* In-place hover zoom (no extra box) */}
+            {currentImage.url && (
+              <div
+                className="absolute inset-0 opacity-0 transition-opacity duration-150"
+                style={{
+                  opacity: isHovering ? 1 : 0,
+                  backgroundImage: `url(${currentImage.url})`,
+                  backgroundRepeat: "no-repeat",
+                  backgroundSize: "220%",
+                  backgroundPosition: `${lensPos.x}% ${lensPos.y}%`,
+                }}
+              />
+            )}
+
             {currentImage.url ? (
               <img
                 src={currentImage.url}
                 alt={currentImage.alt}
-                className="h-full w-auto max-w-full object-contain hover:scale-105 transition-transform duration-500"
+                className={`h-full w-auto max-w-full object-contain transition-opacity duration-150 ${isHovering ? 'opacity-0' : 'opacity-100'}`}
                 loading="lazy"
               />
             ) : (
@@ -83,6 +115,7 @@ export default function ImageGallery({ images = [], productName = "Product", onW
                 </svg>
               </div>
             )}
+
           </div>
           
           {/* Wishlist Button - Top Right Corner of Container */}
@@ -121,15 +154,15 @@ export default function ImageGallery({ images = [], productName = "Product", onW
 
         {/* Bottom: Thumbnail Strip */}
         {sortedImages.length > 1 && (
-          <div className="flex justify-center space-x-2 mt-2">
+          <div className="flex justify-center gap-2 flex-wrap">
             {sortedImages.map((image, index) => (
               <button
                 key={index}
                 onClick={() => handleThumbnailClick(index)}
-                className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 rounded-lg border-2 overflow-hidden transition-all ${
+                className={`w-11 h-11 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 rounded-lg border-2 overflow-hidden transition-all bg-white ${
                   selectedImage === index
-                    ? 'border-blue-500 ring-2 ring-blue-200 shadow-lg'
-                    : 'border-gray-200 hover:border-gray-400 hover:shadow-md'
+                    ? 'border-blue-500 ring-2 ring-blue-100 shadow'
+                    : 'border-gray-200 hover:border-gray-400 hover:shadow-sm'
                 }`}
               >
                 {(image.thumbnail || image.url) && (

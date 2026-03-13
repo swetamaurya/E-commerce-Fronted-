@@ -256,7 +256,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="flex flex-col items-center justify-center">
             {/* Tagline */}
-            <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-normal text-gray-600 mb-2 sm:mb-2 md:mb-3 tracking-wide">
+            <h2 className="section-title text-gray-900 mb-2">
               Premium Handmade Rugs & Mats
             </h2>
 
@@ -288,7 +288,7 @@ export default function HomePage() {
       {/* Brand Category Section - 4 Categories Carousel */}
       <section className="py-4 sm:py-8 md:py-10 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-light text-center text-gray-600 mb-4 sm:mb-8 md:mb-10 tracking-[0.15em] uppercase">Shop By Category</h2>
+          <h2 className="section-title text-center text-gray-900 mb-4 sm:mb-6">Shop By Category</h2>
           
           {/* Carousel Container */}
           <div
@@ -547,7 +547,7 @@ export default function HomePage() {
       <section className="py-4 sm:py-8 bg-white">
         <div className="container mx-auto px-3 sm:px-4">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 sm:mb-8 gap-4">
-            <h2 className="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-normal uppercase">All Products</h2>
+            <h2 className="section-title text-gray-900">All Products</h2>
             {hasMoreAllProducts && (
               <Link to="/all-products" className="text-gray-600 underline hover:text-gray-900 text-sm sm:text-base">
                 VIEW ALL
@@ -577,7 +577,7 @@ export default function HomePage() {
       {/* Customer Feedback Section - Auto-scrolling Carousel */}
       <section className="py-4 sm:py-8 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-light text-center text-gray-600 mb-4 sm:mb-8 md:mb-10 tracking-[0.15em] uppercase">Customers Feedback</h2>
+          <h2 className="section-title text-center text-gray-900 mb-4 sm:mb-6">Customer Feedback</h2>
 
           {/* Carousel Container */}
           <div
@@ -600,7 +600,7 @@ export default function HomePage() {
             >
               {customerReviews.map((review) => (
                 <div key={review.id} className="w-full sm:w-1/2 md:w-1/3 flex-shrink-0 px-2 sm:px-3">
-                  <div className="bg-white p-4 sm:p-5 rounded-lg shadow-lg h-full flex flex-col">
+                  <div className="bg-white p-4 sm:p-5 rounded-lg shadow-md h-full flex flex-col border border-gray-100">
                     <div className="aspect-[4/3] bg-gray-200 rounded-lg mb-2 sm:mb-3 overflow-hidden">
                       <img
                         src={review.image}
@@ -608,7 +608,7 @@ export default function HomePage() {
                         className="w-full h-full object-cover"
                       />
                     </div>
-                    <h3 className="font-medium text-gray-900 mb-2 text-sm sm:text-base tracking-wide">{review.name}</h3>
+                    <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">{review.name}</h3>
                     <div className="flex items-center mb-2">
                       {[...Array(review.rating)].map((_, i) => (
                         <svg key={i} className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
@@ -616,7 +616,7 @@ export default function HomePage() {
                         </svg>
                       ))}
                     </div>
-                    <p className="text-gray-600 text-xs sm:text-sm mb-2">{review.date}</p>
+                    <p className="text-gray-500 text-xs sm:text-sm mb-2">{review.date}</p>
                     <p className="text-gray-600 text-sm sm:text-base flex-1">{review.review}</p>
                   </div>
                 </div>
@@ -679,8 +679,8 @@ export default function HomePage() {
       {/* Footer CTA */}
       <section className="py-4 sm:py-8 bg-gray-900 text-white">
         <div className="container mx-auto px-3 sm:px-4 text-center">
-          <h2 className="text-2xl sm:text-3xl font-semibold mb-2 sm:mb-4 tracking-wide">Ready to Transform Your Home?</h2>
-          <p className="text-lg sm:text-xl mb-4 sm:mb-6 font-light tracking-wide">Discover our exclusive collection of handmade rugs and mats</p>
+          <h2 className="section-title mb-2 sm:mb-3">Ready to Transform Your Home?</h2>
+          <p className="page-subtitle mb-4 sm:mb-6">Discover our exclusive collection of handmade rugs and mats</p>
           <Link
             to="/all-products"
             className="bg-white text-gray-900 px-6 sm:px-8 py-2.5 sm:py-3 rounded-md font-medium hover:bg-gray-100 transition-colors text-sm sm:text-base tracking-wide"

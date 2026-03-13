@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cat src/pages/CategoryPage.jsx)",
+      "Bash(cat:*)",
+      "Bash(/tmp/ProductDetailPage.jsx)",
+      "Bash(/tmp/FilterBar.jsx)",
+      "Bash(cd:*)",
+      "Bash(cd /Users/swetamaurya/Desktop/e-commerce\\ user/e-commerce/frontend:*)",
+      "Bash(while read file)",
+      "Bash(do sed -i 's/py-20/py-10/g' \"$file\")",
+      "Bash(done)",
+      "Bash(while IFS= read -r file)",
+      "Bash(do sed -i '' 's/py-20/py-10/g' \"$file\")",
+      "Bash(/tmp/CartPage_backup.jsx)",
+      "Bash(find:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(/tmp/homepage_part2.js)",
+      "Bash(src/pages/HomePage.jsx)",
+      "Bash(echo:*)",
+      "Bash(git checkout src/components/ProductCard.jsx)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

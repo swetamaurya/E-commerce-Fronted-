@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
-export default function FilterBar({ filters, setFilters, products = [], total = 0 }) {
+export default function FilterBar({ filters, setFilters, products = [], total = 0, mode = "bar" }) {
+  const isDrawer = mode === "drawer";
   const facets = useMemo(() => {
     const countBy = (arr, key) =>
       arr.reduce((m, it) => {
@@ -193,17 +194,21 @@ export default function FilterBar({ filters, setFilters, products = [], total = 
   const hasActiveFilters = filters.type.length > 0 || filters.size.length > 0 || filters.color.length > 0 || filters.price !== "ALL";
 
   return (
-    <div ref={wrapRef} className="w-full bg-gray-50 border-b border-gray-200">
-      <div className="max-w-7xl mx-auto">
+    <div
+      ref={wrapRef}
+      className={isDrawer ? "w-full" : "w-full bg-gray-50 border-b border-gray-200"}
+    >
+      <div className={isDrawer ? "w-full" : "max-w-7xl mx-auto"}>
         {/* Clean Filter Bar */}
-        <div className="px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
-          <div className="flex flex-wrap items-center gap-2 sm:gap-3 md:gap-4">
+        <div className={isDrawer ? "px-0 py-0" : "px-4 sm:px-6 lg:px-8 py-3 sm:py-4"}>
+          <div className={isDrawer ? "space-y-2" : "flex flex-wrap items-center gap-2 sm:gap-3 md:gap-4"}>
             {/* Filter Controls */}
             <FilterGroup
               label="Product Type"
               summary={summary(filters.type)}
               isOpen={open === "type"}
               onOpen={() => setOpen(open === "type" ? null : "type")}
+              mode={mode}
             >
               <CheckboxList title="Product Type" options={facets.types} selected={filters.type} onToggle={(v) => toggleSel("type", v)} />
             </FilterGroup>
@@ -213,6 +218,7 @@ export default function FilterBar({ filters, setFilters, products = [], total = 
               summary={summary(filters.size)}
               isOpen={open === "size"}
               onOpen={() => setOpen(open === "size" ? null : "size")}
+              mode={mode}
             >
               <CheckboxList title="Size" options={facets.sizes} selected={filters.size} onToggle={(v) => toggleSel("size", v)} />
             </FilterGroup>
@@ -222,6 +228,7 @@ export default function FilterBar({ filters, setFilters, products = [], total = 
               summary={summary(filters.color)}
               isOpen={open === "color"}
               onOpen={() => setOpen(open === "color" ? null : "color")}
+              mode={mode}
             >
               <CheckboxList title="Colour/Variant" options={facets.colors} selected={filters.color} onToggle={(v) => toggleSel("color", v)} />
             </FilterGroup>
@@ -231,6 +238,7 @@ export default function FilterBar({ filters, setFilters, products = [], total = 
               summary={priceSummary(facets.prices, filters.price)}
               isOpen={open === "price"}
               onOpen={() => setOpen(open === "price" ? null : "price")}
+              mode={mode}
             >
               <RadioList title="Price Range" options={facets.prices} value={filters.price} onChange={(v) => setSingle("price", v)} />
 
@@ -246,6 +254,7 @@ export default function FilterBar({ filters, setFilters, products = [], total = 
                 onOpen={() => setOpen(open === "sort" ? null : "sort")}
                 noChevron
                 align="right"
+                mode={mode}
               >
                 <MenuList options={facets.sorts} value={filters.sort} onChange={(v) => setSingle("sort", v)} />
               </FilterGroup>
@@ -255,7 +264,7 @@ export default function FilterBar({ filters, setFilters, products = [], total = 
         </div>
 
         {/* Active filters display */}
-        {hasActiveFilters && (
+        {!isDrawer && hasActiveFilters && (
           <div className="px-4 sm:px-6 lg:px-8 py-3 bg-white border-t border-gray-200">
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-sm font-medium text-gray-700">Active filters:</span>
@@ -290,7 +299,32 @@ export default function FilterBar({ filters, setFilters, products = [], total = 
 }
 
 /* ------- Filter Group ------- */
-function FilterGroup({ label, summary, isOpen, onOpen, noChevron = false, align = "left", children }) {
+function FilterGroup({ label, summary, isOpen, onOpen, noChevron = false, align = "left", children, mode = "bar" }) {
+  const isDrawer = mode === "drawer";
+  if (isDrawer) {
+    return (
+      <div className="border border-gray-200 rounded-lg bg-white">
+        <button
+          onClick={onOpen}
+          className="w-full flex items-center justify-between px-3 py-2 text-sm font-semibold text-gray-900"
+        >
+          <span>{label}</span>
+          <div className="flex items-center gap-2 text-xs font-medium text-gray-500">
+            <span className="truncate max-w-[120px]">{summary}</span>
+            {!noChevron && (
+              <svg className={`w-4 h-4 text-gray-400 transition-transform ${isOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            )}
+          </div>
+        </button>
+        {isOpen && (
+          <div className="px-3 pb-3">{children}</div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="relative">
       <button

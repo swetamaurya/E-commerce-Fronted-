@@ -560,7 +560,7 @@ export default function ProductCard({
         <div className="flex-shrink-0">
           <div className="w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 bg-white border border-gray-200 rounded-md overflow-hidden relative">
             {product.badge && (
-              <div className="absolute left-1 top-1 bg-red-600 text-white text-[10px] font-extrabold px-1.5 py-0.5 rounded">
+              <div className="absolute left-1 top-1 bg-amber-500 text-white text-[10px] font-extrabold px-1.5 py-0.5 rounded">
                 {product.badge}
               </div>
             )}
@@ -647,9 +647,9 @@ export default function ProductCard({
             {product.mrp && product.mrp > product.price && (
               <>
                 <div className="line-through text-gray-500 text-sm">₹{product.mrp}</div>
-                <div className="text-red-600 font-bold text-sm">
-                  {Math.round(((product.mrp - product.price) / product.mrp) * 100)}% OFF
-                </div>
+              <div className="text-amber-700 font-bold text-sm">
+                {Math.round(((product.mrp - product.price) / product.mrp) * 100)}% OFF
+              </div>
               </>
             )}
           </div>
@@ -675,7 +675,7 @@ export default function ProductCard({
     >
       {/* Promotional Banner */}
       {product.badge && (
-        <div className="absolute left-3 top-3 z-20 bg-red-600 text-white text-sm font-extrabold px-3 py-1.5 rounded shadow-lg">
+        <div className="absolute left-3 top-3 z-20 bg-amber-500 text-white text-sm font-extrabold px-3 py-1.5 rounded shadow-lg">
           {product.badge}
         </div>
       )}
@@ -799,7 +799,7 @@ export default function ProductCard({
           {product.mrp && product.mrp > product.price && (
             <>
               <div className="line-through text-gray-500 text-[8px] sm:text-xs">₹{product.mrp}</div>
-              <div className="text-red-600 font-bold text-[8px] sm:text-xs">
+              <div className="text-amber-700 font-bold text-[8px] sm:text-xs">
                 {Math.round(((product.mrp - product.price) / product.mrp) * 100)}% OFF
               </div>
             </>

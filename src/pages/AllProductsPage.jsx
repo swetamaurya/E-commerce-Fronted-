@@ -21,6 +21,7 @@ export default function AllProductsPage() {
   const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
   const [wishlistStatus, setWishlistStatus] = useState({}); // Track wishlist status for all products
   const [searchQuery, setSearchQuery] = useState(''); // Search query from URL
+  const [showMobileFilterDrawer, setShowMobileFilterDrawer] = useState(false); // Mobile filter drawer
 
   // Get search query from URL
   useEffect(() => {
@@ -213,11 +214,11 @@ export default function AllProductsPage() {
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6 sm:pb-8 md:pb-10">
       {/* Page Header */}
-      <div className="text-center mt-4 sm:mt-6 md:mt-8 mb-4 sm:mb-6 md:mb-8">
-        <h1 className="font-extrabold tracking-[.08em] text-xl sm:text-2xl md:text-3xl lg:text-4xl text-gray-900 mb-2 sm:mb-3">
+      <div className="text-center mt-2 sm:mt-3 md:mt-4 mb-3 sm:mb-4 md:mb-5">
+        <h1 className="page-title text-gray-900 mb-2">
           {searchQuery ? `Search Results for "${searchQuery}"` : 'All Products'}
         </h1>
-        <p className="text-gray-600 text-sm sm:text-base md:text-lg max-w-3xl mx-auto px-2 leading-relaxed">
+        <p className="page-subtitle text-gray-600 max-w-3xl mx-auto px-2 leading-relaxed">
           {searchQuery 
             ? `Found ${visibleProducts.length} products matching your search`
             : ''
@@ -239,17 +240,56 @@ export default function AllProductsPage() {
         )}
       </div>
 
-      {/* Filter Bar */}
-      <FilterBar
-        filters={filters}
-        setFilters={setFilters}
-        products={products}
-        facetOptions={facetOptions}
-        total={visibleProducts.length}
-      />
+      {/* Filter Bar - Desktop */}
+      <div className="hidden md:block">
+        <FilterBar
+          filters={filters}
+          setFilters={setFilters}
+          products={products}
+          facetOptions={facetOptions}
+          total={visibleProducts.length}
+        />
+      </div>
 
-      {/* Results Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 mt-4 sm:mt-6 mb-2 sm:mb-4">
+      {/* Mobile Top Filter Bar */}
+      <div className="md:hidden flex items-center justify-between gap-3 py-3 px-0 border-b border-gray-200 bg-white mb-3">
+        <button
+          onClick={() => setShowMobileFilterDrawer(true)}
+          className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-gray-900 hover:bg-gray-50 rounded flex-1"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+          </svg>
+          <span>Filter</span>
+          {hasActiveFilters && (
+            <span className="inline-block ml-auto w-2 h-2 bg-red-500 rounded-full"></span>
+          )}
+        </button>
+
+        <div className="flex border border-gray-300 rounded-lg overflow-hidden">
+          <button
+            onClick={() => setViewMode('grid')}
+            className={`p-1.5 ${viewMode === 'grid' ? 'bg-gray-900 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}
+            aria-label="Grid view"
+          >
+            <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+            </svg>
+          </button>
+          <button
+            onClick={() => setViewMode('list')}
+            className={`p-1.5 ${viewMode === 'list' ? 'bg-gray-900 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}
+            aria-label="List view"
+          >
+            <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      {/* Results Header - Desktop Only */}
+      <div className="hidden md:flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 mt-4 sm:mt-6 mb-2 sm:mb-4">
         <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-4">
           <span className="text-sm text-gray-600">
             {visibleProducts.length} of {products.length} products
@@ -341,6 +381,80 @@ export default function AllProductsPage() {
             />
           ))}
         </section>
+      )}
+
+      {/* Mobile Filter Drawer */}
+      {showMobileFilterDrawer && (
+        <div className="fixed inset-0 z-50 md:hidden">
+          <div
+            className="absolute inset-0 bg-black bg-opacity-50"
+            onClick={() => setShowMobileFilterDrawer(false)}
+          ></div>
+
+          <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-lg max-h-[85vh] overflow-y-auto flex flex-col">
+            <div className="sticky top-0 z-10 flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-white rounded-t-2xl">
+              <h2 className="text-base sm:text-lg font-bold text-gray-900">Filters & Sort</h2>
+              <button
+                onClick={() => setShowMobileFilterDrawer(false)}
+                className="p-1 hover:bg-gray-100 rounded-full"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-4 space-y-3 md:space-y-4">
+              <div className="pb-4 border-b border-gray-200">
+                <h3 className="text-sm font-semibold text-gray-900 mb-2">Sort by</h3>
+                <div className="space-y-1.5">
+                  {[
+                    { value: 'pop', label: 'Popularity' },
+                    { value: 'plh', label: 'Price: Low to High' },
+                    { value: 'phl', label: 'Price: High to Low' },
+                    { value: 'new', label: 'Newest First' }
+                  ].map(option => (
+                    <label key={option.value} className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="sort"
+                        value={option.value}
+                        checked={filters.sort === option.value}
+                        onChange={(e) => setFilters({ ...filters, sort: e.target.value })}
+                        className="w-4 h-4"
+                      />
+                      <span className="text-xs sm:text-sm text-gray-700">{option.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <FilterBar
+                filters={filters}
+                setFilters={setFilters}
+                products={products}
+                facetOptions={facetOptions}
+                total={visibleProducts.length}
+                mode="drawer"
+              />
+            </div>
+
+            <div className="sticky bottom-0 flex gap-3 p-4 border-t border-gray-200 bg-white">
+              <button
+                onClick={() => clearAllFilters()}
+                className="flex-1 px-4 py-2.5 text-sm font-medium text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Clear All
+              </button>
+              <button
+                onClick={() => setShowMobileFilterDrawer(false)}
+                className="flex-1 px-4 py-2.5 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors"
+              >
+                Apply Filters
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </main>
   );

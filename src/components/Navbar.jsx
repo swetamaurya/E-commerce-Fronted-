@@ -164,20 +164,32 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="w-full fixed top-0 left-0 right-0 z-50 bg-white shadow-md">
+      <header className="w-full fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100">
         {/* Discount banner */}
-        <div className="w-full bg-black text-white text-center text-xs py-2 px-2">
-          <span className="font-medium">GET 10% off upto Rs. 150 on Orders above 1349 | GET10</span>
+        <div className="w-full bg-black text-white text-center text-[10px] sm:text-[11px] py-1 px-2">
+          <span className="font-medium tracking-[0.12em]">GET 10% off upto Rs. 150 on Orders above 1349 | GET10</span>
         </div>
         {/* Main navigation bar */}
-        <div className="w-full border-b border-gray-200 bg-white shadow-sm">
-          <div className="w-full flex items-center justify-between py-1 sm:py-2 md:py-3 px-2 sm:px-4 md:px-6 lg:px-8">
+        <div className="w-full border-b border-gray-100 bg-gradient-to-b from-white via-white to-gray-50/60">
+          <div className="max-w-6xl mx-auto w-full flex items-center justify-between py-1.5 sm:py-2 md:py-2.5 px-2 sm:px-4 md:px-6 lg:px-8">
             {/* Mobile: Logo + Icons */}
             <div className="flex items-center justify-between w-full md:hidden">
-              {/* Mobile: Left - Logo only (move hamburger near search) */}
-              <Link to="/" className="flex items-center" onClick={closeMenu}>
-                <Logo size="small" noWrapTagline />
-              </Link>
+              {/* Mobile: Left - Menu + Logo */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setMenuOpen(!menuOpen)}
+                  aria-label="Toggle menu"
+                  title="Menu"
+                  className="p-2 rounded-full border border-gray-200 bg-white active:bg-gray-50"
+                >
+                  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
+                  </svg>
+                </button>
+                <Link to="/" className="flex items-center" onClick={closeMenu}>
+                  <Logo size="small" noWrapTagline />
+                </Link>
+              </div>
               
               {/* Mobile Icons */}
               <div className="flex items-center gap-1.5 sm:gap-2">
@@ -268,7 +280,7 @@ export default function Navbar() {
                 <button 
                   onClick={() => { navigate("/wishlist"); closeMenu(); }} 
                   aria-label="Wishlist" 
-                  className="p-1 transition-colors relative"
+                  className="p-1.5 transition-colors relative"
                   title="Wishlist"
                 >
                   <svg className="h-4 w-4" fill="none" stroke="#222" strokeWidth="1.5" viewBox="0 0 24 24">
@@ -285,7 +297,7 @@ export default function Navbar() {
                 <button 
                   onClick={() => { navigate("/cart"); closeMenu(); }} 
                   aria-label="Cart" 
-                  className="p-1 transition-colors"
+                  className="p-1.5 transition-colors"
                   title="Cart"
                 >
                   <svg className="h-4 w-4" fill="none" stroke="#222" strokeWidth="1.5" viewBox="0 0 24 24">
@@ -299,19 +311,19 @@ export default function Navbar() {
             {/* Desktop Layout */}
             <div className="hidden md:flex items-center justify-between w-full">
             {/* Left: Search */}
-            <div className="flex-1 max-w-md md:max-w-lg mr-4 md:mr-8 lg:mr-10">
+            <div className="flex-1 max-w-lg lg:max-w-xl mr-3 md:mr-6 lg:mr-8">
               <form onSubmit={handleSearch} className="relative">
                 <input
                   type="text"
                   placeholder="Search products..."
                   value={searchQuery}
                   onChange={handleSearchChange}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
+                  className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-full bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 text-sm"
                   aria-label="Search products"
                 />
                 <button
                   type="submit"
-                  className="absolute left-3 top-1/2 transform -translate-y-1/2"
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500"
                   aria-label="Search"
                 >
                   <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -329,7 +341,7 @@ export default function Navbar() {
             </div>
               
             {/* Right: User + wishlist + cart */}
-              <div className="flex-1 flex justify-end items-center gap-4 lg:gap-6">
+              <div className="flex-1 flex justify-end items-center gap-2.5 lg:gap-3.5">
               {user ? (
                 <div className="flex items-center gap-2">
                     <span className="text-sm text-gray-700 hidden lg:block">Hi, {user.name}</span>
@@ -418,7 +430,7 @@ export default function Navbar() {
               <button 
                 onClick={() => { navigate("/wishlist"); closeMenu(); }} 
                 aria-label="Wishlist" 
-                className="p-2 transition-colors relative"
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors relative"
                 title="Wishlist"
               >
                 <svg className="h-5 w-5" fill="none" stroke="#222" strokeWidth="1.5" viewBox="0 0 24 24">
@@ -435,7 +447,7 @@ export default function Navbar() {
               <button 
                 onClick={() => { navigate("/cart"); closeMenu(); }} 
                 aria-label="Cart" 
-                className="p-2 transition-colors"
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
                 title="Cart"
               >
                   <svg className="h-5 w-5" fill="none" stroke="#222" strokeWidth="1.5" viewBox="0 0 24 24">
@@ -449,20 +461,9 @@ export default function Navbar() {
 
 
         {/* Mobile Search Bar */}
-        <div className="w-full border-b border-gray-200 bg-white md:hidden">
-          <div className="max-w-7xl mx-auto px-3 sm:px-4 py-2.5">
+        <div className="w-full border-b border-gray-100 bg-gradient-to-b from-white to-gray-50/60 md:hidden">
+          <div className="max-w-6xl mx-auto px-3 sm:px-4 py-2">
             <div className="flex items-center gap-2">
-              {/* Mobile Hamburger near Search */}
-              <button
-                onClick={() => setMenuOpen(!menuOpen)}
-                aria-label="Toggle menu"
-                title="Menu"
-                className="p-2 rounded-md border border-gray-200 bg-white active:bg-gray-50"
-              >
-                <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
-                </svg>
-              </button>
               {/* Search */}
               <form onSubmit={handleSearch} className="relative flex-1">
                 <input
@@ -470,12 +471,12 @@ export default function Navbar() {
                   placeholder="Search products..."
                   value={searchQuery}
                   onChange={handleSearchChange}
-                  className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
+                  className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-full bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 text-sm"
                   aria-label="Search products"
                 />
                 <button
                   type="submit"
-                  className="absolute left-3 top-1/2 transform -translate-y-1/2"
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500"
                   aria-label="Search"
                 >
                   <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -488,22 +489,22 @@ export default function Navbar() {
         </div>
 
         {/* Categories Navigation */}
-        <div className="w-full border-b border-gray-200 bg-white">
-          <nav className="w-full px-2 sm:px-4 md:px-6 lg:px-8" aria-label="Main navigation">
-            <ul className="hidden md:flex justify-center text-sm font-semibold text-gray-700">
+        <div className="w-full border-b border-gray-100 bg-gradient-to-b from-white to-gray-50/70">
+          <nav className="max-w-6xl mx-auto w-full px-2 sm:px-4 md:px-6 lg:px-8" aria-label="Main navigation">
+            <ul className="hidden md:flex justify-center gap-1 text-[13px] font-semibold text-gray-700 tracking-wide">
               {categories.map(({ label, path, description }) => (
                 <li key={path} className="relative">
                   <NavLink
 
                     to={path}
                     className={({ isActive }) =>
-                      `block px-6 py-4 ${isActive ? "text-black" : "text-gray-700"} transition-colors`
+                      `block px-3 py-2.5 ${isActive ? "text-gray-900" : "text-gray-600"} transition-colors`
                     }
                     title={description}
                     aria-label={`Navigate to ${label} page`}
                   >
                     {label}
-                    <span className={`absolute left-0 right-0 -bottom-[1px] h-0.5 ${pathname === path ? "bg-black" : "bg-transparent"}`} />
+                    <span className={`absolute left-2 right-2 -bottom-[1px] h-0.5 rounded ${pathname === path ? "bg-gray-900" : "bg-transparent"}`} />
                   </NavLink>
                 </li>
               ))}
