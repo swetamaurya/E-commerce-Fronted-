@@ -131,7 +131,7 @@ export default function AccountPage() {
             <div className="flex items-center justify-center">
               <div className="w-full max-w-md">
                 <div className="text-center mb-8">
-                  <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3 tracking-tight">My Account</h1>
+                  <h1 className="page-title text-gray-900 mb-3">My Account</h1>
                   <p className="text-gray-600 text-lg">Sign in to manage your profile and orders</p>
                 </div>
 
@@ -181,13 +181,13 @@ export default function AccountPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 sm:py-12 md:py-16">
+    <div className="bg-gray-50 py-4 sm:py-6 pb-8 sm:pb-10">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-10">
+        <div className="mb-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-2">
             <div>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">My Account</h1>
+              <h1 className="page-title text-gray-900">My Account</h1>
               <p className="text-gray-500 text-sm sm:text-base mt-2">Manage your profile and preferences</p>
             </div>
             <div className="flex gap-3">
@@ -210,7 +210,7 @@ export default function AccountPage() {
 
         {/* Account Information Card */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-8">
-          <div className="p-6 sm:p-8 border-b border-gray-100 bg-gradient-to-r from-teal-50 to-blue-50">
+          <div className="p-4 sm:p-6 border-b border-gray-100 bg-gradient-to-r from-teal-50 to-blue-50">
             <div className="flex items-center gap-4">
               <div className="hidden sm:flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-teal-400 to-teal-600">
                 <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
@@ -218,14 +218,14 @@ export default function AccountPage() {
                 </svg>
               </div>
               <div>
-                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">{user.name || 'Account'}</h2>
+                <h2 className="section-title text-gray-900">{user.name || 'Account'}</h2>
                 <p className="text-gray-600 text-sm mt-1">Welcome back to your account</p>
               </div>
             </div>
           </div>
 
-          <div className="p-6 sm:p-8">
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="p-4 sm:p-6">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {/* Full Name */}
               <div className="pb-6 sm:pb-0 border-b sm:border-b-0">
                 <div className="flex items-center gap-3 mb-3">
@@ -234,7 +234,7 @@ export default function AccountPage() {
                   </svg>
                   <p className="text-gray-600 text-sm font-semibold uppercase tracking-wide">Full Name</p>
                 </div>
-                <p className="text-lg sm:text-xl font-semibold text-gray-900 ml-8">{user.name || '—'}</p>
+                <p className="text-base sm:text-lg font-semibold text-gray-900 ml-8">{user.name || '—'}</p>
               </div>
 
               {/* Email Address */}
@@ -245,7 +245,7 @@ export default function AccountPage() {
                   </svg>
                   <p className="text-gray-600 text-sm font-semibold uppercase tracking-wide">Email Address</p>
                 </div>
-                <p className="text-lg sm:text-xl font-semibold text-gray-900 ml-8 break-all">{user.email || '—'}</p>
+                <p className="text-base sm:text-lg font-semibold text-gray-900 ml-8 break-all">{user.email || '—'}</p>
               </div>
 
               {/* Mobile Number */}
@@ -256,39 +256,51 @@ export default function AccountPage() {
                   </svg>
                   <p className="text-gray-600 text-sm font-semibold uppercase tracking-wide">Mobile Number</p>
                 </div>
-                <p className="text-lg sm:text-xl font-semibold text-gray-900 ml-8">{user.mobile || '—'}</p>
+                <p className="text-base sm:text-lg font-semibold text-gray-900 ml-8">{user.mobile || '—'}</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Quick Actions */}
-        <div className="grid sm:grid-cols-2 gap-6">
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8 hover:shadow-md transition-shadow cursor-pointer">
-            <div className="flex items-start gap-4">
-              <div className="p-3 rounded-lg bg-teal-100">
+        <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
+          <div
+            onClick={() => navigate('/orders')}
+            className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6 hover:shadow-md hover:border-teal-200 transition-all cursor-pointer group"
+          >
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-lg bg-teal-100 group-hover:bg-teal-200 transition-colors">
                 <svg className="w-6 h-6 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                 </svg>
               </div>
-              <div>
-                <h3 className="text-lg font-bold text-gray-900">My Orders</h3>
-                <p className="text-gray-600 text-sm mt-1">View and track your orders</p>
+              <div className="flex-1">
+                <h3 className="text-base sm:text-lg font-bold text-gray-900">My Orders</h3>
+                <p className="text-gray-500 text-sm mt-0.5">View and track your orders</p>
               </div>
+              <svg className="w-5 h-5 text-gray-400 group-hover:text-gray-900 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8 hover:shadow-md transition-shadow cursor-pointer">
-            <div className="flex items-start gap-4">
-              <div className="p-3 rounded-lg bg-pink-100">
+          <div
+            onClick={() => navigate('/wishlist')}
+            className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6 hover:shadow-md hover:border-pink-200 transition-all cursor-pointer group"
+          >
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-lg bg-pink-100 group-hover:bg-pink-200 transition-colors">
                 <svg className="w-6 h-6 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>
               </div>
-              <div>
-                <h3 className="text-lg font-bold text-gray-900">My Wishlist</h3>
-                <p className="text-gray-600 text-sm mt-1">View your saved items</p>
+              <div className="flex-1">
+                <h3 className="text-base sm:text-lg font-bold text-gray-900">My Wishlist</h3>
+                <p className="text-gray-500 text-sm mt-0.5">View your saved items</p>
               </div>
+              <svg className="w-5 h-5 text-gray-400 group-hover:text-gray-900 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
             </div>
           </div>
         </div>

@@ -160,7 +160,7 @@ export default function OrderDetailsPage() {
       <div className="bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center">
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">Order Not Found</h1>
+            <h1 className="page-title text-gray-900 mb-4">Order Not Found</h1>
             <p className="text-gray-600 mb-6">The order you're looking for doesn't exist.</p>
             <Link 
               to="/orders" 
@@ -178,12 +178,12 @@ export default function OrderDetailsPage() {
 
   return (
     <div className="bg-gray-50 min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Header */}
-        <div className="mb-8">
-          <Link 
-            to="/orders" 
-            className="inline-flex items-center text-gray-900 hover:text-teal-700 mb-4"
+        <div className="mb-5">
+          <Link
+            to="/orders"
+            className="inline-flex items-center text-gray-900 hover:text-teal-700 mb-3"
           >
             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -191,12 +191,12 @@ export default function OrderDetailsPage() {
             Back to Orders
           </Link>
           
-          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-4">
+          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-3">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              <h1 className="page-title text-gray-900 mb-1">
                 Order #{order.orderId || order._id?.slice(-8) || 'N/A'}
           </h1>
-              <p className="text-gray-600">
+              <p className="text-sm text-gray-600">
                 Placed on {formatDate(order.createdAt || order.orderDate)}
           </p>
         </div>
@@ -217,12 +217,12 @@ export default function OrderDetailsPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-4">
             {/* Order Progress */}
             <div className="bg-white rounded-lg shadow-sm p-4">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Order Progress</h2>
+              <h2 className="section-title text-gray-900 mb-4">Order Progress</h2>
               
               {/* Current Status */}
               <div className="mb-4">
@@ -281,7 +281,7 @@ export default function OrderDetailsPage() {
             {/* Shipping Address */}
             {order.shippingAddress && (
               <div className="bg-white rounded-lg shadow-sm p-4">
-                <h2 className="text-lg font-semibold text-gray-900 mb-3">Shipping Address</h2>
+                <h2 className="section-title text-gray-900 mb-3">Shipping Address</h2>
                 <div className="text-gray-600">
                   <p className="font-medium text-gray-900">{order.shippingAddress.name || order.customerName}</p>
                   <p>{order.shippingAddress.street || order.shippingAddress.addressLine1}</p>
@@ -293,7 +293,7 @@ export default function OrderDetailsPage() {
 
           {/* Order Items */}
             <div className="bg-white rounded-lg shadow-sm p-4">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Order Items</h2>
+              <h2 className="section-title text-gray-900 mb-4">Order Items</h2>
               
               {/* Desktop Table */}
               <div className="hidden sm:block overflow-x-auto">
@@ -391,7 +391,7 @@ export default function OrderDetailsPage() {
           <div className="space-y-4">
             {/* Order Summary */}
             <div className="bg-white rounded-lg shadow-sm p-4">
-              <h2 className="text-lg font-semibold text-gray-900 mb-3">Order Summary</h2>
+              <h2 className="section-title text-gray-900 mb-3">Order Summary</h2>
               
                 <div className="space-y-3">
                   <div className="flex justify-between">
@@ -429,8 +429,8 @@ export default function OrderDetailsPage() {
             </div>
 
             {/* Delivery Information */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Delivery Information</h2>
+            <div className="bg-white rounded-lg shadow-sm p-4">
+              <h2 className="section-title text-gray-900 mb-3">Delivery Information</h2>
               
               <div className="space-y-3">
                 <div>

@@ -10,7 +10,7 @@ export default function PrivacyPage() {
       {/* Hero Section */}
       <section className="bg-gradient-to-b from-gray-50 to-white py-8 sm:py-12 md:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4 sm:mb-6">
+          <h1 className="page-title text-gray-900 mb-4 sm:mb-6">
             Privacy Policy
           </h1>
           <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
@@ -27,7 +27,7 @@ export default function PrivacyPage() {
         <div className="bg-white rounded-lg shadow-sm p-6 sm:p-8 md:p-12">
           <div className="prose prose-gray max-w-none">
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">1. Information We Collect</h2>
+              <h2 className="section-title text-gray-900 mb-4">1. Information We Collect</h2>
               <div className="space-y-4 text-gray-600">
                 <h3 className="text-lg font-semibold text-gray-900">Personal Information</h3>
                 <p>We collect information you provide directly to us, such as when you:</p>
@@ -50,7 +50,7 @@ export default function PrivacyPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">2. How We Use Your Information</h2>
+              <h2 className="section-title text-gray-900 mb-4">2. How We Use Your Information</h2>
               <div className="space-y-4 text-gray-600">
                 <p>We use the information we collect to:</p>
                 <ul className="list-disc list-inside space-y-2 ml-4">
@@ -66,7 +66,7 @@ export default function PrivacyPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">3. Information Sharing</h2>
+              <h2 className="section-title text-gray-900 mb-4">3. Information Sharing</h2>
               <div className="space-y-4 text-gray-600">
                 <p>We do not sell, trade, or rent your personal information to third parties. We may share your information only in the following circumstances:</p>
                 <ul className="list-disc list-inside space-y-2 ml-4">
@@ -79,7 +79,7 @@ export default function PrivacyPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">4. Data Security</h2>
+              <h2 className="section-title text-gray-900 mb-4">4. Data Security</h2>
               <div className="space-y-4 text-gray-600">
                 <p>We implement appropriate security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction. These measures include:</p>
                 <ul className="list-disc list-inside space-y-2 ml-4">
@@ -92,7 +92,7 @@ export default function PrivacyPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">5. Your Rights</h2>
+              <h2 className="section-title text-gray-900 mb-4">5. Your Rights</h2>
               <div className="space-y-4 text-gray-600">
                 <p>You have the right to:</p>
                 <ul className="list-disc list-inside space-y-2 ml-4">
@@ -107,28 +107,28 @@ export default function PrivacyPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">6. Cookies and Tracking</h2>
+              <h2 className="section-title text-gray-900 mb-4">6. Cookies and Tracking</h2>
               <div className="space-y-4 text-gray-600">
                 <p>We use cookies and similar technologies to enhance your browsing experience. You can control cookie settings through your browser preferences. However, disabling cookies may affect the functionality of our website.</p>
               </div>
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">7. Third-Party Links</h2>
+              <h2 className="section-title text-gray-900 mb-4">7. Third-Party Links</h2>
               <div className="space-y-4 text-gray-600">
                 <p>Our website may contain links to third-party websites. We are not responsible for the privacy practices of these external sites. We encourage you to review their privacy policies before providing any personal information.</p>
               </div>
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">8. Changes to This Policy</h2>
+              <h2 className="section-title text-gray-900 mb-4">8. Changes to This Policy</h2>
               <div className="space-y-4 text-gray-600">
                 <p>We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new policy on this page and updating the "Last updated" date. We encourage you to review this policy periodically.</p>
               </div>
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">9. Contact Us</h2>
+              <h2 className="section-title text-gray-900 mb-4">9. Contact Us</h2>
               <div className="space-y-4 text-gray-600">
                 <p>If you have any questions about this Privacy Policy or our data practices, please contact us:</p>
                 <div className="bg-gray-50 rounded-lg p-6">

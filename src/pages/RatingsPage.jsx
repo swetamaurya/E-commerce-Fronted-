@@ -176,7 +176,7 @@ export default function RatingsPage() {
               </svg>
               Back
             </button>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">Rate This Product</h1>
+            <h1 className="page-title text-gray-900">Rate This Product</h1>
           </div>
 
           {/* Product Info */}
@@ -448,7 +448,7 @@ export default function RatingsPage() {
             </svg>
             Back
           </button>
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">Product Ratings & Reviews</h1>
+          <h1 className="page-title text-gray-900">Product Ratings & Reviews</h1>
         </div>
 
         {/* Product Info */}

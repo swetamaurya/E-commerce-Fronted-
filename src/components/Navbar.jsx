@@ -4,7 +4,8 @@ import LoginModal from "./LoginModal";
 import CustomDialog from "./CustomDialog";
 import Toast from "./Toast";
 import Logo from "./Logo";
-import { getGuestWishlist } from "../utils/guestStorage";
+import { getGuestWishlist, getGuestCart } from "../utils/guestStorage";
+import { API_URL } from "../config";
 
 const categories = [
   { label: "AREA RUGS",        path: "/area-rugs", description: "Beautiful area rugs for home decoration" },
@@ -26,6 +27,7 @@ export default function Navbar() {
   const [showLogoutSuccess, setShowLogoutSuccess] = useState(false);
   const [showLoginSuccess, setShowLoginSuccess] = useState(false);
   const [wishlistCount, setWishlistCount] = useState(0);
+  const [cartCount, setCartCount] = useState(0);
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -34,38 +36,75 @@ export default function Navbar() {
 
   // Update wishlist count
   useEffect(() => {
-    const updateWishlistCount = () => {
+    const updateWishlistCount = async () => {
       if (user) {
-        // For logged-in users, we'll need to fetch from API
-        // For now, we'll use guest wishlist as fallback
-        const guestWishlist = getGuestWishlist();
-        console.log('🔍 Navbar - Logged in user wishlist:', guestWishlist);
-        setWishlistCount(guestWishlist.length);
+        try {
+          const token = localStorage.getItem('token');
+          const res = await fetch(`${API_URL}/wishlist`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const data = await res.json();
+          if (data.success && data.data?.items) {
+            setWishlistCount(data.data.items.length);
+          }
+        } catch {
+          setWishlistCount(0);
+        }
       } else {
-        // For guest users, get from localStorage
         const guestWishlist = getGuestWishlist();
-        console.log('🔍 Navbar - Guest user wishlist:', guestWishlist);
         setWishlistCount(guestWishlist.length);
       }
     };
 
     updateWishlistCount();
 
-    // Listen for storage changes to update count in real-time
     const handleStorageChange = (e) => {
-      if (e.key === 'guest_wishlist') {
-        updateWishlistCount();
-      }
+      if (e.key === 'guest_wishlist') updateWishlistCount();
     };
 
     window.addEventListener('storage', handleStorageChange);
-    
-    // Also listen for custom events when wishlist is updated
     window.addEventListener('wishlistUpdated', updateWishlistCount);
 
     return () => {
       window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener('wishlistUpdated', updateWishlistCount);
+    };
+  }, [user]);
+
+  // Update cart count
+  useEffect(() => {
+    const updateCartCount = async () => {
+      if (user) {
+        try {
+          const token = localStorage.getItem('token');
+          const res = await fetch(`${API_URL}/cart`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const data = await res.json();
+          if (data.success && data.data?.items) {
+            setCartCount(data.data.items.length);
+          }
+        } catch {
+          setCartCount(0);
+        }
+      } else {
+        const guestCart = getGuestCart();
+        setCartCount(guestCart.length);
+      }
+    };
+
+    updateCartCount();
+
+    const handleStorageChange = (e) => {
+      if (e.key === 'guest_cart') updateCartCount();
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('cartUpdated', updateCartCount);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('cartUpdated', updateCartCount);
     };
   }, [user]);
 
@@ -294,15 +333,20 @@ export default function Navbar() {
                 </button>
                 
                 {/* Cart - Separate */}
-                <button 
-                  onClick={() => { navigate("/cart"); closeMenu(); }} 
-                  aria-label="Cart" 
-                  className="p-1.5 transition-colors"
+                <button
+                  onClick={() => { navigate("/cart"); closeMenu(); }}
+                  aria-label="Cart"
+                  className="p-1.5 transition-colors relative"
                   title="Cart"
                 >
                   <svg className="h-4 w-4" fill="none" stroke="#222" strokeWidth="1.5" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
                   </svg>
+                  {cartCount > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center font-bold">
+                      {cartCount > 99 ? '99+' : cartCount}
+                    </span>
+                  )}
                 </button>
               </div>
             </div>
@@ -444,15 +488,20 @@ export default function Navbar() {
               </button>
               
               {/* Cart */}
-              <button 
-                onClick={() => { navigate("/cart"); closeMenu(); }} 
-                aria-label="Cart" 
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              <button
+                onClick={() => { navigate("/cart"); closeMenu(); }}
+                aria-label="Cart"
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors relative"
                 title="Cart"
               >
-                  <svg className="h-5 w-5" fill="none" stroke="#222" strokeWidth="1.5" viewBox="0 0 24 24">
+                <svg className="h-5 w-5" fill="none" stroke="#222" strokeWidth="1.5" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
                 </svg>
+                {cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
+                    {cartCount > 99 ? '99+' : cartCount}
+                  </span>
+                )}
               </button>
             </div>
           </div>

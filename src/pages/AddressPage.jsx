@@ -7,6 +7,7 @@ export default function AddressPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const [loading, setLoading] = useState(false);
+  const [isFetchingAddresses, setIsFetchingAddresses] = useState(true);
   const [addressesLoaded, setAddressesLoaded] = useState(false);
   const [savedAddresses, setSavedAddresses] = useState([]);
   const [showSavedAddresses, setShowSavedAddresses] = useState(true);
@@ -51,6 +52,7 @@ export default function AddressPage() {
 
   const loadSavedAddresses = async () => {
     try {
+      setIsFetchingAddresses(true);
       setAddressesLoaded(true);
       const response = await addressApi.getAddresses();
       const addresses = response.data || [];
@@ -76,6 +78,8 @@ export default function AddressPage() {
       console.error('Error loading addresses:', error);
       setAddressesLoaded(false); // Reset flag on error
       // Don't show error toast as this is not critical
+    } finally {
+      setIsFetchingAddresses(false);
     }
   };
 
@@ -307,8 +311,19 @@ export default function AddressPage() {
     }
   };
 
+  if (isFetchingAddresses) {
+    return (
+      <div className="bg-white flex items-center justify-center py-10">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-teal-500"></div>
+          <p className="mt-4 text-sm text-gray-500">Loading your saved addresses...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-[70vh] bg-gray-50">
+    <div className="bg-gray-50">
         {/* Custom Delete Confirmation Dialog */}
         {showDeleteConfirm && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -348,7 +363,7 @@ export default function AddressPage() {
             </div>
           </div>
         )}
-      <div className="max-w-[800px] mx-auto px-4 sm:px-6 py-4 sm:py-6">
+      <div className="max-w-[800px] mx-auto px-4 sm:px-6 py-4 sm:py-6 pb-8 sm:pb-10">
         {/* Back button - different for cart vs navbar */}
         <div className="mb-3">
           <button
@@ -375,26 +390,24 @@ export default function AddressPage() {
           </button>
         </div>
         
-        <h1 className="text-xl sm:text-2xl font-semibold text-center mb-4 sm:mb-6">SHIPPING ADDRESS</h1>
+        <h1 className="page-title text-gray-900 text-center mb-4 sm:mb-6">SHIPPING ADDRESS</h1>
         
         {/* Current Address Section */}
         {defaultAddress && !showNewAddressForm && (
           <div className="bg-white rounded-lg shadow-md overflow-hidden mb-4">
             <div className="p-3 sm:p-4">
-              {!isFromCart && (
-                <div className="flex justify-end mb-3">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      clearForm();
-                      setShowNewAddressForm(true);
-                    }}
-                    className="px-3 py-1.5 bg-gray-900 text-white text-sm rounded-md hover:bg-gray-800 transition-colors"
-                  >
-                    Add New Address
-                  </button>
-                </div>
-              )}
+              <div className="flex justify-end mb-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    clearForm();
+                    setShowNewAddressForm(true);
+                  }}
+                  className="px-3 py-1.5 bg-gray-900 text-white text-sm rounded-md hover:bg-gray-800 transition-colors"
+                >
+                  Add New Address
+                </button>
+              </div>
               
               <div className="border border-gray-200 rounded-lg p-3 sm:p-4 bg-gray-50">
                 <div className="flex justify-between items-start mb-3">
@@ -541,10 +554,19 @@ export default function AddressPage() {
         {(!defaultAddress || showNewAddressForm) && (
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
             <div className="p-3 sm:p-4">
-              <div className="mb-4">
+              <div className="mb-4 flex items-center justify-between gap-3">
                 <h2 className="text-lg font-medium">
                   {editingAddress ? 'Edit Address' : (defaultAddress ? 'Add New Address' : 'Enter Shipping Address')}
                 </h2>
+                {isFromCart && defaultAddress && (
+                  <button
+                    type="button"
+                    onClick={() => useSavedAddress(defaultAddress)}
+                    className="text-sm text-gray-700 hover:text-teal-700 underline"
+                  >
+                    Use Saved Address
+                  </button>
+                )}
               </div>
               
             <form onSubmit={handleSubmit}>

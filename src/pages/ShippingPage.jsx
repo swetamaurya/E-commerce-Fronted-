@@ -10,7 +10,7 @@ export default function ShippingPage() {
       {/* Hero Section */}
       <section className="bg-gradient-to-b from-gray-50 to-white py-8 sm:py-12 md:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4 sm:mb-6">
+          <h1 className="page-title text-gray-900 mb-4 sm:mb-6">
             Shipping Information
           </h1>
           <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
@@ -24,7 +24,7 @@ export default function ShippingPage() {
         <div className="space-y-8">
           {/* Shipping Options */}
           <div className="bg-white rounded-lg shadow-sm p-6 sm:p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Shipping Options</h2>
+            <h2 className="section-title text-gray-900 mb-6">Shipping Options</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="border border-gray-200 rounded-lg p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-3">Standard Shipping</h3>
@@ -49,7 +49,7 @@ export default function ShippingPage() {
 
           {/* Delivery Areas */}
           <div className="bg-white rounded-lg shadow-sm p-6 sm:p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Delivery Areas</h2>
+            <h2 className="section-title text-gray-900 mb-6">Delivery Areas</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-3">Major Cities</h3>
@@ -79,7 +79,7 @@ export default function ShippingPage() {
 
           {/* Order Processing */}
           <div className="bg-white rounded-lg shadow-sm p-6 sm:p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Order Processing</h2>
+            <h2 className="section-title text-gray-900 mb-6">Order Processing</h2>
             <div className="space-y-6">
               <div className="flex items-start space-x-4">
                 <div className="flex-shrink-0">
@@ -133,7 +133,7 @@ export default function ShippingPage() {
 
           {/* Tracking Your Order */}
           <div className="bg-white rounded-lg shadow-sm p-6 sm:p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Tracking Your Order</h2>
+            <h2 className="section-title text-gray-900 mb-6">Tracking Your Order</h2>
             <div className="space-y-4 text-gray-600">
               <p>Once your order is shipped, you can track it using:</p>
               <ul className="list-disc list-inside space-y-2 ml-4">
@@ -150,7 +150,7 @@ export default function ShippingPage() {
 
           {/* Delivery Requirements */}
           <div className="bg-white rounded-lg shadow-sm p-6 sm:p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Delivery Requirements</h2>
+            <h2 className="section-title text-gray-900 mb-6">Delivery Requirements</h2>
             <div className="space-y-4 text-gray-600">
               <h3 className="text-lg font-semibold text-gray-900">Address Requirements</h3>
               <ul className="list-disc list-inside space-y-2 ml-4">
@@ -172,7 +172,7 @@ export default function ShippingPage() {
 
           {/* Shipping Restrictions */}
           <div className="bg-white rounded-lg shadow-sm p-6 sm:p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Shipping Restrictions</h2>
+            <h2 className="section-title text-gray-900 mb-6">Shipping Restrictions</h2>
             <div className="space-y-4 text-gray-600">
               <p>We currently ship to all locations within India. However, there may be restrictions for:</p>
               <ul className="list-disc list-inside space-y-2 ml-4">
@@ -189,7 +189,7 @@ export default function ShippingPage() {
 
           {/* Contact Information */}
           <div className="bg-white rounded-lg shadow-sm p-6 sm:p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Need Help?</h2>
+            <h2 className="section-title text-gray-900 mb-6">Need Help?</h2>
             <div className="space-y-4 text-gray-600">
               <p>If you have any questions about shipping or need assistance with your order, please contact us:</p>
               <div className="bg-gray-50 rounded-lg p-6">

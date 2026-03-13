@@ -29,6 +29,7 @@ export const addToGuestCart = (item) => {
     }
     
     localStorage.setItem(GUEST_CART_KEY, JSON.stringify(cart));
+    window.dispatchEvent(new CustomEvent('cartUpdated'));
     return cart;
   } catch (error) {
     console.error('Error adding to guest cart:', error);
@@ -41,6 +42,7 @@ export const removeFromGuestCart = (productId) => {
     const cart = getGuestCart();
     const updatedCart = cart.filter(item => item.productId !== productId);
     localStorage.setItem(GUEST_CART_KEY, JSON.stringify(updatedCart));
+    window.dispatchEvent(new CustomEvent('cartUpdated'));
     return updatedCart;
   } catch (error) {
     console.error('Error removing from guest cart:', error);
@@ -57,6 +59,7 @@ export const updateGuestCartQuantity = (productId, quantity) => {
         : item
     );
     localStorage.setItem(GUEST_CART_KEY, JSON.stringify(updatedCart));
+    window.dispatchEvent(new CustomEvent('cartUpdated'));
     return updatedCart;
   } catch (error) {
     console.error('Error updating guest cart quantity:', error);
@@ -67,6 +70,7 @@ export const updateGuestCartQuantity = (productId, quantity) => {
 export const clearGuestCart = () => {
   try {
     localStorage.removeItem(GUEST_CART_KEY);
+    window.dispatchEvent(new CustomEvent('cartUpdated'));
     return [];
   } catch (error) {
     console.error('Error clearing guest cart:', error);

@@ -9,7 +9,7 @@ const UpiPaymentUI = ({ upiId, onClose, onSuccess }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-        <h2 className="text-xl font-semibold mb-4 text-center">UPI Payment</h2>
+        <h2 className="section-title mb-4 text-center">UPI Payment</h2>
         <p className="mb-4 text-center">Please complete your payment using UPI ID: <strong>{upiId}</strong></p>
         
         <div className="bg-gray-100 p-4 rounded-md mb-4">
@@ -48,7 +48,7 @@ const CardPaymentUI = ({ cardDetails, onClose, onSuccess }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-        <h2 className="text-xl font-semibold mb-4">Card Payment</h2>
+        <h2 className="section-title mb-4">Card Payment</h2>
         
         <div className="bg-gray-100 p-4 rounded-md mb-4">
           <p className="mb-2">Card Number: **** **** **** {cardDetails.cardNumber.slice(-4)}</p>
@@ -357,9 +357,9 @@ export default function PaymentPage() {
   };
 
   return (
-    <div className="min-h-[70vh] bg-gray-50">
+    <div className="bg-gray-50">
       <div className="max-w-[800px] mx-auto px-4 sm:px-6 py-4 sm:py-6">
-        <h1 className="text-xl sm:text-2xl font-semibold text-center mb-4 sm:mb-6">PAYMENT METHOD</h1>
+        <h1 className="page-title text-gray-900 text-center mb-4 sm:mb-6">PAYMENT METHOD</h1>
         
         {/* UPI Payment UI Modal */}
         {showUpiPaymentUI && (
@@ -391,7 +391,7 @@ export default function PaymentPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
               </svg>
             </div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">No Cart Data</h2>
+            <h2 className="section-title text-gray-900 mb-2">No Cart Data</h2>
             <p className="text-gray-600 mb-4">Unable to load your cart items. Please try again.</p>
             <button
               onClick={() => window.location.reload()}
@@ -408,7 +408,7 @@ export default function PaymentPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Order Placed Successfully!</h2>
+              <h2 className="section-title text-gray-900 mb-2">Order Placed Successfully!</h2>
               <p className="text-gray-600 mb-6">Your order ID is: <span className="font-semibold">{orderId}</span></p>
               
               <div className="bg-gray-50 p-4 rounded-lg mb-6">
@@ -432,7 +432,7 @@ export default function PaymentPage() {
               {/* Cart Summary */}
               {cartData && (
                 <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6">
-                  <h2 className="text-lg font-medium mb-4">Order Summary</h2>
+                  <h2 className="section-title mb-4">Order Summary</h2>
                   <div className="space-y-3">
                     {cartData.items?.map((item, index) => (
                       <div key={index} className="flex justify-between items-center py-2 border-b border-gray-100">
@@ -456,7 +456,7 @@ export default function PaymentPage() {
               <form onSubmit={handleSubmit}>
               <div className="space-y-4 sm:space-y-6">
                 <div>
-                  <h2 className="text-lg font-medium mb-4">Select Payment Method</h2>
+                  <h2 className="section-title mb-4">Select Payment Method</h2>
                   
                   <div className="space-y-3 sm:space-y-4">
                     {/* COD Option (enabled) */}

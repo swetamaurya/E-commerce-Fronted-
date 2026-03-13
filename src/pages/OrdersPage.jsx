@@ -264,7 +264,7 @@ export default function OrdersPage() {
               Back to Home
             </Link>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2 text-center">Your Orders</h1>
+          <h1 className="page-title text-gray-900 mb-2 text-center">Your Orders</h1>
           <div className="flex flex-col items-center justify-center py-10">
             <svg className="w-16 h-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -288,13 +288,13 @@ export default function OrdersPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 md:py-16">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Header */}
-        <div className="mb-12">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div className="mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
             <div>
               <h1 className="page-title text-gray-900">Your Orders</h1>
-              <p className="text-gray-600 text-sm sm:text-base mt-2">Track your order status and history</p>
+              <p className="page-subtitle text-gray-600 mt-1">Track your order status and history</p>
             </div>
             {isConnected && (
               <div className="flex items-center gap-2 px-4 py-2 bg-green-50 rounded-lg border border-green-200">
@@ -310,13 +310,13 @@ export default function OrdersPage() {
           {orders.map((order) => (
             <div key={order._id || order.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 group">
               {/* Order Card Header */}
-              <div className="p-6 sm:p-8 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-teal-50/30">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="p-4 sm:p-5 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-teal-50/30">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <div className="flex-1">
-                    <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                    <h3 className="text-lg font-bold text-gray-900 mb-1">
                       Order #{order.orderNumber || order._id?.slice(-8) || 'N/A'}
                     </h3>
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm text-gray-600">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 text-sm text-gray-600">
                       <span className="flex items-center gap-1">
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10m5 0a2 2 0 012 2v10a2 2 0 01-2 2H7a2 2 0 01-2-2V13a2 2 0 012-2h10a2 2 0 012 2v10z" />
@@ -337,11 +337,11 @@ export default function OrdersPage() {
                       )}
                     </div>
                   </div>
-                  <div className="flex flex-col gap-3 sm:items-end">
-                    <span className={`px-4 py-2 rounded-full text-sm font-bold w-fit ${getStatusColor(order.status)}`}>
+                  <div className="flex flex-col gap-2 sm:items-end">
+                    <span className={`px-3 py-1 rounded-full text-xs font-bold w-fit ${getStatusColor(order.status)}`}>
                       {getStatusText(order.status)}
                     </span>
-                    <span className="text-2xl sm:text-3xl font-bold text-gray-900">
+                    <span className="text-xl sm:text-2xl font-bold text-gray-900">
                       ₹{(order.totalAmount || order.total).toLocaleString('en-IN')}
                     </span>
                   </div>
@@ -349,13 +349,13 @@ export default function OrdersPage() {
               </div>
 
               {/* Order Items */}
-              <div className="p-6 sm:p-8">
-                <h4 className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-4">Items ({order.items?.length || 0})</h4>
-                <div className="space-y-3">
+              <div className="p-4 sm:p-5">
+                <h4 className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-3">Items ({order.items?.length || 0})</h4>
+                <div className="space-y-2">
                   {order.items?.map((item, index) => (
-                    <div key={index} className="flex gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                    <div key={index} className="flex gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                       {/* Product Image */}
-                      <div className="flex-shrink-0 w-20 h-20 bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                      <div className="flex-shrink-0 w-16 h-16 bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
                         {item.image ? (
                           <img src={item.image} alt={item.title} className="w-full h-full object-contain" />
                         ) : (
@@ -403,7 +403,7 @@ export default function OrdersPage() {
               </div>
 
               {/* Order Footer */}
-              <div className="px-6 sm:px-8 py-4 sm:py-6 bg-gray-50 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="px-4 sm:px-5 py-3 sm:py-4 bg-gray-50 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div className="text-sm text-gray-600 space-y-1">
                   {order.trackingNumber && (
                     <p className="flex items-center gap-2">

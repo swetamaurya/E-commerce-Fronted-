@@ -10,7 +10,7 @@ export default function TermsPage() {
       {/* Hero Section */}
       <section className="bg-gradient-to-b from-gray-50 to-white py-8 sm:py-12 md:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4 sm:mb-6">
+          <h1 className="page-title text-gray-900 mb-4 sm:mb-6">
             Terms & Conditions
           </h1>
           <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
@@ -27,14 +27,14 @@ export default function TermsPage() {
         <div className="bg-white rounded-lg shadow-sm p-6 sm:p-8 md:p-12">
           <div className="prose prose-gray max-w-none">
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">1. Acceptance of Terms</h2>
+              <h2 className="section-title text-gray-900 mb-4">1. Acceptance of Terms</h2>
               <div className="space-y-4 text-gray-600">
                 <p>By accessing and using Royal Thread's website and services, you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.</p>
               </div>
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">2. Use License</h2>
+              <h2 className="section-title text-gray-900 mb-4">2. Use License</h2>
               <div className="space-y-4 text-gray-600">
                 <p>Permission is granted to temporarily download one copy of the materials on Royal Thread's website for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title, and under this license you may not:</p>
                 <ul className="list-disc list-inside space-y-2 ml-4">
@@ -47,7 +47,7 @@ export default function TermsPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">3. Product Information</h2>
+              <h2 className="section-title text-gray-900 mb-4">3. Product Information</h2>
               <div className="space-y-4 text-gray-600">
                 <p>We strive to provide accurate product descriptions, images, and pricing. However, we do not warrant that product descriptions or other content is accurate, complete, reliable, current, or error-free. All products are subject to availability.</p>
                 <p>Colors and patterns may vary slightly from the images shown due to monitor settings and lighting conditions. We recommend viewing products in person when possible.</p>
@@ -55,7 +55,7 @@ export default function TermsPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">4. Orders and Payment</h2>
+              <h2 className="section-title text-gray-900 mb-4">4. Orders and Payment</h2>
               <div className="space-y-4 text-gray-600">
                 <h3 className="text-lg font-semibold text-gray-900">Order Processing</h3>
                 <ul className="list-disc list-inside space-y-2 ml-4">
@@ -76,7 +76,7 @@ export default function TermsPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">5. Shipping and Delivery</h2>
+              <h2 className="section-title text-gray-900 mb-4">5. Shipping and Delivery</h2>
               <div className="space-y-4 text-gray-600">
                 <ul className="list-disc list-inside space-y-2 ml-4">
                   <li>Shipping charges are calculated based on delivery location and order weight</li>
@@ -89,7 +89,7 @@ export default function TermsPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">6. Returns and Exchanges</h2>
+              <h2 className="section-title text-gray-900 mb-4">6. Returns and Exchanges</h2>
               <div className="space-y-4 text-gray-600">
                 <p>We want you to be completely satisfied with your purchase. Please refer to our detailed Return Policy for information about returns, exchanges, and refunds.</p>
                 <ul className="list-disc list-inside space-y-2 ml-4">
@@ -102,7 +102,7 @@ export default function TermsPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">7. Intellectual Property</h2>
+              <h2 className="section-title text-gray-900 mb-4">7. Intellectual Property</h2>
               <div className="space-y-4 text-gray-600">
                 <p>The content, organization, graphics, design, compilation, magnetic translation, digital conversion, and other matters related to the website are protected under applicable copyrights, trademarks, and other proprietary rights.</p>
                 <p>You may not use our trademarks, logos, or other proprietary information without our express written consent.</p>
@@ -110,35 +110,35 @@ export default function TermsPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">8. Limitation of Liability</h2>
+              <h2 className="section-title text-gray-900 mb-4">8. Limitation of Liability</h2>
               <div className="space-y-4 text-gray-600">
                 <p>In no event shall Royal Thread, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from your use of the service.</p>
               </div>
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">9. Privacy Policy</h2>
+              <h2 className="section-title text-gray-900 mb-4">9. Privacy Policy</h2>
               <div className="space-y-4 text-gray-600">
                 <p>Your privacy is important to us. Please review our Privacy Policy, which also governs your use of the service, to understand our practices.</p>
               </div>
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">10. Governing Law</h2>
+              <h2 className="section-title text-gray-900 mb-4">10. Governing Law</h2>
               <div className="space-y-4 text-gray-600">
                 <p>These terms shall be governed by and construed in accordance with the laws of India, without regard to its conflict of law provisions. Any disputes arising from these terms shall be subject to the exclusive jurisdiction of the courts in Uttar Pradesh, India.</p>
               </div>
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">11. Changes to Terms</h2>
+              <h2 className="section-title text-gray-900 mb-4">11. Changes to Terms</h2>
               <div className="space-y-4 text-gray-600">
                 <p>We reserve the right to modify these terms at any time. We will notify users of any material changes by posting the new terms on this page and updating the "Last updated" date. Your continued use of the service after any such changes constitutes your acceptance of the new terms.</p>
               </div>
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">12. Contact Information</h2>
+              <h2 className="section-title text-gray-900 mb-4">12. Contact Information</h2>
               <div className="space-y-4 text-gray-600">
                 <p>If you have any questions about these Terms & Conditions, please contact us:</p>
                 <div className="bg-gray-50 rounded-lg p-6">

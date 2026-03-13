@@ -10,7 +10,7 @@ export default function ReturnPage() {
       {/* Hero Section */}
       <section className="bg-gradient-to-b from-gray-50 to-white py-8 sm:py-12 md:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4 sm:mb-6">
+          <h1 className="page-title text-gray-900 mb-4 sm:mb-6">
             Return Policy
           </h1>
           <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
@@ -24,7 +24,7 @@ export default function ReturnPage() {
         <div className="bg-white rounded-lg shadow-sm p-6 sm:p-8 md:p-12">
           <div className="prose prose-gray max-w-none">
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Return Eligibility</h2>
+              <h2 className="section-title text-gray-900 mb-4">Return Eligibility</h2>
               <div className="space-y-4 text-gray-600">
                 <p>We offer returns and exchanges for most items within 7 days of delivery. To be eligible for a return, your item must be:</p>
                 <ul className="list-disc list-inside space-y-2 ml-4">
@@ -40,7 +40,7 @@ export default function ReturnPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">How to Initiate a Return</h2>
+              <h2 className="section-title text-gray-900 mb-4">How to Initiate a Return</h2>
               <div className="space-y-4 text-gray-600">
                 <h3 className="text-lg font-semibold text-gray-900">Step 1: Contact Us</h3>
                 <p>To initiate a return, please contact us within 7 days of delivery:</p>
@@ -59,7 +59,7 @@ export default function ReturnPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Return Shipping</h2>
+              <h2 className="section-title text-gray-900 mb-4">Return Shipping</h2>
               <div className="space-y-4 text-gray-600">
                 <p>Return shipping costs are the responsibility of the customer, except in cases where:</p>
                 <ul className="list-disc list-inside space-y-2 ml-4">
@@ -72,7 +72,7 @@ export default function ReturnPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Processing Returns</h2>
+              <h2 className="section-title text-gray-900 mb-4">Processing Returns</h2>
               <div className="space-y-4 text-gray-600">
                 <h3 className="text-lg font-semibold text-gray-900">Inspection Process</h3>
                 <p>Once we receive your return, we will inspect the item to ensure it meets our return criteria. This process typically takes 2-3 business days.</p>
@@ -86,7 +86,7 @@ export default function ReturnPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Refund Timeline</h2>
+              <h2 className="section-title text-gray-900 mb-4">Refund Timeline</h2>
               <div className="space-y-4 text-gray-600">
                 <div className="bg-gray-50 rounded-lg p-6">
                   <div className="space-y-3">
@@ -109,7 +109,7 @@ export default function ReturnPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Items Not Eligible for Return</h2>
+              <h2 className="section-title text-gray-900 mb-4">Items Not Eligible for Return</h2>
               <div className="space-y-4 text-gray-600">
                 <ul className="list-disc list-inside space-y-2 ml-4">
                   <li>Custom or personalized items</li>
@@ -123,7 +123,7 @@ export default function ReturnPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Damaged or Defective Items</h2>
+              <h2 className="section-title text-gray-900 mb-4">Damaged or Defective Items</h2>
               <div className="space-y-4 text-gray-600">
                 <p>If you receive a damaged or defective item, please contact us immediately. We will arrange for a replacement or full refund at no cost to you.</p>
                 <div className="bg-red-50 border border-red-200 rounded-lg p-4">
@@ -133,7 +133,7 @@ export default function ReturnPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Return Address</h2>
+              <h2 className="section-title text-gray-900 mb-4">Return Address</h2>
               <div className="space-y-4 text-gray-600">
                 <p>Please send returns to:</p>
                 <div className="bg-gray-50 rounded-lg p-6">
@@ -149,7 +149,7 @@ export default function ReturnPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Questions or Concerns</h2>
+              <h2 className="section-title text-gray-900 mb-4">Questions or Concerns</h2>
               <div className="space-y-4 text-gray-600">
                 <p>If you have any questions about our return policy or need assistance with a return, please don't hesitate to contact us:</p>
                 <div className="bg-teal-50 rounded-lg p-6">

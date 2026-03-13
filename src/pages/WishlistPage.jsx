@@ -82,17 +82,18 @@ export default function WishlistPage() {
       if (localStorage.getItem('token')) {
         // Logged in user - use API
         await wishlistApi.removeFromWishlist(productId);
+        window.dispatchEvent(new CustomEvent('wishlistUpdated'));
       } else {
         // Guest user - update local storage
         removeFromGuestWishlist(productId);
       }
-      
+
       // Update local state
       setWishlist(prevWishlist => ({
         ...prevWishlist,
         items: prevWishlist.items.filter(item => item.product !== productId)
       }));
-      
+
       toast.success('Item removed from wishlist');
     } catch (error) {
       console.error('Error removing from wishlist:', error);
@@ -118,11 +119,12 @@ export default function WishlistPage() {
       if (localStorage.getItem("token")) {
         // Logged in user - use API
         await cartApi.addToCart(productData);
+        window.dispatchEvent(new CustomEvent('cartUpdated'));
       } else {
         // Guest user - use local storage
         addToGuestCart(productData);
       }
-      
+
       toast.success('Added to cart');
     } catch (error) {
       console.error('Error adding to cart:', error);
@@ -136,7 +138,7 @@ export default function WishlistPage() {
   const handleBuyNow = async (item) => {
     try {
       setProcessing(true);
-      
+
       const productData = {
         productId: item.product,
         quantity: 1,
@@ -144,11 +146,12 @@ export default function WishlistPage() {
         title: item.title,
         image: item.image
       };
-      
+
       // First add to cart
       if (localStorage.getItem("token")) {
         // Logged in user - use API
         await cartApi.addToCart(productData);
+        window.dispatchEvent(new CustomEvent('cartUpdated'));
       } else {
         // Guest user - use local storage
         addToGuestCart(productData);
@@ -178,6 +181,7 @@ export default function WishlistPage() {
       if (localStorage.getItem('token')) {
         // Logged in user - use API
         await wishlistApi.clearWishlist();
+        window.dispatchEvent(new CustomEvent('wishlistUpdated'));
       } else {
         // Guest user - clear local storage
         localStorage.removeItem('guest_wishlist');
@@ -284,7 +288,7 @@ export default function WishlistPage() {
         <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
           <div>
             <h1 className="page-title text-gray-900">Your Wishlist</h1>
-            <p className="text-gray-600 text-sm sm:text-base mt-2">{wishlist.items.length} item{wishlist.items.length !== 1 ? 's' : ''} saved</p>
+            <p className="page-subtitle text-gray-600 mt-2">{wishlist.items.length} item{wishlist.items.length !== 1 ? 's' : ''} saved</p>
           </div>
           <button
             onClick={handleClearWishlist}
@@ -340,7 +344,7 @@ export default function WishlistPage() {
                     <button
                       onClick={() => handleAddToCart(item)}
                       disabled={processing}
-                      className="bg-gray-900 text-white py-1.5 px-2 rounded text-[10px] sm:text-xs font-bold hover:bg-gray-800 hover:shadow-md transition-all disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-0.5"
+                      className="bg-teal-600 text-white py-1.5 px-2 rounded text-[10px] sm:text-xs font-bold hover:bg-teal-700 hover:shadow-md transition-all disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-0.5"
                     >
                       <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -350,7 +354,7 @@ export default function WishlistPage() {
                     <button
                       onClick={() => handleBuyNow(item)}
                       disabled={processing}
-                      className="bg-gray-900 text-white py-1.5 px-2 rounded text-[10px] sm:text-xs font-bold hover:bg-gray-800 hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-0.5"
+                      className="bg-teal-600 text-white py-1.5 px-2 rounded text-[10px] sm:text-xs font-bold hover:bg-teal-700 hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-0.5"
                     >
                       <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />

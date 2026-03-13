@@ -39,7 +39,7 @@ export default function ContactPage() {
       {/* Hero Section */}
       <section className="bg-gradient-to-b from-gray-50 to-white py-8 sm:py-12 md:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4 sm:mb-6">
+          <h1 className="page-title text-gray-900 mb-4 sm:mb-6">
             Contact Us
           </h1>
           <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
@@ -54,7 +54,7 @@ export default function ContactPage() {
           {/* Contact Information */}
           <div className="space-y-8">
             <div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">Get in Touch</h2>
+              <h2 className="section-title text-gray-900 mb-6">Get in Touch</h2>
               <p className="text-gray-600 leading-relaxed mb-8">
                 We'd love to hear from you. Send us a message and we'll respond as soon as possible.
               </p>
@@ -131,7 +131,7 @@ export default function ContactPage() {
 
           {/* Contact Form */}
           <div className="bg-white rounded-lg shadow-sm p-6 sm:p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Send us a Message</h2>
+            <h2 className="section-title text-gray-900 mb-6">Send us a Message</h2>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>

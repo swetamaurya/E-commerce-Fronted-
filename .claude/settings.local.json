@@ -18,7 +18,8 @@
       "Bash(/tmp/homepage_part2.js)",
       "Bash(src/pages/HomePage.jsx)",
       "Bash(echo:*)",
-      "Bash(git checkout src/components/ProductCard.jsx)"
+      "Bash(git checkout src/components/ProductCard.jsx)",
+      "Bash(npx vite:*)"
     ],
     "deny": [],
     "ask": []

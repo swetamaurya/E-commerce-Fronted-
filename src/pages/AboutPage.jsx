@@ -10,7 +10,7 @@ export default function AboutPage() {
       {/* Hero Section */}
       <section className="bg-gradient-to-b from-gray-50 to-white py-8 sm:py-12 md:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4 sm:mb-6">
+          <h1 className="page-title text-gray-900 mb-4 sm:mb-6">
             About Royal Thread
           </h1>
           <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
@@ -24,7 +24,7 @@ export default function AboutPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16">
           {/* Our Story */}
           <div className="space-y-6">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Our Story</h2>
+            <h2 className="section-title text-gray-900">Our Story</h2>
             <div className="space-y-4 text-gray-600 leading-relaxed">
               <p>
                 Welcome to Royal Thread, a MSE (Micro and Small Enterprise) based out of India. 
@@ -44,7 +44,7 @@ export default function AboutPage() {
 
           {/* Our Mission */}
           <div className="space-y-6">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Our Mission</h2>
+            <h2 className="section-title text-gray-900">Our Mission</h2>
             <div className="space-y-4 text-gray-600 leading-relaxed">
               <p>
                 To provide our customers with premium quality handmade rugs and mats that combine 
@@ -64,7 +64,7 @@ export default function AboutPage() {
 
         {/* Values Section */}
         <section className="mt-12 sm:mt-16">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-8 sm:mb-12">
+          <h2 className="section-title text-gray-900 text-center mb-8 sm:mb-12">
             Our Values
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
@@ -108,7 +108,7 @@ export default function AboutPage() {
 
         {/* Contact CTA */}
         <section className="mt-12 sm:mt-16 text-center bg-white rounded-lg shadow-sm p-8 sm:p-12">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+          <h2 className="section-title text-gray-900 mb-4">
             Get in Touch
           </h2>
           <p className="text-gray-600 mb-6 max-w-2xl mx-auto">

@@ -478,6 +478,7 @@ export default function ProductCard({
           setIsWishlisted(true);
           toast.success("Added to wishlist");
         }
+        window.dispatchEvent(new CustomEvent('wishlistUpdated'));
       } else {
         // Guest user - use local storage
         // First check the actual status from localStorage
@@ -536,6 +537,7 @@ export default function ProductCard({
         // Logged in user - use API
         console.log('Adding to cart:', { product, productId });
         await cartApi.addToCart(productData);
+        window.dispatchEvent(new CustomEvent('cartUpdated'));
         toast.success("Added to cart");
       } else {
         // Guest user - use local storage
