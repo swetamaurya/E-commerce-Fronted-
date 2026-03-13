@@ -82,10 +82,7 @@ export const clearGuestCart = () => {
 export const getGuestWishlist = () => {
   try {
     const wishlist = localStorage.getItem(GUEST_WISHLIST_KEY);
-    const parsedWishlist = wishlist ? JSON.parse(wishlist) : [];
-    console.log('🔍 getGuestWishlist - Raw data:', wishlist);
-    console.log('🔍 getGuestWishlist - Parsed data:', parsedWishlist);
-    return parsedWishlist;
+    return wishlist ? JSON.parse(wishlist) : [];
   } catch (error) {
     console.error('Error getting guest wishlist:', error);
     return [];
@@ -134,11 +131,7 @@ export const removeFromGuestWishlist = (productId) => {
 export const isInGuestWishlist = (productId) => {
   try {
     const wishlist = getGuestWishlist();
-    const isInWishlist = wishlist.some(item => item.productId === productId);
-    console.log('🔍 isInGuestWishlist - ProductId:', productId);
-    console.log('🔍 isInGuestWishlist - Wishlist items:', wishlist.map(item => item.productId));
-    console.log('🔍 isInGuestWishlist - Is in wishlist:', isInWishlist);
-    return isInWishlist;
+    return wishlist.some(item => item.productId === productId);
   } catch (error) {
     console.error('Error checking guest wishlist:', error);
     return false;

@@ -19,7 +19,10 @@
       "Bash(src/pages/HomePage.jsx)",
       "Bash(echo:*)",
       "Bash(git checkout src/components/ProductCard.jsx)",
-      "Bash(npx vite:*)"
+      "Bash(npx vite:*)",
+      "Bash(xargs:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm outdated:*)"
     ],
     "deny": [],
     "ask": []

@@ -9,23 +9,18 @@ export default function OrderDetailsPage() {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   
-  console.log('OrderDetailsPage - orderId from params:', orderId);
-
   useEffect(() => {
     const fetchOrderDetails = async () => {
       try {
         setLoading(true);
         const response = await orderApi.getOrderDetails(orderId);
-        console.log('Order details response:', response);
-        
+
         if (response.success && response.data) {
-        setOrder(response.data);
+          setOrder(response.data);
         } else {
-          console.error('Order not found or invalid response:', response);
           setOrder(null);
         }
-      } catch (error) {
-        console.error('Error fetching order details:', error);
+      } catch {
         toast.error('Failed to load order details');
         setOrder(null);
       } finally {

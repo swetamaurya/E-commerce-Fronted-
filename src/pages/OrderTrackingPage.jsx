@@ -43,8 +43,7 @@ export default function OrderTrackingPage() {
           return () => clearInterval(id);
         }
       })
-      .catch((err) => {
-        console.error('Error loading orders:', err);
+      .catch(() => {
         toast.error('Failed to load orders');
       })
       .finally(() => setLoading(false));
@@ -161,8 +160,8 @@ export default function OrderTrackingPage() {
       .then((hist) => {
         if (hist && hist.length > 0) toast.success('Order found!');
       })
-      .catch((err) => {
-        console.error('Error fetching order:', err);
+      .catch(() => {
+        // Search error handled
       })
       .finally(() => setLoading(false));
   };

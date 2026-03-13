@@ -100,7 +100,6 @@ export default function CategoryPage({ title, slug }) {
       setLoading(true);
       
       try {
-        console.log(`[CategoryPage] Fetching products for category: ${slug}`);
         const response = await productApi.getProductsByCategory(slug);
         const data = response.data || [];
 
@@ -109,16 +108,6 @@ export default function CategoryPage({ title, slug }) {
         }
 
         const products = Array.isArray(data) ? data : [];
-        console.log(`[CategoryPage] Found ${products.length} products for ${slug}`);
-        console.log(`[CategoryPage] Response:`, response);
-        console.log(`[CategoryPage] Products:`, products);
-
-        if (products.length === 0) {
-          console.warn(`⚠️ [CategoryPage] No products found for category ${slug}. Check if API endpoint is correct or if category name matches backend.`);
-        }
-
-        console.log('✅ [CategoryPage] Setting items with products:', products);
-        console.log('✅ [CategoryPage] First product:', products[0]);
         setItems(products);
 
         // Fetch wishlist status for all products
@@ -129,7 +118,6 @@ export default function CategoryPage({ title, slug }) {
         if (error.name === 'AbortError') {
           return;
         }
-        console.error(`[CategoryPage] Error fetching products for ${slug}:`, error);
         if (isMounted) {
           setItems([]);
         }
@@ -223,9 +211,7 @@ export default function CategoryPage({ title, slug }) {
           )
         );
 
-        if (matches) {
-          console.log('🎨 Product', p.name, 'matches color filter:', filters.color, 'Product colors:', productColors);
-        }
+
 
         return matches;
       })
@@ -302,7 +288,7 @@ export default function CategoryPage({ title, slug }) {
         canonical={`https://royalthread.co.in/${slug}`}
       />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6 sm:pb-8 md:pb-10">
+      <main className="min-h-[70vh] max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6 sm:pb-8 md:pb-10">
         {/* Page Header */}
         <div className="text-center mt-2 sm:mt-3 md:mt-4 mb-3 sm:mb-4 md:mb-5">
           <h1 className="page-title text-gray-900 mb-2">

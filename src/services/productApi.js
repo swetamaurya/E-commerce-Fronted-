@@ -8,7 +8,6 @@ const CACHE_DURATION = 30000; // 30 seconds
 const getCachedData = (key) => {
   const cached = cache.get(key);
   if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
-    console.log(`[Cache] Using cached data for: ${key}`);
     return cached.data;
   }
   return null;
@@ -31,7 +30,6 @@ const productApi = {
         return cachedData;
       }
 
-      console.log('[API] Fetching all products');
       const response = await api.get(`/products/getAll/?_t=${Date.now()}`);
       const data = response.data;
       
@@ -54,7 +52,6 @@ const productApi = {
         return cachedData;
       }
 
-      console.log(`[API] Fetching products for category: ${category}`);
       const response = await api.get(`/products/category/${category}?_t=${Date.now()}`);
       const data = response.data;
       
@@ -77,7 +74,6 @@ const productApi = {
         return cachedData;
       }
 
-      console.log(`[API] Fetching product by ID: ${id}`);
       const response = await api.get(`/products/${id}?_t=${Date.now()}`);
       const data = response.data;
       
@@ -100,7 +96,6 @@ const productApi = {
         return cachedData;
       }
 
-      console.log('[API] Fetching featured products');
       const response = await api.get(`/products/featured?_t=${Date.now()}`);
       const data = response.data;
       

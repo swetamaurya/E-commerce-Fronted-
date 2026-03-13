@@ -212,7 +212,7 @@ export default function AllProductsPage() {
   const hasActiveFilters = filters.type.length > 0 || filters.size.length > 0 || filters.color.length > 0 || filters.price !== "ALL";
 
   return (
-    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6 sm:pb-8 md:pb-10">
+    <main className="min-h-[70vh] max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6 sm:pb-8 md:pb-10">
       {/* Page Header */}
       <div className="text-center mt-2 sm:mt-3 md:mt-4 mb-3 sm:mb-4 md:mb-5">
         <h1 className="page-title text-gray-900 mb-2">

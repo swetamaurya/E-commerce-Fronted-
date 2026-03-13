@@ -125,10 +125,6 @@ export default function HomePage() {
   const [hasMoreAllProducts, setHasMoreAllProducts] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
 
-  // Debug: Log the current state
-  // console.log('HomePage render - allProducts:', allProducts);
-  // console.log('HomePage render - allProductsLoading:', allProductsLoading);
-
   useEffect(() => {
     // Check if mobile on mount and resize
     const checkMobile = () => {
@@ -167,20 +163,14 @@ export default function HomePage() {
     const fetchAllProducts = async () => {
       try {
         setAllProductsLoading(true);
-        console.log('[HomePage] Fetching all products...');
-        
         // Use only productApi to avoid duplicate calls
         const response = await productApi.getAllProducts();
-        console.log('[HomePage] All products API response:', response);
         const products = response.data || [];
-        console.log('[HomePage] Products data:', products);
-        
+
         // Take only first 4 products
         setHasMoreAllProducts(products.length > 4);
         setAllProducts(products.slice(0, 4));
-        console.log('[HomePage] Set all products:', products.slice(0, 4));
       } catch (error) {
-        console.error('[HomePage] Error fetching all products:', error);
         setAllProducts([]);
         setHasMoreAllProducts(false);
       } finally {
@@ -506,43 +496,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* In The Spotlight Section */}
-      {/* <section className="py-4 sm:py-8 bg-gray-50">
-        <div className="container mx-auto px-3 sm:px-4">
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 sm:mb-8 gap-4">
-            <h2 className="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-normal uppercase">In The Spotlight</h2>
-            {hasMoreFeatured && (
-              <Link to="/cotton-yoga-mats" className="text-gray-600 underline hover:text-gray-900 text-sm sm:text-base">
-                VIEW ALL
-              </Link>
-            )}
-          </div>
-          
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-1 sm:gap-3 md:gap-4 items-stretch">
-            {loading ? (
-              <div className="col-span-full flex justify-center items-center py-6">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-              </div>
-            ) : featuredProducts.length > 0 ? featuredProducts.map((product) => (
-              <ProductCard key={product._id || product.id} product={product} category={product.category} />
-            )) : (
-              <div className="col-span-full text-center py-6">
-                <div className="flex flex-col items-center">
-                  <img
-                    src="/logo9.png"
-                    alt="Coming Soon Illustration"
-                    className="w-20 h-20 sm:w-24 sm:h-24 mb-4 opacity-80"
-                    loading="lazy"
-                  />
-                  <p className="text-gray-600 text-lg font-semibold">Coming Soon</p>
-                  <p className="text-gray-500 text-sm mt-2">Featured products will appear here shortly.</p>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      </section> */}
-
       {/* All Products Section */}
       <section className="py-4 sm:py-8 bg-white">
         <div className="container mx-auto px-3 sm:px-4">
@@ -566,8 +519,6 @@ export default function HomePage() {
             )) : (
               <div className="col-span-full text-center py-6">
                 <p className="text-gray-500">No products available</p>
-                <p className="text-sm text-gray-400 mt-2">Loading state: {allProductsLoading ? 'true' : 'false'}</p>
-                <p className="text-sm text-gray-400">Products count: {allProducts ? allProducts.length : 'undefined'}</p>
               </div>
             )}
           </div>

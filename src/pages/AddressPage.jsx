@@ -216,9 +216,19 @@ export default function AddressPage() {
     if (loading) return; // Prevent multiple submissions
     
     // Validate form
-    if (!formData.fullName || !formData.addressLine1 || !formData.city || 
+    if (!formData.fullName || !formData.addressLine1 || !formData.city ||
         !formData.state || !formData.pincode || !formData.phone) {
       toast.error('Please fill all required fields');
+      return;
+    }
+
+    if (!/^\d{6}$/.test(formData.pincode)) {
+      toast.error('Pincode must be exactly 6 digits');
+      return;
+    }
+
+    if (!/^\d{10}$/.test(formData.phone)) {
+      toast.error('Phone number must be exactly 10 digits');
       return;
     }
 
@@ -318,7 +328,7 @@ export default function AddressPage() {
   }
 
   return (
-    <div className="bg-gray-50">
+    <div className="min-h-[70vh] bg-gray-50">
         {/* Custom Delete Confirmation Dialog */}
         {showDeleteConfirm && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">

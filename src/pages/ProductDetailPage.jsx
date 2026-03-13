@@ -37,11 +37,6 @@ export default function ProductDetailPage() {
   // login modal
   const [showLoginModal, setShowLoginModal] = useState(false);
 
-  // Debug: Monitor login modal state
-  useEffect(() => {
-    console.log("Login modal state changed:", showLoginModal);
-  }, [showLoginModal]);
-
   // info table expand
   const [showFullInfo, setShowFullInfo] = useState(false);
 
@@ -67,13 +62,10 @@ export default function ProductDetailPage() {
       setLoading(true);
       
       try {
-        console.log('Fetching product:', { category, productId });
-        
         // Try to fetch product directly by ID first (more efficient)
         try {
           const directResponse = await productApi.getProductById(productId);
           if (directResponse.success && directResponse.data) {
-            console.log('Found product via direct fetch:', directResponse.data);
             if (isMounted) {
               setProduct(directResponse.data);
             }
@@ -81,20 +73,15 @@ export default function ProductDetailPage() {
             throw new Error('Product not found via direct fetch');
           }
         } catch (directError) {
-          console.log('Direct fetch failed, trying category fetch:', directError.message);
-          
           // Fallback: get products by category only if direct fetch fails
           const response = await productApi.getProductsByCategory(category);
           const products = response.data || [];
-          console.log('Products from category:', products);
-          
+
           const found = products.find((p) => (p.id || p._id) === productId);
-          console.log('Found product:', found);
           
           if (!isMounted) return;
           
           if (!found) {
-            console.log('Product not found in category, redirecting to 404');
             navigate("/not-found");
             return;
           } else {
@@ -114,7 +101,6 @@ export default function ProductDetailPage() {
           if (isMounted) setIsWishlisted(false);
         }
       } catch (e) {
-        console.error(`❌ [${Date.now()}] Product fetch error:`, e);
         if (isMounted) {
           navigate("/not-found");
         }
@@ -151,8 +137,7 @@ export default function ProductDetailPage() {
         addToGuestCart(payload);
       }
       toast.success("Added to cart");
-    } catch (err) {
-      console.error("Error adding to cart:", err);
+    } catch {
       toast.error("Failed to add to cart");
     } finally {
       setIsAddingToCart(false);
@@ -160,17 +145,9 @@ export default function ProductDetailPage() {
   };
 
   const handleBuyNow = async () => {
-    console.log("BUY NOW clicked!");
-    
-    if (!product) {
-      console.log("No product found");
-      return;
-    }
+    if (!product) return;
 
     setIsBuyingNow(true);
-
-    console.log("Product:", product);
-    console.log("Quantity:", quantity);
 
     try {
       const payload = {
@@ -181,24 +158,14 @@ export default function ProductDetailPage() {
         image: product.images?.[0]?.url || product.image,
       };
 
-      console.log("Payload:", payload);
-
-      // Add to cart first
-      console.log("Adding to cart...");
       if (localStorage.getItem("token")) {
-        // Logged in user - use API
         await cartApi.addToCart(payload);
       } else {
-        // Guest user - use local storage
         addToGuestCart(payload);
       }
-      console.log("Added to cart successfully");
 
-      // Navigate to cart page
-      console.log("Navigating to cart page...");
       navigate('/cart');
-    } catch (error) {
-      console.error("Error in buy now:", error);
+    } catch {
       toast.error("Failed to proceed to checkout");
     } finally {
       setIsBuyingNow(false);
@@ -209,8 +176,6 @@ export default function ProductDetailPage() {
     setShowLoginModal(false);
     
     if (isFromBuyNow) {
-      // If coming from BUY NOW, redirect to cart page
-      console.log("Redirecting to cart page after login from BUY NOW");
       navigate("/cart");
       setIsFromBuyNow(false); // Reset the flag
     } else {
@@ -264,8 +229,7 @@ export default function ProductDetailPage() {
           toast.success("Added to wishlist");
         }
       }
-    } catch (err) {
-      console.error("Error toggling wishlist:", err);
+    } catch {
       toast.error("Failed to update wishlist");
     } finally {
       setIsTogglingWishlist(false);

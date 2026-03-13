@@ -48,42 +48,31 @@ export default function OrdersPage() {
           eventSourceRef.current.close();
         }
 
-        console.log('Creating SSE connection...');
         const eventSource = orderSSE.connect();
         eventSourceRef.current = eventSource;
 
         eventSource.onopen = () => {
-          console.log('SSE connection opened');
           setIsConnected(true);
         };
 
         eventSource.onmessage = (event) => {
           try {
-            console.log('=== SSE MESSAGE RECEIVED ===');
-            console.log('Raw event data:', event.data);
-            
             const data = JSON.parse(event.data);
-            console.log('Parsed data:', data);
-            
+
             // Handle error responses
             if (data.success === false) {
-              console.error('SSE error:', data.message);
               toast.error(`Connection error: ${data.message}`);
               setIsConnected(false);
               return;
             }
-            
+
             if (data.type === 'order_update') {
-              console.log('Processing order update:', data);
-              console.log('Current orders before update:', orders);
-              
               // Update specific order status
               setOrders(prevOrders => {
-                const updatedOrders = prevOrders.map(order => {
+                return prevOrders.map(order => {
                   if (order._id === data.orderId) {
-                    console.log('Updating order:', order._id, 'to status:', data.newStatus);
-                    return { 
-                      ...order, 
+                    return {
+                      ...order,
                       status: data.newStatus,
                       trackingNumber: data.orderData.trackingNumber,
                       notes: data.orderData.notes,
@@ -93,31 +82,19 @@ export default function OrdersPage() {
                   }
                   return order;
                 });
-                console.log('Updated orders:', updatedOrders);
-                return updatedOrders;
               });
-              
+
               // Show notification
               toast.success(`Order ${data.orderId} status updated to ${data.newStatus}`);
             } else if (data.type === 'initial_data') {
-              console.log('Received initial data:', data.orders);
-              // Update orders with fresh data
               setOrders(data.orders || []);
-            } else if (data.type === 'connected') {
-              console.log('Connected to real-time updates');
-            } else if (data.type === 'ping') {
-              // Keep alive ping - no action needed
             }
-            
-            console.log('=== END SSE MESSAGE PROCESSING ===');
-          } catch (error) {
-            console.error('Error parsing SSE data:', error);
+          } catch {
+            // SSE parse error - ignore
           }
         };
 
-        eventSource.onerror = (error) => {
-          console.error('SSE connection error:', error);
-          console.log('SSE readyState:', eventSource.readyState);
+        eventSource.onerror = () => {
           setIsConnected(false);
           
           // Close current connection
@@ -129,14 +106,12 @@ export default function OrdersPage() {
           // Attempt to reconnect after 5 seconds only if component is still mounted
           setTimeout(() => {
             if (eventSourceRef.current === null) {
-              console.log('Attempting to reconnect SSE...');
               connectSSE();
             }
           }, 5000);
         };
 
-      } catch (error) {
-        console.error('Error creating SSE connection:', error);
+      } catch {
         setIsConnected(false);
       }
     };
